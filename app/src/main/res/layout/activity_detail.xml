@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+        android:id="@+id/sp_player"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_240_y"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/sp_player"
+        app:tabIndicatorColor="@color/colorAccent"
+        app:tabTextColor="@android:color/black"
+        app:tabSelectedTextColor="@color/colorAccent"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_detail"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/tl_card"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </android.support.v4.view.ViewPager>
+
+
+</android.support.constraint.ConstraintLayout>
