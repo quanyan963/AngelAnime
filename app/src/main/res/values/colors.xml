@@ -3,8 +3,13 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <!--1ab9de-->
-    <color name="colorAccent">#1ab9de</color>
+    <color name="colorAccent">#4bd9ff</color>
     <color name="white">#ffffff</color>
 
     <color name="black">#000000</color>
+    <color name="low_grey">#838384</color>
+    <color name="gray">#323233</color>
+    <color name="grey_back">#e6e6e6</color>
+    <color name="light_grey">#f9f9f9</color>
+    <color name="red">#d81e06</color>
 </resources>

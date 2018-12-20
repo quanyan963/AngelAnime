@@ -7,4 +7,6 @@ package com.tsdm.angelanime.utils;
 public class Constants {
     public static final String HREF_URL = "href_url";
     public static final int FIRST = 0;
+    public static final String URL_HOME = "URL_HOME";
+    public static final String INTRODUCTION = "introduction";
 }

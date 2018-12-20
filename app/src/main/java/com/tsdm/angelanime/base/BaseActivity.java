@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
+import com.tsdm.angelanime.utils.StatusBarUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final String TAG = BaseActivity.class.getSimpleName();
     public TextView tvTitle;
     public boolean isBack = true;
+    public boolean changeColor = true;
     private long mExitTime;
     private MyApplication mApplication;
     Toolbar toolbar;
@@ -36,6 +37,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (changeColor)
+            StatusBarUtils.setWindowStatusBarColor(this,R.color.colorAccent);
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         ButterKnife.bind(this);
@@ -67,20 +70,20 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
         }
 
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
-//
-//    public void setNavigationIcon(boolean isBack) {
-//        this.isBack = isBack;
-//        if (isBack) {
-//            toolbar.setNavigationIcon(R.mipmap.ic_home);
-//        } else {
-//            toolbar.setNavigationIcon(R.mipmap.ic_left_arrow);
-//        }
-//
-//    }
+
+    public void setNavigationIcon(boolean isBack) {
+        this.isBack = isBack;
+        if (isBack) {
+            toolbar.setNavigationIcon(R.mipmap.back);
+        } else {
+            //toolbar.setNavigationIcon(R.mipmap.ic_left_arrow);
+        }
+
+    }
 
     public Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
         @Override
@@ -136,7 +139,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void showSnackBar(View view, int str) {
         if (snackbar == null) {
             snackbar = Snackbar.make(view, str, Snackbar.LENGTH_INDEFINITE);
-            //snackbar.getView().setBackgroundColor(getResources().getColor(R.color.gray));
+            snackbar.getView().setBackgroundColor(getResources().getColor(R.color.gray));
         }
         snackbar.show();
     }
@@ -147,9 +150,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-//    @Subscribe
-//    public void onEventMainThread(MusicServiceEvent serviceEvent) {
-//        Log.d(TAG, "Position: " + serviceEvent.getPosition());
-//        Log.d(TAG, "Progress: " + serviceEvent.getProgress());
-//    }
+    @Subscribe
+    public void onEventMainThread(String str) {
+
+    }
 }

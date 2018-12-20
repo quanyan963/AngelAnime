@@ -2,6 +2,7 @@ package com.tsdm.angelanime.model.db;
 
 
 
+import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 
 import java.util.List;
@@ -13,4 +14,7 @@ import java.util.List;
 public interface DBHelper {
     void insertTopEight(List<TopEight> value);
     List<TopEight> getTopEight();
+
+    void insertRecently(RecentlyData data);
+    RecentlyData getRecently();
 }

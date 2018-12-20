@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="classify">
+        <item>新番</item>
+        <item>后宫</item>
+        <item>校园</item>
+        <item>恋爱</item>
+        <item>热血</item>
+    </array>
+</resources>

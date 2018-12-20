@@ -2,6 +2,7 @@ package com.tsdm.angelanime.start.mvp;
 
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.utils.RxUtil;
@@ -42,6 +43,8 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
                         Elements els = document.getElementsByClass("box720 fl");
                         Element elt = els.get(0).select("iframe").first();
                         String imgUrl = elt.attr("src");
+                        Elements data = document.getElementsByClass("serial");
+                        mManagerModel.insertRecently(new RecentlyData(data.toString()));
                         if (imgUrl != null){
                             return imgUrl;
                         }else {
@@ -54,7 +57,10 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
                 .subscribeWith(new CommonSubscriber<String>(view){
                         @Override
                         public void onNext(String url) {
-                            mManagerModel.insertTopEight(mManagerModel.getTopEight(url,listener));
+                            List<TopEight> data = mManagerModel.getTopEight(url,listener);
+                            if (data!= null){
+                                mManagerModel.insertTopEight(data);
+                            }
                         }
 
                     @Override

@@ -1,4 +1,4 @@
-package com.tsdm.angelanime.bean;
+package com.tsdm.angelanime.bean.event;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,13 +12,15 @@ public class AnimationDetail implements Serializable {
     private String title;
     private String titleImg;
     private String updateTime;
-    private String statue;
+    private String statue;//最新连载
     private String introduction;
     private List<String> playList;
     private List<String> playListTitle;
+    private int requestStatue;
 
     public AnimationDetail(String title, String titleImg, String updateTime, String statue,
-                           String introduction, List<String> playList, List<String> playListTitle) {
+                           String introduction, List<String> playList, List<String> playListTitle,
+                           int requestStatue) {
         this.title = title;
         this.titleImg = titleImg;
         this.updateTime = updateTime;
@@ -26,6 +28,11 @@ public class AnimationDetail implements Serializable {
         this.introduction = introduction;
         this.playList = playList;
         this.playListTitle = playListTitle;
+        this.requestStatue = requestStatue;
+    }
+
+    public AnimationDetail(int requestStatue) {
+        this.requestStatue = requestStatue;
     }
 
     public String getTitle() {
@@ -82,5 +89,13 @@ public class AnimationDetail implements Serializable {
 
     public void setPlayListTitle(List<String> playListTitle) {
         this.playListTitle = playListTitle;
+    }
+
+    public int getRequestStatue() {
+        return requestStatue;
+    }
+
+    public void setRequestStatue(int requestStatue) {
+        this.requestStatue = requestStatue;
     }
 }

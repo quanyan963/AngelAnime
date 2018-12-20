@@ -60,7 +60,7 @@ public class StartActivity extends MvpBaseActivity<StartPresenter> implements St
             @Override
             public void onAnimationEnd(Animation animation) {
                 isAnimationFinished = true;
-                if (isAnimationFinished) {
+                if (isLoadingFinished) {
                     endAnimation();
 
                 }
@@ -72,7 +72,7 @@ public class StartActivity extends MvpBaseActivity<StartPresenter> implements St
             }
         });
         ivLogo.startAnimation(start);
-        ivLogo.setImageResource(R.mipmap.logo);
+        ivLogo.setImageResource(R.mipmap.logo_angel);
 
         //animationSet.addAnimation(start);
         //animationSet.addAnimation(end);

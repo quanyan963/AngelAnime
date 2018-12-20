@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,10 +15,15 @@ import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseActivity;
-import com.tsdm.angelanime.bean.AnimationDetail;
+import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.detail.mvp.AnimationDetailContract;
 import com.tsdm.angelanime.detail.mvp.AnimationDetailPresenter;
+import com.tsdm.angelanime.introduction.IntroductionActivity;
+import com.tsdm.angelanime.introduction.IntroductionFragment;
+import com.tsdm.angelanime.utils.StatusBarUtils;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,7 @@ import tv.danmaku.ijk.media.exo2.Exo2PlayerManager;
 import tv.danmaku.ijk.media.exo2.ExoPlayerCacheManager;
 
 import static com.tsdm.angelanime.utils.Constants.HREF_URL;
+import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
 
 /**
  * Created by Mr.Quan on 2018/11/21.
@@ -46,13 +53,21 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     private ImageView img;//封面
     private AnimationDetail detail;
     private int position = 0;
-    private TabAdapter tabAdapter;
+    private DetailPagerAdapter detAdapter;
     private List<String> titleList;
-    private List<View> viewList;
+    private List<Fragment> viewList;
+    private boolean isFisrst = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        changeColor = false;
+        StatusBarUtils.setWindowStatusBarColor(this,R.color.black);
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);    //设置全屏
+//        //getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
     }
 
@@ -65,33 +80,20 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void init() {
         Intent intent = getIntent();
         url = intent.getStringExtra(HREF_URL);
-
         presenter.getDetail(url, this);
         initGSYView();
         titleList = new ArrayList<>();
         titleList.add(getString(R.string.introduction));
-        titleList.add("简介");
-        tabAdapter = new TabAdapter(titleList,viewList);
-        tlCard.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                vpDetail.setCurrentItem(tab.getPosition(),true);
-            }
+        titleList.add(getString(R.string.comment));
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-        vpDetail.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tlCard));
-        tlCard.setTabsFromPagerAdapter(tabAdapter);
+        viewList = new ArrayList<>();
+        viewList.add(new IntroductionFragment());
+        viewList.add(new IntroductionFragment());
+        detAdapter = new DetailPagerAdapter(getSupportFragmentManager(),titleList,viewList);
+        vpDetail.setAdapter(detAdapter);
+        tlCard.setupWithViewPager(vpDetail);
+        tlCard.setTabsFromPagerAdapter(detAdapter);
     }
-
 
     private void initGSYView() {
         PlayerFactory.setPlayManager(Exo2PlayerManager.class);//EXO模式
@@ -120,7 +122,8 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     @Override
     public void getDetail(AnimationDetail animationDetail) {
         detail = animationDetail;
-        presenter.getPlayUrl(detail.getPlayList().get(position), this);
+        presenter.getListUrl(detail.getPlayList().get(position), this);
+
         //spPlayer.setThumbImageView();
     }
 
@@ -132,8 +135,17 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     }
 
     @Override
-    public void onError() {
+    public void onComplete() {
+        if (!isFisrst){
+            EventBus.getDefault().post(detail);
+            isFisrst = true;
+        }
+        presenter.getPlayUrl(position,this);
+    }
 
+    @Override
+    public void onError() {
+        showSnackBar(vpDetail,R.string.net_error);
     }
 
     @Override
@@ -153,5 +165,18 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void onDestroy() {
         GSYVideoManager.releaseAllVideos();
         super.onDestroy();
+    }
+
+    public void onResultFromFragment(int position){
+        if (position == -1){
+            GSYVideoManager.onPause();
+            startActivity(new Intent(this, IntroductionActivity.class).
+                    putExtra(INTRODUCTION,detail.getIntroduction()));
+        }else {
+            this.position = position;
+            GSYVideoManager.releaseAllVideos();
+            onComplete();
+            //presenter.getPlayUrl(detail.getPlayList().get(position), this);
+        }
     }
 }

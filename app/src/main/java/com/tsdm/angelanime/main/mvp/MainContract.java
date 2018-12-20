@@ -2,6 +2,7 @@ package com.tsdm.angelanime.main.mvp;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
+import com.tsdm.angelanime.bean.RecentlyDetail;
 import com.tsdm.angelanime.bean.TopEight;
 
 import java.util.List;
@@ -18,5 +19,7 @@ public interface MainContract {
     interface Presenter extends BasePresenter<View> {
 
         List<TopEight> geTopEight();
+
+        List<RecentlyDetail> getRecently();
     }
 }

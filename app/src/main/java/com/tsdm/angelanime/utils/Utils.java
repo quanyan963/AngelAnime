@@ -83,16 +83,16 @@ public class Utils {
 //    public static void showPopup(View view, final Activity activity, int position, String[] data,
 //                                 int titleId, final PopWindowListener popWindowListener) {
 //        View popView = LayoutInflater.from(activity).inflate(R.layout.pop_picker, null);
-//        final PopupWindow mPopWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT,
+//        final PopupWindow mPopWindow = detail_new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT, true);
 //        MontserratButton btnTitle = (MontserratButton) popView.findViewById(R.id.btn_title);
 //        btnTitle.setText(titleId);
-//        mPopWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        mPopWindow.setBackgroundDrawable(detail_new ColorDrawable(Color.TRANSPARENT));
 //        MontserratButton btnSave = (MontserratButton) popView.findViewById(R.id.btn_save);
 //        final LoopView loopView = (LoopView) popView.findViewById(R.id.loop_view);
 //        loopView.setDataList(Arrays.asList(data));
 //        loopView.setInitPosition(position);
-//        btnSave.setOnClickListener(new View.OnClickListener() {
+//        btnSave.setOnClickListener(detail_new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                popWindowListener.onSave(loopView.getSelectedItem());
@@ -101,7 +101,7 @@ public class Utils {
 //        });
 //
 //        // 当点击取消的时候，pw消失
-//        mPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+//        mPopWindow.setOnDismissListener(detail_new PopupWindow.OnDismissListener() {
 //            @Override
 //            public void onDismiss() {
 //                backgroundAlpha(activity, 1.0f);
@@ -113,7 +113,7 @@ public class Utils {
 
 //    public static void showBottomDialog(Activity activity, final boolean playing, final List<Song> songList,
 //                                        final MusicListListener listener) {
-//        final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+//        final BottomSheetDialog dialog = detail_new BottomSheetDialog(activity);
 //        View dialogView = LayoutInflater.from(activity).inflate(R.layout.pop_music, null);
 //        dialogView.setBackgroundResource(R.color.transparent);
 //        CustomTextView tvTitle = (CustomTextView) dialogView.findViewById(R.id.mtv_title);
@@ -121,11 +121,11 @@ public class Utils {
 //                song_size), songList.size() + ""));
 //        final RecyclerView rlvMusicList = (RecyclerView) dialogView.findViewById(R.id.rlv_music_list);
 //        rlvMusicList.setHasFixedSize(true);
-//        rlvMusicList.setLayoutManager(new LinearLayoutManager(activity));
-//        final MusicListAdapter musicListAdapter = new MusicListAdapter(activity);
+//        rlvMusicList.setLayoutManager(detail_new LinearLayoutManager(activity));
+//        final MusicListAdapter musicListAdapter = detail_new MusicListAdapter(activity);
 //        rlvMusicList.setAdapter(musicListAdapter);
 //        musicListAdapter.addList(playing, songList, rlvMusicList);
-//        musicListAdapter.setOnClickListener(new MusicListAdapter.MusicClickListener() {
+//        musicListAdapter.setOnClickListener(detail_new MusicListAdapter.MusicClickListener() {
 //            @Override
 //            public void onItemClick(int position) {
 //                listener.onItemSelected(position);
@@ -170,7 +170,7 @@ public class Utils {
     }
 
 //    public static String getWeekString(String weeks, Context context) {
-//        int[] week = new int[7];
+//        int[] week = detail_new int[7];
 //        String repeatText = "";
 //        String[] menu = context.getResources().getStringArray(R.array.week_repeat_list);
 //        if (weeks.equals(Constants.ALL_WEEK)) {

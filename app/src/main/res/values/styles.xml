@@ -20,12 +20,17 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/dp_16_x</item>
-        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">@dimen/dp_16_x</item>
+    </style>
+
+    <style name="main_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/grey_back</item>
     </style>
 
 </resources>

@@ -10,6 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.generatedDensities = ['hdpi','xxhdpi']
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -63,4 +65,5 @@ dependencies {
     //video
     implementation 'com.shuyu:GSYVideoPlayer:6.0.1'
     implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1352_43618_sharewithdownload_withoutGame_obfs_20180918_120327.jar')
+    implementation 'com.android.support:design:27.+'
 }

@@ -5,6 +5,8 @@ import android.app.Activity;
 
 import com.tsdm.angelanime.di.module.FragmentModule;
 import com.tsdm.angelanime.di.scope.FragmentScope;
+import com.tsdm.angelanime.introduction.IntroductionFragment;
+import com.tsdm.angelanime.main.MainFragment;
 
 import dagger.Component;
 
@@ -18,5 +20,6 @@ import dagger.Component;
 public interface FragmentComponent {
     Activity getActivity();
 
-//    void inject(MoodLightFragment moodLightFragment);
+    void inject(IntroductionFragment introductionFragment);
+    void inject(MainFragment mainFragment);
 }

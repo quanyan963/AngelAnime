@@ -99,8 +99,8 @@ public class TitleUtils {
 
 //    private static boolean isMiUIV6OrAbove() {
 //        try {
-//            final Properties properties = new Properties();
-//            properties.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
+//            final Properties properties = detail_new Properties();
+//            properties.load(detail_new FileInputStream(detail_new File(Environment.getRootDirectory(), "build.prop")));
 //            String uiCode = properties.getProperty(KEY_MIUI_VERSION_CODE, null);
 //            if (uiCode != null) {
 //                int code = Integer.parseInt(uiCode);

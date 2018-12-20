@@ -6,6 +6,7 @@ import android.app.Activity;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.di.module.ActivityModule;
 import com.tsdm.angelanime.di.scope.ActivityScope;
+import com.tsdm.angelanime.introduction.IntroductionActivity;
 import com.tsdm.angelanime.main.MainActivity;
 import com.tsdm.angelanime.start.StartActivity;
 
@@ -24,4 +25,5 @@ public interface ActivityComponent {
     void inject(MainActivity mainActivity);
     void inject(StartActivity startActivity);
     void inject(AnimationDetailActivity detailActivity);
+    void inject(IntroductionActivity introductionActivity);
 }

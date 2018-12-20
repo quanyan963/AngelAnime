@@ -1,10 +1,7 @@
 package com.tsdm.angelanime.model;
 
-import android.app.Activity;
-import android.content.Context;
 
-
-import com.tsdm.angelanime.bean.AnimationDetail;
+import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.db.DBHelper;
 import com.tsdm.angelanime.model.net.NetHelper;
@@ -13,7 +10,6 @@ import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.nodes.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -60,8 +56,13 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     }
 
     @Override
+    public Flowable<String[]> getListUrl(String hrefUrl, WebResponseListener listener) {
+        return mNetHelper.getListUrl(hrefUrl, listener);
+    }
+
+    @Override
     public Flowable<Document> getPlayUrl(String hrefUrl, WebResponseListener listener) {
-        return mNetHelper.getPlayUrl(hrefUrl, listener);
+        return mNetHelper.getPlayUrl(hrefUrl,listener);
     }
 
     @Override
@@ -72,5 +73,15 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     @Override
     public List<TopEight> getTopEight() {
         return mDBDbHelper.getTopEight();
+    }
+
+    @Override
+    public void insertRecently(RecentlyData data) {
+        mDBDbHelper.insertRecently(data);
+    }
+
+    @Override
+    public RecentlyData getRecently() {
+        return mDBDbHelper.getRecently();
     }
 }

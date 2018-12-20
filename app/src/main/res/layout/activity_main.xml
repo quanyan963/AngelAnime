@@ -1,22 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tsdm.angelanime.main.MainActivity"
-    android:fitsSystemWindows="true">
+    tools:context="com.tsdm.angelanime.main.MainActivity">
 
-    <include
-        android:id="@+id/i_toolbar"
-        layout="@layout/toolbar"
-        app:layout_constraintTop_toTopOf="parent"/>
-    <com.youth.banner.Banner
-        android:id="@+id/bn_top"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_230_y"
-        app:layout_constraintTop_toBottomOf="@+id/i_toolbar">
+        android:layout_height="wrap_content">
 
-    </com.youth.banner.Banner>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways">
+            <include
+                android:id="@+id/i_toolbar"
+                layout="@layout/toolbar"
+                 />
+            <com.youth.banner.Banner
+                android:id="@+id/bn_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_210_y"
+                android:layout_below="@+id/i_toolbar">
 
-</android.support.constraint.ConstraintLayout>
+            </com.youth.banner.Banner>
+        </RelativeLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabIndicatorHeight="@dimen/dp_2_y"
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabTextColor="@color/black">
+
+        </android.support.design.widget.TabLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </android.support.v4.view.ViewPager>
+
+</android.support.design.widget.CoordinatorLayout>

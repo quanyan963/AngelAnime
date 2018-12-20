@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_grey">
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+        <com.tsdm.angelanime.widget.RoundImageView
+            android:id="@+id/iv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16_y"
+            android:layout_marginLeft="@dimen/dp_16_y"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            app:left_top_radius="@dimen/dp_10_x"
+            app:right_top_radius="@dimen/dp_10_x"
+            app:right_bottom_radius="@dimen/dp_10_x"
+            app:left_bottom_radius="@dimen/dp_10_x" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/main_tv"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_16_y"
+            android:layout_marginLeft="@dimen/dp_16_y"
+            android:layout_toRightOf="@+id/iv_title"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/dp_16_y"/>
+        <TextView
+            android:id="@+id/tv_update_time"
+            style="@style/main_tv"
+            android:layout_marginLeft="@dimen/dp_16_y"
+            android:layout_toRightOf="@+id/iv_title"
+            android:layout_below="@+id/tv_name"
+            android:textSize="@dimen/dp_12_x"
+            android:textColor="@color/low_grey"
+            android:layout_marginTop="@dimen/dp_4_y"/>
+        <TextView
+            android:id="@+id/tv_introduction"
+            style="@style/main_tv"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/dp_16_y"
+            android:layout_toRightOf="@+id/iv_title"
+            android:layout_below="@+id/tv_update_time"
+            android:maxLines="6"
+            android:textSize="@dimen/dp_12_x"
+            android:textColor="@color/low_grey"
+            android:layout_marginRight="@dimen/dp_16_y"
+            android:layout_marginTop="@dimen/dp_4_y"
+            android:ellipsize="end"/>
+    </RelativeLayout>
+
+
+    <View
+        android:id="@+id/v_line"
+        style="@style/main_line"
+        android:layout_marginTop="@dimen/dp_16_y"
+        app:layout_constraintTop_toBottomOf="@+id/rl_top"/>
+    <TextView
+        android:id="@+id/tv_list_name"
+        style="@style/main_tv"
+        android:text="选集"
+        android:textSize="@dimen/dp_14_x"
+        app:layout_constraintTop_toBottomOf="@+id/v_line"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_16_y"
+        android:layout_marginLeft="@dimen/dp_16_y"/>
+
+    <TextView
+        android:id="@+id/tv_list_statue"
+        style="@style/main_tv"
+        android:gravity="center"
+        android:textSize="@dimen/dp_14_x"
+        app:layout_constraintTop_toBottomOf="@+id/v_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_16_y"
+        android:layout_marginRight="@dimen/dp_16_y"
+        android:drawableRight="@mipmap/right_back"
+        android:textColor="@color/low_grey"
+        android:drawablePadding="@dimen/dp_6_y" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rlv_play_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16_y"
+        app:layout_constraintTop_toBottomOf="@+id/tv_list_statue"
+        android:layout_marginBottom="@dimen/dp_16_y">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        style="@style/main_line"
+        android:layout_marginTop="@dimen/dp_16_y"
+        app:layout_constraintTop_toBottomOf="@+id/rlv_play_list"/>
+
+</android.support.constraint.ConstraintLayout>

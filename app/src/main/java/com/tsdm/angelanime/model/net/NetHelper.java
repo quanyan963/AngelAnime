@@ -1,6 +1,5 @@
 package com.tsdm.angelanime.model.net;
 
-import com.tsdm.angelanime.bean.AnimationDetail;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -20,6 +19,8 @@ public interface NetHelper {
     List<TopEight> getTopEight(String url, WebResponseListener listener);
 
     Flowable<Document> getDetail(String hrefUrl, WebResponseListener listener);
+
+    Flowable<String[]> getListUrl(String hrefUrl, WebResponseListener listener);
 
     Flowable<Document> getPlayUrl(String hrefUrl, WebResponseListener listener);
 }
