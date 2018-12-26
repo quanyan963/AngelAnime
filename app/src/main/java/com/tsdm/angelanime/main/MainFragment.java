@@ -1,9 +1,9 @@
 package com.tsdm.angelanime.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,22 +12,28 @@ import android.view.ViewGroup;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
 import com.tsdm.angelanime.bean.RecentlyDetail;
+import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.main.mvp.FragmentContract;
 import com.tsdm.angelanime.main.mvp.FragmentPresenter;
+import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 
 import butterknife.BindView;
+
+import static com.tsdm.angelanime.utils.Constants.HREF_URL;
 
 /**
  * Created by Mr.Quan on 2018/12/19.
  */
 
-public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements FragmentContract.View {
+public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements FragmentContract.View,
+        FRecycleAdapter.onRecycleItemClick {
     @BindView(R.id.rlv_animation_list)
     RecyclerView rlvAnimationList;
 
     private FRecycleAdapter adapter;
     private CallBackValue callBackValue;
+    private RecentlyDetail detail;
     @Override
     protected void initInject() {
         getFragmentComponent().inject(this);
@@ -52,9 +58,17 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
                 getActivity().getResources().getDimensionPixelSize(R.dimen.dp_16_x),
                 getActivity().getResources().getColor(R.color.white)));
         //rlvAnimationList.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new FRecycleAdapter(callBackValue.SendMessageValue(this),getContext());
+        detail = callBackValue.SendMessageValue(this);
+        adapter = new FRecycleAdapter(detail,getContext());
         rlvAnimationList.setAdapter(adapter);
+        adapter.setOnItemClick(this);
+    }
 
+    @Override
+    public void onItemClick(int position) {
+        startActivity(new Intent(getActivity(), AnimationDetailActivity.class).
+                putExtra(HREF_URL, Url.URL+detail.getUrl().get(position)));
+        //.putExtra(POSITION,(detail.getUrl().size()-1))
     }
 
     public interface CallBackValue{

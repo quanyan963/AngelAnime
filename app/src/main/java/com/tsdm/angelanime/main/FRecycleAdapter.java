@@ -4,8 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
@@ -22,6 +24,7 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
 
     private RecentlyDetail data;
     private Context mContext;
+    private onRecycleItemClick listener;
 
     public FRecycleAdapter(RecentlyDetail data, Context mContext) {
         this.data = data;
@@ -36,12 +39,12 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FRecycleViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull FRecycleViewHolder viewHolder, final int i) {
         viewHolder.tvName.setText(data.getDate().get(i) + data.getName().get(i));
         viewHolder.tvUpdate.setText(data.getSetNum().get(i));
-        if (i < 2){
+        if (i < 2) {
             viewHolder.vTop.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             viewHolder.vTop.setVisibility(View.GONE);
         }
         if (i % 2 == 1) {
@@ -51,6 +54,15 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
             viewHolder.vLeft.setVisibility(View.VISIBLE);
             viewHolder.vRight.setVisibility(View.GONE);
         }
+        viewHolder.rlMain.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    listener.onItemClick(i);
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -69,9 +81,20 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
         View vLeft;
         @BindView(R.id.v_top)
         View vTop;
+        @BindView(R.id.rl_main)
+        RelativeLayout rlMain;
+
         public FRecycleViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void setOnItemClick(onRecycleItemClick listener) {
+        this.listener = listener;
+    }
+
+    public interface onRecycleItemClick {
+        void onItemClick(int position);
     }
 }

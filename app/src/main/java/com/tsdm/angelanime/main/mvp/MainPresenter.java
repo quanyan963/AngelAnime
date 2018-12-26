@@ -1,10 +1,15 @@
 package com.tsdm.angelanime.main.mvp;
 
+import android.content.Intent;
+import android.view.View;
+
+import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.RecentlyDetail;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.DataManagerModel;
+import com.tsdm.angelanime.search.SearchActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import cn.icheny.transition.CySharedElementTransition;
 
 /**
  * Created by Mr.Quan on 2018/11/10.
@@ -59,5 +66,14 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
         }
         return data;
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.iv_right:
+                view.toSearchActivity(v);
+                break;
+        }
     }
 }

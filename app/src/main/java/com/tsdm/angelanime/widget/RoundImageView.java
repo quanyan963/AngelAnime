@@ -98,6 +98,4 @@ public class RoundImageView extends AppCompatImageView {
         }
         super.onDraw(canvas);
     }
-
-
 }

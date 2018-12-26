@@ -1,12 +1,16 @@
 package com.tsdm.angelanime.base;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private MyApplication mApplication;
     Toolbar toolbar;
     public Snackbar snackbar;
+    private ImageView ivRight;
 
     public abstract void init();
 
@@ -58,6 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             tvTitle = (TextView) findViewById(R.id.tv_title);
+            ivRight = (ImageView) findViewById(R.id.iv_right);
             setSupportActionBar(toolbar);
             setTitle("");
 
@@ -81,6 +87,17 @@ public abstract class BaseActivity extends AppCompatActivity {
             toolbar.setNavigationIcon(R.mipmap.back);
         } else {
             //toolbar.setNavigationIcon(R.mipmap.ic_left_arrow);
+        }
+
+    }
+
+    public void setRightImg(boolean isShow, @Nullable Drawable drawable, View.OnClickListener listener) {
+        if (isShow) {
+            ivRight.setVisibility(View.VISIBLE);
+            ivRight.setImageDrawable(drawable);
+            ivRight.setOnClickListener(listener);
+        } else {
+            ivRight.setVisibility(View.GONE);
         }
 
     }

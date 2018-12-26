@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        app:popupTheme="@style/ToolbarPopupTheme"
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        android:theme="@style/AppTheme.ActionBar">
+
+        <RelativeLayout
+            android:id="@+id/rl_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_12_y"
+            android:layout_marginBottom="@dimen/dp_12_y">
+            <ImageView
+                android:id="@+id/iv_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/search"
+                android:paddingTop="@dimen/dp_4_y"
+                android:paddingBottom="@dimen/dp_4_y"/>
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dp_16_x"
+                android:layout_toRightOf="@+id/iv_right"
+                style="@style/main_tv"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:background="@null"
+                android:textSize="@dimen/dp_12_x"
+                android:hint="@string/enter_hint"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+</RelativeLayout>

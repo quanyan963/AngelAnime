@@ -1,5 +1,7 @@
 package com.tsdm.angelanime.main.mvp;
 
+import android.view.View;
+
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.RecentlyDetail;
@@ -14,6 +16,7 @@ import java.util.List;
 public interface MainContract {
     interface View extends BaseView {
 
+        void toSearchActivity(android.view.View v);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -21,5 +24,7 @@ public interface MainContract {
         List<TopEight> geTopEight();
 
         List<RecentlyDetail> getRecently();
+
+        void onClick(android.view.View view);
     }
 }

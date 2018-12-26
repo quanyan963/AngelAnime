@@ -1,13 +1,9 @@
 package com.tsdm.angelanime.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.TopEight;
 import com.youth.banner.loader.ImageLoader;
@@ -35,6 +31,7 @@ public class GlideImageLoader extends ImageLoader {
                         .showImageOnLoading(R.mipmap.loading)//图片正在加载的时候显示的图片*/
                 .build();
         MyApplication.getImageLoader(context).displayImage(((TopEight)path).getImgUrl(),imageView,options);
+        //Glide.with(context).load(((TopEight)path).getImgUrl()).into(imageView);
     }
 
 //    //清除缓存按钮

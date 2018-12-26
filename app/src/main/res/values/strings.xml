@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AngelAnime</string>
+    <string name="app_name">Angel</string>
     <string name="init">Initializing&#8230;</string>
     <string name="error">network error</string>
     <string name="data_error">Data Parse Error!</string>
@@ -8,4 +8,7 @@
     <string name="introduction">简介</string>
     <string name="net_error">network error!</string>
     <string name="comment">评论</string>
+    <string name="count">选集(%s)</string>
+    <string name="cancel">取消</string>
+    <string name="enter_hint">在此输入动漫名</string>
 </resources>

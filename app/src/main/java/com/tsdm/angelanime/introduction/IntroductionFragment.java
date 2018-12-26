@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.introduction;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.introduction.mvp.IntroductionContract;
 import com.tsdm.angelanime.introduction.mvp.IntroductionPresenter;
 import com.tsdm.angelanime.utils.Url;
+import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.RoundImageView;
+import com.tsdm.angelanime.widget.listener.PopUpListener;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -28,7 +31,8 @@ import butterknife.BindView;
  * Created by Mr.Quan on 2018/12/10.
  */
 
-public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter> implements IntroductionContract.View {
+public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter> implements
+        IntroductionContract.View, PopUpListener {
     @BindView(R.id.iv_title)
     RoundImageView ivTitle;
     @BindView(R.id.tv_name)
@@ -43,9 +47,15 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
     TextView tvListStatue;
     @BindView(R.id.rl_top)
     RelativeLayout rlTop;
+    @BindView(R.id.rl_select)
+    RelativeLayout rlSelect;
+    @BindView(R.id.cl_fragment)
+    ConstraintLayout clFragment;
 
     private AnimationDetail detail;
     private IntroductionAdapter listAdapter;
+    private boolean isFirst = true;
+    private int position;
 
     @Override
     protected void initInject() {
@@ -66,48 +76,77 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
         listAdapter = new IntroductionAdapter(getContext());
         rlvPlayList.setAdapter(listAdapter);
         initListener();
+
     }
 
     private void initListener() {
         listAdapter.setOnClickListener(new IntroductionAdapter.MusicClickListener() {
             @Override
             public void onItemClick(int position) {
-                ((AnimationDetailActivity)getActivity()).onResultFromFragment(position);
+                IntroductionFragment.this.position = position;
+                ((AnimationDetailActivity) getActivity()).onResultFromFragment(position);
+                listAdapter.setPosition(position);
             }
         });
         rlTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((AnimationDetailActivity)getActivity()).onResultFromFragment(-1);
+                ((AnimationDetailActivity) getActivity()).onResultFromFragment(-1);
             }
         });
     }
 
     @Subscribe
-    public void onEventFragmentThread(AnimationDetail detail) {
+    public void onEventFragmentThread(final AnimationDetail detail) {
         if (detail.getRequestStatue() == 0) {
-            this.detail = detail;
-            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .cacheInMemory(true)//让图片进行内存缓存
-                    .cacheOnDisk(true)//让图片进行sdcard缓存
+            if (isFirst){
+                this.detail = detail;
+                DisplayImageOptions options = new DisplayImageOptions.Builder()
+                        .cacheInMemory(true)//让图片进行内存缓存
+                        .cacheOnDisk(true)//让图片进行sdcard缓存
                         /*.showImageForEmptyUri(R.mipmap.ic_empty)//图片地址有误
                         .showImageOnFail(R.mipmap.ic_error)//当图片加载出现错误的时候显示的图片
                         .showImageOnLoading(R.mipmap.loading)//图片正在加载的时候显示的图片*/
-                    .build();
-            if (detail.getTitleImg().contains(".gif")) {
-                MyApplication.getImageLoader(getContext()).displayImage(detail.getTitleImg(), ivTitle, options);
-            } else {
-                MyApplication.getImageLoader(getContext()).displayImage(Url.URL + detail.getTitleImg(), ivTitle, options);
+                        .build();
+                if (detail.getTitleImg().contains(".gif")) {
+                    //Glide.with(getContext()).load(detail.getTitleImg()).into(ivTitle);
+                    MyApplication.getImageLoader(getContext()).displayImage(detail.getTitleImg(), ivTitle, options);
+                } else {
+                    //Glide.with(getContext()).load(Url.URL + detail.getTitleImg()).into(ivTitle);
+                    MyApplication.getImageLoader(getContext()).displayImage(Url.URL + detail.getTitleImg(), ivTitle, options);
+                }
+                position = detail.getPlayListTitle().size() - 1;
+                tvName.setText(detail.getTitle());
+                tvUpdateTime.setText(detail.getUpdateTime());
+                tvIntroduction.setText(detail.getIntroduction());
+                tvListStatue.setText(detail.getStatue());
+                listAdapter.setPosition(position);
+                listAdapter.addList(detail.getPlayListTitle());
+                rlvPlayList.scrollToPosition(position);
+                rlSelect.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Utils.showBottomPopUp(getActivity(), detail.getPlayListTitle(),
+                                IntroductionFragment.this,clFragment,position);
+                    }
+                });
+                isFirst = false;
+            }else {
+
             }
 
-            tvName.setText(detail.getTitle());
-            tvUpdateTime.setText(detail.getUpdateTime());
-            tvIntroduction.setText(detail.getIntroduction());
-            tvListStatue.setText(detail.getStatue());
 
-            listAdapter.addList(detail.getPlayListTitle());
         } else {
             //显示网络异常界面
         }
+
+
+    }
+
+    @Override
+    public void onPopUpClick(int position) {
+        this.position = position;
+        listAdapter.setPosition(position);
+        ((AnimationDetailActivity) getActivity()).onResultFromFragment(position);
     }
 }

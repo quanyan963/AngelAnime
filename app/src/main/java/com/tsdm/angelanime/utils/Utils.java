@@ -1,28 +1,39 @@
 package com.tsdm.angelanime.utils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
+import com.tsdm.angelanime.introduction.PopAnimAdapter;
+import com.tsdm.angelanime.widget.DividerItemDecoration;
+import com.tsdm.angelanime.widget.listener.PopUpListener;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -42,6 +53,53 @@ public class Utils {
         String g1 = Utils.getBothColor(g);
         String b1 = Utils.getBothColor(b);
         return r1 + g1 + b1;
+    }
+
+    /**
+     *
+     * @param activity
+     */
+    public static void showOrHideSoftKeyboard(Activity activity){
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    /**
+     * 判断软键盘是否显示方法
+     * @param activity
+     * @return
+     */
+
+    public static boolean isSoftShowing(Activity activity) {
+        //获取当屏幕内容的高度
+        int screenHeight = activity.getWindow().getDecorView().getHeight();
+        //获取View可见区域的bottom
+        Rect rect = new Rect();
+        //DecorView即为activity的顶级view
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+        //考虑到虚拟导航栏的情况（虚拟导航栏情况下：screenHeight = rect.bottom + 虚拟导航栏高度）
+        //选取screenHeight*2/3进行判断
+        return screenHeight*2/3 > rect.bottom+getSoftButtonsBarHeight(activity);
+    }
+
+    /**
+     * 底部虚拟按键栏的高度
+     * @return
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private static int getSoftButtonsBarHeight(Activity activity) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        //这个方法获取可能不是真实屏幕的高度
+        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int usableHeight = metrics.heightPixels;
+        //获取当前屏幕的真实高度
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        int realHeight = metrics.heightPixels;
+        if (realHeight > usableHeight) {
+            return realHeight - usableHeight;
+        } else {
+            return 0;
+        }
     }
 
     public static String getBothColor(int str) {
@@ -111,29 +169,39 @@ public class Utils {
 //        mPopWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 //    }
 
-//    public static void showBottomDialog(Activity activity, final boolean playing, final List<Song> songList,
-//                                        final MusicListListener listener) {
-//        final BottomSheetDialog dialog = detail_new BottomSheetDialog(activity);
-//        View dialogView = LayoutInflater.from(activity).inflate(R.layout.pop_music, null);
-//        dialogView.setBackgroundResource(R.color.transparent);
-//        CustomTextView tvTitle = (CustomTextView) dialogView.findViewById(R.id.mtv_title);
-//        tvTitle.setText(String.format(MyApplication.getInstance().getResources().getString(R.string.
-//                song_size), songList.size() + ""));
-//        final RecyclerView rlvMusicList = (RecyclerView) dialogView.findViewById(R.id.rlv_music_list);
-//        rlvMusicList.setHasFixedSize(true);
-//        rlvMusicList.setLayoutManager(detail_new LinearLayoutManager(activity));
-//        final MusicListAdapter musicListAdapter = detail_new MusicListAdapter(activity);
-//        rlvMusicList.setAdapter(musicListAdapter);
-//        musicListAdapter.addList(playing, songList, rlvMusicList);
-//        musicListAdapter.setOnClickListener(detail_new MusicListAdapter.MusicClickListener() {
-//            @Override
-//            public void onItemClick(int position) {
-//                listener.onItemSelected(position);
-//            }
-//        });
-//        dialog.setContentView(dialogView);
-//        dialog.show();
-//    }
+    public static void showBottomPopUp(Activity activity, final List<String> animationList,
+                                        final PopUpListener listener,ViewGroup rootView, int position) {
+        final BottomSheetDialog dialog = new BottomSheetDialog(activity);
+        View dialogView = LayoutInflater.from(activity).inflate(R.layout.pop_anim_list, rootView,false);
+        dialogView.setBackgroundResource(R.color.transparent);
+        TextView tvTitle = (TextView) dialogView.findViewById(R.id.mtv_title);
+        ImageView ivclose = (ImageView) dialogView.findViewById(R.id.img_close);
+        tvTitle.setText(String.format(MyApplication.getInstance().getResources().getString(R.string.
+                count), animationList.size() + ""));
+        ivclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        final RecyclerView animList = (RecyclerView) dialogView.findViewById(R.id.rlv_anim_list);
+        animList.setHasFixedSize(true);
+        animList.setLayoutManager(new GridLayoutManager(activity,3));
+        animList.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.BOTH_SET,
+                activity.getResources().getDimensionPixelSize(R.dimen.dp_16_x),
+                activity.getResources().getColor(R.color.white)));
+        final PopAnimAdapter popAnimAdapter = new PopAnimAdapter(animationList,activity);
+        popAnimAdapter.setOnPopItemClickListener((new PopAnimAdapter.PopItemClick() {
+            @Override
+            public void onClick(int position) {
+                listener.onPopUpClick(position);
+            }
+        }));
+        animList.setAdapter(popAnimAdapter);
+        popAnimAdapter.setPosition(position);
+        dialog.setContentView(dialogView);
+        dialog.show();
+    }
 
     /**
      * 设置添加屏幕的背景透明度

@@ -67,12 +67,16 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                             Elements e = elt.select("div");
                             if (e.size()<2){
                                 e = elt.select("span");
-                                for (int i = 0; i < e.size(); i++){
-                                    if (!e.get(i).text().isEmpty()){
-                                        introduction+=e.get(i).text()+"\n";
-                                    }else {
-                                        introduction+="\n";
+                                if (e.size() != 0){
+                                    for (int i = 0; i < e.size(); i++){
+                                        if (!e.get(i).text().isEmpty()){
+                                            introduction+=e.get(i).text()+"\n";
+                                        }else {
+                                            introduction+="\n";
+                                        }
                                     }
+                                }else {
+                                    introduction = elt.text();
                                 }
                             }else {
                                 for (int i = 1; i < e.size(); i++){

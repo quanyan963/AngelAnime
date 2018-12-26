@@ -50,6 +50,7 @@ public class StartActivity extends MvpBaseActivity<StartPresenter> implements St
         presenter.getHtml(this);
         Animation start = new AlphaAnimation(0.0f, 1.0f);
         start.setDuration(1000);
+        //保持结束状态
         start.setFillAfter(true);
         start.setAnimationListener(new Animation.AnimationListener() {
             @Override

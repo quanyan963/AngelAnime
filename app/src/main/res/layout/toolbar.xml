@@ -8,10 +8,11 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_54_y"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/colorAccent"
         app:popupTheme="@style/ToolbarPopupTheme"
-        app:titleTextAppearance="@style/Toolbar.TitleText">
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        android:theme="@style/AppTheme.ActionBar">
 
         <TextView
             android:id="@+id/tv_title"

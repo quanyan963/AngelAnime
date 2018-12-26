@@ -2,37 +2,38 @@ package com.tsdm.angelanime.main;
 
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
-import android.widget.TableLayout;
+import android.view.Menu;
+import android.view.View;
 
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.MvpBaseActivity;
 import com.tsdm.angelanime.bean.RecentlyDetail;
 import com.tsdm.angelanime.bean.TopEight;
-import com.tsdm.angelanime.bean.event.ListData;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.main.mvp.MainContract;
 import com.tsdm.angelanime.main.mvp.MainPresenter;
+import com.tsdm.angelanime.search.SearchActivity;
 import com.tsdm.angelanime.widget.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
+import cn.icheny.transition.CySharedElementTransition;
 
 import static com.tsdm.angelanime.utils.Constants.HREF_URL;
 
-public class MainActivity extends MvpBaseActivity<MainPresenter> implements MainContract.View, MainFragment.CallBackValue {
+public class MainActivity extends MvpBaseActivity<MainPresenter> implements MainContract.View,
+        MainFragment.CallBackValue, View.OnClickListener {
 
     @BindView(R.id.bn_top)
     Banner bnTop;
@@ -49,7 +50,12 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     public void init() {
         //TitleUtils.transparencyBar(this);
         initToolbar();
+        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources()
+                ,R.drawable.search,getTheme());
+        vectorDrawableCompat.setTint(getResources().getColor(R.color.white));
+        setRightImg(true,vectorDrawableCompat,this);
         detailList = presenter.getRecently();
+
         titles = getResources().getStringArray(R.array.classify);
         for(int i=0;i<titles.length;i++){
             fragments.add(new MainFragment());
@@ -82,6 +88,7 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
                 startActivity(new Intent(MainActivity.this,
                         AnimationDetailActivity.class)
                         .putExtra(HREF_URL, mData.get(position).getHrefUrl()));
+                //.putExtra(POSITION,0)
             }
         });
     }
@@ -105,5 +112,23 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     public RecentlyDetail SendMessageValue(MainFragment fragment) {
         int position = pagerAdapter.getItemPosition(fragment);
         return detailList.get(position);
+    }
+
+    @Override
+    public void onDestroy() {
+        MyApplication.getImageLoader(this).clearMemoryCache();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View view) {
+        presenter.onClick(view);
+
+    }
+
+    @Override
+    public void toSearchActivity(View v) {
+        CySharedElementTransition.startActivity(new Intent(this,
+                SearchActivity.class),this,v);
     }
 }

@@ -34,6 +34,7 @@ import tv.danmaku.ijk.media.exo2.ExoPlayerCacheManager;
 
 import static com.tsdm.angelanime.utils.Constants.HREF_URL;
 import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
+import static com.tsdm.angelanime.utils.Constants.POSITION;
 
 /**
  * Created by Mr.Quan on 2018/11/21.
@@ -56,7 +57,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     private DetailPagerAdapter detAdapter;
     private List<String> titleList;
     private List<Fragment> viewList;
-    private boolean isFisrst = false;
+    private boolean isFirst = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void init() {
         Intent intent = getIntent();
         url = intent.getStringExtra(HREF_URL);
+        //position = intent.getIntExtra(POSITION,0);
         presenter.getDetail(url, this);
         initGSYView();
         titleList = new ArrayList<>();
@@ -122,8 +124,12 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     @Override
     public void getDetail(AnimationDetail animationDetail) {
         detail = animationDetail;
-        presenter.getListUrl(detail.getPlayList().get(position), this);
-
+        if (isFirst){
+            position = detail.getPlayList().size()-1;
+            presenter.getListUrl(detail.getPlayList().get(position), this);
+        }else {
+            presenter.getListUrl(detail.getPlayList().get(position), this);
+        }
         //spPlayer.setThumbImageView();
     }
 
@@ -136,9 +142,9 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     public void onComplete() {
-        if (!isFisrst){
+        if (isFirst){
             EventBus.getDefault().post(detail);
-            isFisrst = true;
+            isFirst = false;
         }
         presenter.getPlayUrl(position,this);
     }
@@ -173,9 +179,11 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             startActivity(new Intent(this, IntroductionActivity.class).
                     putExtra(INTRODUCTION,detail.getIntroduction()));
         }else {
-            this.position = position;
-            GSYVideoManager.releaseAllVideos();
-            onComplete();
+            if (this.position != position){
+                this.position = position;
+                GSYVideoManager.releaseAllVideos();
+                onComplete();
+            }
             //presenter.getPlayUrl(detail.getPlayList().get(position), this);
         }
     }

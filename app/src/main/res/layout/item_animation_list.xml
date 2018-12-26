@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout
         android:id="@+id/rl_main"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:focusable="true"
@@ -17,21 +17,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/v_right"
         android:padding="@dimen/dp_8_x"
+        android:gravity="center"
         android:background="@drawable/list_statue">
         <TextView
             android:id="@+id/tv_name"
             style="@style/main_tv"
-            android:layout_marginLeft="@dimen/dp_4_x"
-            android:layout_centerHorizontal="true"
-            android:maxLines="2"
+            android:layout_width="match_parent"
+            android:lines="2"
             android:ellipsize="end"
+            android:textSize="@dimen/dp_14_x"
             android:gravity="center"/>
         <TextView
             android:id="@+id/tv_update"
             style="@style/main_tv"
+            android:layout_width="match_parent"
             android:textColor="@color/low_grey"
             android:layout_below="@id/tv_name"
-            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/dp_14_x"
+            android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"/>
     </RelativeLayout>
