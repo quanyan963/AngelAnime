@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.model;
 
 
+import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.db.DBHelper;
@@ -66,6 +67,11 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     }
 
     @Override
+    public Flowable<Document> getSearch(String s, WebResponseListener listener) {
+        return mNetHelper.getSearch(s,listener);
+    }
+
+    @Override
     public void insertTopEight(List<TopEight> value) {
         mDBDbHelper.insertTopEight(value);
     }
@@ -83,5 +89,25 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     @Override
     public RecentlyData getRecently() {
         return mDBDbHelper.getRecently();
+    }
+
+    @Override
+    public void insertHistory(History data) {
+        mDBDbHelper.insertHistory(data);
+    }
+
+    @Override
+    public List<History> getHistory() {
+        return mDBDbHelper.getHistory();
+    }
+
+    @Override
+    public void deleteAllHistory() {
+        mDBDbHelper.deleteAllHistory();
+    }
+
+    @Override
+    public void deleteHistory(History history) {
+        mDBDbHelper.deleteHistory(history);
     }
 }

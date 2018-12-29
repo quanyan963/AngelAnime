@@ -125,8 +125,12 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void getDetail(AnimationDetail animationDetail) {
         detail = animationDetail;
         if (isFirst){
-            position = detail.getPlayList().size()-1;
-            presenter.getListUrl(detail.getPlayList().get(position), this);
+            if (detail.getPlayList().size() != 0){
+                position = detail.getPlayList().size()-1;
+                presenter.getListUrl(detail.getPlayList().get(position), this);
+            }else {
+                EventBus.getDefault().post(detail);
+            }
         }else {
             presenter.getListUrl(detail.getPlayList().get(position), this);
         }

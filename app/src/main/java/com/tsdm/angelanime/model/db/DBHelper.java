@@ -1,7 +1,7 @@
 package com.tsdm.angelanime.model.db;
 
 
-
+import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 
@@ -13,8 +13,18 @@ import java.util.List;
 
 public interface DBHelper {
     void insertTopEight(List<TopEight> value);
+
     List<TopEight> getTopEight();
 
     void insertRecently(RecentlyData data);
+
     RecentlyData getRecently();
+
+    void insertHistory(History data);
+
+    List<History> getHistory();
+
+    void deleteAllHistory();
+
+    void deleteHistory(History history);
 }

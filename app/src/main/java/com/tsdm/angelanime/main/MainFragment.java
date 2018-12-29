@@ -56,7 +56,7 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
         rlvAnimationList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rlvAnimationList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.BOTH_SET,
                 getActivity().getResources().getDimensionPixelSize(R.dimen.dp_16_x),
-                getActivity().getResources().getColor(R.color.white)));
+                getActivity().getResources().getColor(R.color.light_grey)));
         //rlvAnimationList.setLayoutManager(new LinearLayoutManager(getContext()));
         detail = callBackValue.SendMessageValue(this);
         adapter = new FRecycleAdapter(detail,getContext());

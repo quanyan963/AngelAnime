@@ -3,6 +3,7 @@ package com.tsdm.angelanime.model.db;
 
 
 import com.tsdm.angelanime.application.MyApplication;
+import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.bean.dao.DaoMaster;
@@ -52,5 +53,26 @@ public class DBHelperImpl implements DBHelper {
     @Override
     public RecentlyData getRecently() {
         return mDaoSession.getRecentlyDataDao().loadAll().get(0);
+    }
+
+    @Override
+    public void insertHistory(History data) {
+        mDaoSession.getHistoryDao().insert(data);
+    }
+
+    @Override
+    public List<History> getHistory() {
+        return mDaoSession.getHistoryDao().loadAll();
+    }
+
+    @Override
+    public void deleteAllHistory() {
+        mDaoSession.getHistoryDao().deleteAll();
+
+    }
+
+    @Override
+    public void deleteHistory(History history) {
+        mDaoSession.getHistoryDao().delete(history);
     }
 }

@@ -5,6 +5,7 @@ import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.utils.FileEncodingDetect;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -14,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +54,6 @@ public class NetHelperImpl implements NetHelper {
                     e1.printStackTrace();
                 }
 //                OkGo.<String>get(Url.URL + Url.HOME_PAGE)
-//                        //.headers("Accept-Encoding","gzip")
-//                        .headers("Accept-Language","gb2312")
-//                        //.headers("Content-Type", "text/html; charset=utf-8")
 //                        .cacheKey(URL_HOME)
 //                        .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
 //                        .tag(this)
@@ -62,6 +61,11 @@ public class NetHelperImpl implements NetHelper {
 //
 //                            @Override
 //                            public void onSuccess(Response<String> response) {
+//                                try {
+//                                    String s = new String(response.body().getBytes("8859_1"),"gb2312");
+//                                } catch (UnsupportedEncodingException e1) {
+//                                    e1.printStackTrace();
+//                                }
 //                                Document document = Jsoup.parse(response.body());
 //
 //                            }
@@ -196,6 +200,23 @@ public class NetHelperImpl implements NetHelper {
                                 e.onComplete();
                             }
                         });
+            }
+        },BackpressureStrategy.BUFFER);
+    }
+
+    @Override
+    public Flowable<Document> getSearch(final String s, final WebResponseListener listener) {
+        return Flowable.create(new FlowableOnSubscribe<Document>() {
+            @Override
+            public void subscribe(FlowableEmitter<Document> e) {
+                try {
+                    String word = new String(s.getBytes(),"utf-8");
+                    e.onNext((Document) Jsoup.connect(Url.SEARCH+word).get());
+                } catch (Exception e1) {
+                    listener.onError();
+                    e1.printStackTrace();
+                }
+                e.onComplete();
             }
         },BackpressureStrategy.BUFFER);
     }

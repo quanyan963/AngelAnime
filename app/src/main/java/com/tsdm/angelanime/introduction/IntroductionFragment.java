@@ -54,7 +54,6 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
 
     private AnimationDetail detail;
     private IntroductionAdapter listAdapter;
-    private boolean isFirst = true;
     private int position;
 
     @Override
@@ -99,43 +98,43 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
     @Subscribe
     public void onEventFragmentThread(final AnimationDetail detail) {
         if (detail.getRequestStatue() == 0) {
-            if (isFirst){
-                this.detail = detail;
-                DisplayImageOptions options = new DisplayImageOptions.Builder()
-                        .cacheInMemory(true)//让图片进行内存缓存
-                        .cacheOnDisk(true)//让图片进行sdcard缓存
+            this.detail = detail;
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)//让图片进行内存缓存
+                    .cacheOnDisk(true)//让图片进行sdcard缓存
                         /*.showImageForEmptyUri(R.mipmap.ic_empty)//图片地址有误
                         .showImageOnFail(R.mipmap.ic_error)//当图片加载出现错误的时候显示的图片
                         .showImageOnLoading(R.mipmap.loading)//图片正在加载的时候显示的图片*/
-                        .build();
-                if (detail.getTitleImg().contains(".gif")) {
-                    //Glide.with(getContext()).load(detail.getTitleImg()).into(ivTitle);
-                    MyApplication.getImageLoader(getContext()).displayImage(detail.getTitleImg(), ivTitle, options);
-                } else {
-                    //Glide.with(getContext()).load(Url.URL + detail.getTitleImg()).into(ivTitle);
-                    MyApplication.getImageLoader(getContext()).displayImage(Url.URL + detail.getTitleImg(), ivTitle, options);
-                }
+                    .build();
+            if (detail.getTitleImg().contains(".gif")) {
+                //Glide.with(getContext()).load(detail.getTitleImg()).into(ivTitle);
+                MyApplication.getImageLoader(getContext()).displayImage(detail.getTitleImg(), ivTitle, options);
+            } else {
+                //Glide.with(getContext()).load(Url.URL + detail.getTitleImg()).into(ivTitle);
+                MyApplication.getImageLoader(getContext()).displayImage(Url.URL + detail.getTitleImg(), ivTitle, options);
+            }
+            if (detail.getPlayListTitle().size() == 0){
+                position = 0;
+            }else {
                 position = detail.getPlayListTitle().size() - 1;
-                tvName.setText(detail.getTitle());
-                tvUpdateTime.setText(detail.getUpdateTime());
-                tvIntroduction.setText(detail.getIntroduction());
-                tvListStatue.setText(detail.getStatue());
                 listAdapter.setPosition(position);
                 listAdapter.addList(detail.getPlayListTitle());
                 rlvPlayList.scrollToPosition(position);
-                rlSelect.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            }
+            tvName.setText(detail.getTitle());
+            tvUpdateTime.setText(detail.getUpdateTime());
+            tvIntroduction.setText(detail.getIntroduction());
+            tvListStatue.setText(detail.getStatue());
+
+            rlSelect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (detail.getPlayListTitle().size() != 0){
                         Utils.showBottomPopUp(getActivity(), detail.getPlayListTitle(),
                                 IntroductionFragment.this,clFragment,position);
                     }
-                });
-                isFirst = false;
-            }else {
-
-            }
-
-
+                }
+            });
         } else {
             //显示网络异常界面
         }

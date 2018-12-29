@@ -43,13 +43,16 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                         if (document != null){
                             //列表
                             Elements els = document.getElementsByClass("bfdz");
-                            Elements elements = els.get(0).select("a[href]");
                             List<String> playList = new ArrayList<>();
                             List<String> playListTitle = new ArrayList<>();
-                            for (Element element:elements){
-                                playList.add(element.attr("href"));
-                                playListTitle.add(element.text());
+                            if (els.size() != 0){
+                                Elements elements = els.get(0).select("a[href]");
+                                for (Element element:elements){
+                                    playList.add(element.attr("href"));
+                                    playListTitle.add(element.text());
+                                }
                             }
+
                             //封面
                             els = document.getElementsByClass("mimg");
                             String imgUrl = els.select("img").attr("src");

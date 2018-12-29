@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grey_rectangle_bg"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/iv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/delete"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:paddingLeft="@dimen/dp_2_x"
+            android:paddingRight="@dimen/dp_2_x"
+            android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/main_tv"
+            android:textSize="@dimen/dp_12_x"
+            android:layout_toRightOf="@+id/iv_left"
+            android:layout_centerInParent="true"
+            android:gravity="center" />
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/delete"
+            android:layout_toRightOf="@+id/tv_title"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            android:paddingTop="@dimen/dp_2_y"
+            android:paddingLeft="@dimen/dp_2_x"
+            android:paddingBottom="@dimen/dp_10_y"
+            android:paddingRight="@dimen/dp_2_x"/>
+    </RelativeLayout>
+</RelativeLayout>

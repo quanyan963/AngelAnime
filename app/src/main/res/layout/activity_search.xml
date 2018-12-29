@@ -41,5 +41,85 @@
                 android:hint="@string/enter_hint"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/rl_history"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/toolbar"-->
+        <!--android:background="@color/white">-->
+        <!---->
 
+    <!--</RelativeLayout>-->
+
+    <!--<RelativeLayout-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/rl_top"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/toolbar"-->
+        <!--android:background="@color/white">-->
+        <!--<TextView-->
+            <!--style="@style/main_tv"-->
+            <!--android:textSize="@dimen/dp_12_x"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:paddingLeft="@dimen/dp_16_x"-->
+            <!--android:text="@string/search_history"/>-->
+        <!--<ImageView-->
+            <!--android:id="@+id/iv_more"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@mipmap/more"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:paddingRight="@dimen/dp_16_x"-->
+            <!--android:paddingBottom="@dimen/dp_8_y"-->
+            <!--android:paddingTop="@dimen/dp_8_y"/>-->
+    <!--</RelativeLayout>-->
+    <RelativeLayout
+        android:visibility="invisible"
+        android:id="@+id/rl_history_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar">
+        <View
+            android:id="@+id/v_line_top"
+            style="@style/main_line"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rlv_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_16_x"
+            android:paddingRight="@dimen/dp_16_x"
+            android:paddingTop="@dimen/dp_8_y"
+            android:background="@color/white"
+            android:layout_below="@+id/v_line_top">
+
+        </android.support.v7.widget.RecyclerView>
+        <View
+            android:id="@+id/v_line_bottom"
+            style="@style/main_line"
+            android:layout_below="@+id/rlv_history"/>
+        <TextView
+            android:id="@+id/tv_delete_all"
+            style="@style/main_tv"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/v_line_bottom"
+            android:paddingTop="@dimen/dp_16_x"
+            android:paddingBottom="@dimen/dp_16_x"
+            android:textColor="@color/low_grey"
+            android:gravity="center"
+            android:textSize="@dimen/dp_14_x"
+            android:text="@string/delete_history"
+            android:background="@drawable/ripple_item_layout_effect_white"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
+        android:id="@+id/rlv_search_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

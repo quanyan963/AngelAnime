@@ -138,37 +138,6 @@ public class Utils {
         MyApplication.getImageLoader(context).displayImage(uri, imageView, displayImageOptions);
     }
 
-//    public static void showPopup(View view, final Activity activity, int position, String[] data,
-//                                 int titleId, final PopWindowListener popWindowListener) {
-//        View popView = LayoutInflater.from(activity).inflate(R.layout.pop_picker, null);
-//        final PopupWindow mPopWindow = detail_new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT, true);
-//        MontserratButton btnTitle = (MontserratButton) popView.findViewById(R.id.btn_title);
-//        btnTitle.setText(titleId);
-//        mPopWindow.setBackgroundDrawable(detail_new ColorDrawable(Color.TRANSPARENT));
-//        MontserratButton btnSave = (MontserratButton) popView.findViewById(R.id.btn_save);
-//        final LoopView loopView = (LoopView) popView.findViewById(R.id.loop_view);
-//        loopView.setDataList(Arrays.asList(data));
-//        loopView.setInitPosition(position);
-//        btnSave.setOnClickListener(detail_new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                popWindowListener.onSave(loopView.getSelectedItem());
-//                mPopWindow.dismiss();
-//            }
-//        });
-//
-//        // 当点击取消的时候，pw消失
-//        mPopWindow.setOnDismissListener(detail_new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                backgroundAlpha(activity, 1.0f);
-//            }
-//        });
-//        backgroundAlpha(activity, 0.8f);
-//        mPopWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-//    }
-
     public static void showBottomPopUp(Activity activity, final List<String> animationList,
                                         final PopUpListener listener,ViewGroup rootView, int position) {
         final BottomSheetDialog dialog = new BottomSheetDialog(activity);
