@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/rl_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:paddingBottom="@dimen/dp_16_y"
         android:background="@drawable/list_statue">
         <com.tsdm.angelanime.widget.RoundImageView
             android:id="@+id/riv_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/tv_title"/>
+            android:layout_height="@dimen/dp_120_y"
+            android:scaleType="centerCrop"
+            app:left_top_radius="@dimen/dp_10_x"
+            app:right_top_radius="@dimen/dp_10_x"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            app:set_bottom_radius="false"/>
         <TextView
             android:id="@+id/tv_title"
             style="@style/main_tv"
-            android:layout_width="match_parent"
             android:layout_marginLeft="@dimen/dp_16_x"
             android:layout_marginRight="@dimen/dp_16_x"
+            android:layout_centerInParent="true"
             android:gravity="center"
-            android:maxLines="2"
+            android:lines="2"
             android:ellipsize="end"
-            android:layout_above="@+id/tv_statue"
-            android:text="sssss"/>
+            android:layout_below="@+id/riv_img"/>
         <TextView
             android:id="@+id/tv_statue"
             style="@style/main_tv"
@@ -30,9 +39,8 @@
             android:layout_marginRight="@dimen/dp_16_x"
             android:textSize="@dimen/dp_14_x"
             android:textColor="@color/low_grey"
-            android:layout_above="@+id/tv_update"
-            android:layout_alignParentLeft="true"
-            android:text="aaaaa"/>
+            android:layout_below="@+id/tv_title"
+            android:layout_alignParentLeft="true" />
         <TextView
             android:id="@+id/tv_update"
             style="@style/main_tv"
@@ -40,9 +48,8 @@
             android:layout_marginRight="@dimen/dp_16_x"
             android:textSize="@dimen/dp_14_x"
             android:textColor="@color/low_grey"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:text="aaaaa"/>
+            android:layout_below="@+id/tv_statue"/>
     </RelativeLayout>
 
 </RelativeLayout>

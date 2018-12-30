@@ -41,7 +41,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @NonNull
     @Override
     public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_history, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_history, parent,false);
         return new HistoryViewHolder(view);
     }
 
@@ -88,7 +88,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     public void addItem(String value) {
-        mList.add(new History(value));
+        //mList.add(new History(value));
         notifyItemInserted(mList.size()-1);
     }
 

@@ -22,7 +22,7 @@ public class RoundImageView extends AppCompatImageView {
     private int rightTopRadius;
     private int rightBottomRadius;
     private int leftBottomRadius;
-
+    private boolean drawBottom;
     public RoundImageView(Context context) {
         super(context);
         init(context,null,0);
@@ -45,7 +45,7 @@ public class RoundImageView extends AppCompatImageView {
         rightTopRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_right_top_radius, defaultRadius);
         rightBottomRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_right_bottom_radius, defaultRadius);
         leftBottomRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_left_bottom_radius, defaultRadius);
-
+        drawBottom = array.getBoolean(R.styleable.Custom_Round_Image_View_set_bottom_radius,true);
         //如果四个角的值没有设置，那么就使用通用的radius的值。
         if (defaultRadius == leftTopRadius) {
             leftTopRadius = radius;
@@ -85,11 +85,19 @@ public class RoundImageView extends AppCompatImageView {
             path.lineTo(width - rightTopRadius, 0);
             path.quadTo(width, 0, width, rightTopRadius);
 
-            path.lineTo(width, height - rightBottomRadius);
-            path.quadTo(width, height, width - rightBottomRadius, height);
+            if (drawBottom){
+                path.lineTo(width, height - rightBottomRadius);
+                path.quadTo(width, height, width - rightBottomRadius, height);
 
-            path.lineTo(leftBottomRadius, height);
-            path.quadTo(0, height, 0, height - leftBottomRadius);
+                path.lineTo(leftBottomRadius, height);
+                path.quadTo(0, height, 0, height - leftBottomRadius);
+            }else {
+                path.lineTo(width, height);
+                //path.quadTo(width, height, width - rightBottomRadius, height);
+
+                //path.lineTo(leftBottomRadius, height);
+                path.quadTo(0, height, 0, height);
+            }
 
             path.lineTo(0, leftTopRadius);
             path.quadTo(0, 0, leftTopRadius, 0);

@@ -2,6 +2,7 @@ package com.tsdm.angelanime.search;
 
 import android.animation.Animator;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -51,12 +52,6 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     ImageView ivRight;
     @BindView(R.id.rl_search)
     RelativeLayout rlSearch;
-//    @BindView(R.id.iv_more)
-//    ImageView ivMore;
-//    @BindView(R.id.rl_top)
-//    RelativeLayout rlTop;
-//    @BindView(R.id.v_line_top)
-//    View vLineTop;
     @BindView(R.id.rlv_history)
     RecyclerView rlvHistory;
     @BindView(R.id.v_line_bottom)
@@ -65,8 +60,6 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     TextView tvDeleteAll;
     @BindView(R.id.rl_history_list)
     RelativeLayout rlHistoryList;
-//    @BindView(R.id.rl_history)
-//    RelativeLayout rlHistory;
     @BindView(R.id.rlv_search_list)
     RecyclerView rlvSearchList;
 
@@ -74,6 +67,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     private List<History> histories;
     private int height;
     private HistoryAdapter historyAdapter;
+    private SearchAdapter searchAdapter;
 
     @Override
     public void setInject() {
@@ -82,20 +76,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     @Override
     public void init() {
-        rlvHistory.setHasFixedSize(true);
-        rlvHistory.setLayoutManager(new FlowLayoutManager());
-        rlvHistory.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.BOTH_SET,
-                getResources().getDimensionPixelSize(R.dimen.dp_8_x),
-                getResources().getColor(R.color.white)));
-        historyAdapter = new HistoryAdapter(this);
-        rlvHistory.setAdapter(historyAdapter);
-        histories = presenter.getHistory();
-        if (histories.size() == 0){
-            rlHistoryList.setVisibility(View.INVISIBLE);
-        }else {
-            historyAdapter.setList(histories);
-        }
+        initHistory();
+        initSearch();
         CySharedElementTransition.runEnterAnim(this, 300, new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
@@ -118,7 +100,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
                         @Override
                         public void run() {
                             height = rlHistoryList.getHeight();
-                            HiddenAnimUtils.newInstance(SearchActivity.this,rlHistoryList,height).hidOrShow();
+                            showHistory();
                         }
                     });
 
@@ -143,22 +125,49 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     }
 
-//    //获取历史纪录控件高度
-//    private void getHeight() {
-//        ViewTreeObserver vto = rlHistoryList.getViewTreeObserver();
-//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                rlHistoryList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//                height = rlHistoryList.getHeight();
-//                HiddenAnimUtils.newInstance(SearchActivity.this,rlHistoryList,height).hidOrShow();
-//            }
-//        });
-////        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-////        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-////        rlHistoryList.measure(w, h);
-////        height = rlHistoryList.getMeasuredHeight();
-//    }
+    private void initSearch() {
+        rlvSearchList.setHasFixedSize(true);
+        rlvSearchList.setLayoutManager(new GridLayoutManager(this,2));
+        rlvSearchList.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.BOTH_SET,
+                getResources().getDimensionPixelSize(R.dimen.dp_16_x),
+                getResources().getColor(R.color.light_grey)));
+        searchAdapter = new SearchAdapter(this);
+        rlvSearchList.setAdapter(searchAdapter);
+    }
+
+    private void initHistory() {
+        rlvHistory.setHasFixedSize(true);
+        rlvHistory.setLayoutManager(new FlowLayoutManager());
+        rlvHistory.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.BOTH_SET,
+                getResources().getDimensionPixelSize(R.dimen.dp_8_x),
+                getResources().getColor(R.color.white)));
+        historyAdapter = new HistoryAdapter(this);
+        rlvHistory.setAdapter(historyAdapter);
+        histories = presenter.getHistory();
+        if (histories.size() == 0){
+            rlHistoryList.setVisibility(View.INVISIBLE);
+        }else {
+            historyAdapter.setList(histories);
+        }
+    }
+
+    //获取历史纪录控件高度
+    private void getHeight() {
+        ViewTreeObserver vto = rlHistoryList.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                rlHistoryList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                height = rlHistoryList.getHeight();
+            }
+        });
+//        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//        rlHistoryList.measure(w, h);
+//        height = rlHistoryList.getMeasuredHeight();
+    }
 
     private void initListener() {
         tvDeleteAll.setOnClickListener(this);
@@ -172,7 +181,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                return presenter.onSearch(textView,i,SearchActivity.this);
+                return presenter.onSearch(textView,i,SearchActivity.this,histories);
             }
         });
     }
@@ -188,36 +197,42 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         if (Utils.isSoftShowing(this)) {
             Utils.showOrHideSoftKeyboard(this);
         }
-        AlphaAnimation animation = new AlphaAnimation(1f, 0f);
-        animation.setDuration(250);
-        animation.setFillAfter(true);
-        rlSearch.startAnimation(animation);
-        if (rlHistoryList.getVisibility() == View.VISIBLE){
-            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
+        if (rlvSearchList.getVisibility() == View.VISIBLE){
+            //getHeight();
+            showHistory();
+            rlvSearchList.setVisibility(View.GONE);
+            rlvSearchList.removeAllViews();
+            searchAdapter.notifyDataSetChanged();
+            data = null;
+        }else {
+            AlphaAnimation animation = new AlphaAnimation(1f, 0f);
+            animation.setDuration(250);
+            animation.setFillAfter(true);
+            rlSearch.startAnimation(animation);
+            hideHistory();
+            CySharedElementTransition.runExitAnim(this, 300, new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
         }
-        CySharedElementTransition.runExitAnim(this, 300, new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
 
-
-                //((View)toolbar.getMenu().getItem(0)).startAnimation(animation);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
     }
 
     @Override
@@ -234,9 +249,9 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     public void getSearchList(List<SearchList> searchLists) {
         data = searchLists;
         if (data.size() != 0) {
-
+            searchAdapter.setList(data);
         } else {
-
+            showSnackBar(rlvSearchList,R.string.not_found);
         }
     }
 
@@ -244,9 +259,14 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     @Override
     public void hideHistory() {
         //getHeight();
-        HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
-        rlvHistory.removeAllViews();
-        histories = null;
+        if (rlHistoryList.getVisibility() == View.VISIBLE)
+            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
+    }
+
+    public void showHistory(){
+        if (rlHistoryList.getVisibility() == View.GONE
+                || rlHistoryList.getVisibility() == View.INVISIBLE)
+            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
     }
 
     @Override
@@ -255,16 +275,19 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             histories = new ArrayList<>();
             histories.add(new History(value));
             historyAdapter.setList(histories);
+            rlHistoryList.setVisibility(View.VISIBLE);
         }else {
-            //histories.add(new History(value));
+            histories.add(new History(value));
             historyAdapter.addItem(value);
         }
+        getHeight();
+        showHistory();
 
-        if (rlHistoryList.getVisibility() == View.GONE){
-            //getHeight();
-            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
-        }
+    }
 
+    @Override
+    public void showSearchView() {
+        rlvSearchList.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -272,34 +295,41 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         super.onDestroy();
     }
 
+    //network
     @Override
     public void onError() {
 
     }
 
+    //network
     @Override
     public void onParseError() {
 
     }
 
+    //itemClick
     @Override
     public void onClick(View view) {
+        rlvHistory.removeAllViews();
+        histories = null;
         presenter.onViewClick(view);
     }
 
     @Override
     public void onDeleteClick(History data, boolean isNone) {
-        presenter.deleteHistory(data);
+        presenter.deleteHistory(data,isNone);
         if (isNone){
-            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
+            hideHistory();
         }
     }
 
     //history
     @Override
     public void onHistoryItemClick(History data) {
-        presenter.search(data.getHistory(),this);
+        hideHistory();
+        showSearchView();
         hidKeyboard();
+        presenter.search(data.getHistory(),this);
     }
 
     private void hidKeyboard(){

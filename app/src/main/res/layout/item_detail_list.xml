@@ -25,7 +25,7 @@
             android:paddingLeft="@dimen/dp_16_x"
             android:text="ssssss"/>
         <ImageView
-            android:visibility="visible"
+            android:visibility="gone"
             android:id="@+id/tv_list_new"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -90,13 +90,27 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
     }
 
     @Override
-    public boolean onSearch(TextView textView, int i, Activity activity) {
+    public boolean onSearch(TextView textView, int i, Activity activity, List<History> mList) {
         if (i == EditorInfo.IME_ACTION_SEARCH) {
             String key = textView.getText().toString().trim();
             if (TextUtils.isEmpty(key))
                 return false;
-            insertHistory(textView.getText().toString());
-            view.updateHistory(textView.getText().toString());
+            int count = 0;
+            if (mList != null){
+                for (History data : mList){
+                    if (data.getHistory().equals(textView.getText().toString())){
+                        continue;
+                    }else {
+                        count += 1;
+                    }
+                }
+            }
+            if (mList == null || count == mList.size()){
+                insertHistory(textView.getText().toString());
+                view.updateHistory(textView.getText().toString());
+            }
+            view.hideHistory();
+            view.showSearchView();
             search(textView.getText().toString(), (WebResponseListener) activity);
             Utils.showOrHideSoftKeyboard(activity);
             return true;
@@ -120,7 +134,12 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
     }
 
     @Override
-    public void deleteHistory(History data) {
-        mDataManagerModel.deleteHistory(data);
+    public void deleteHistory(History data, boolean isNone) {
+        if (!isNone){
+            mDataManagerModel.deleteHistory(data);
+        }else {
+            mDataManagerModel.deleteAllHistory();
+        }
+
     }
 }

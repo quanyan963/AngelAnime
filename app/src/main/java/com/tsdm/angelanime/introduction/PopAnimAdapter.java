@@ -35,7 +35,7 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     @NonNull
     @Override
     public AnimViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, parent,false);
         return new AnimViewHolder(view);
     }
 

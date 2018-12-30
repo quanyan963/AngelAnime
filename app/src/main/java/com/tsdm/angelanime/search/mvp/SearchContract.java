@@ -27,6 +27,8 @@ public interface SearchContract {
         void hideHistory();
 
         void updateHistory(String value);
+
+        void showSearchView();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -35,13 +37,13 @@ public interface SearchContract {
 
         void insertHistory(String s);
 
-        boolean onSearch(TextView textView, int i, Activity activity);
+        boolean onSearch(TextView textView, int i, Activity activity, List<History> mList);
 
         void onViewClick(android.view.View view);
 
         List<History> getHistory();
 
-        void deleteHistory(History data);
+        void deleteHistory(History data, boolean isNone);
 
         void search(String s, WebResponseListener listener);
     }
