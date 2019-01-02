@@ -5,6 +5,7 @@ import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.FileEncodingDetect;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
@@ -92,9 +93,9 @@ public class NetHelperImpl implements NetHelper {
         try {
             mData = new ArrayList<>();
             Document doc = Jsoup.connect(Url.URL + url).get();
-            if (doc == null){
+            if (doc == null) {
                 return null;
-            }else {
+            } else {
                 Element data = doc.getElementById("au");
                 Elements els = data.getElementsByTag("a");
                 Elements img = data.getElementsByTag("img");
@@ -111,7 +112,6 @@ public class NetHelperImpl implements NetHelper {
         }
 
     }
-
 
 
     @Override
@@ -150,7 +150,7 @@ public class NetHelperImpl implements NetHelper {
 //                        });
 
             }
-        },BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.BUFFER);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class NetHelperImpl implements NetHelper {
         return Flowable.create(new FlowableOnSubscribe<String[]>() {
             @Override
             public void subscribe(final FlowableEmitter<String[]> e) throws Exception {
-                OkGo.<String>get(Url.URL+hrefUrl)
+                OkGo.<String>get(Url.URL + hrefUrl)
                         .tag(this)
                         .execute(new StringCallback() {
                             @Override
@@ -167,7 +167,7 @@ public class NetHelperImpl implements NetHelper {
                                 Element elt = document.getElementById("ccplay");
                                 Element els = elt.select("script").first();
                                 String temp = els.attr("src");
-                                OkGo.<String>get(Url.URL+temp)
+                                OkGo.<String>get(Url.URL + temp)
                                         .tag(this)
                                         .execute(new StringCallback() {
                                             @Override
@@ -182,7 +182,7 @@ public class NetHelperImpl implements NetHelper {
                         });
 
             }
-        },BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.BUFFER);
     }
 
     @Override
@@ -201,23 +201,24 @@ public class NetHelperImpl implements NetHelper {
                             }
                         });
             }
-        },BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.BUFFER);
     }
 
     @Override
-    public Flowable<Document> getSearch(final String s, final WebResponseListener listener) {
+    public Flowable<Document> getSearch(final int page, final String s, final WebResponseListener listener) {
         return Flowable.create(new FlowableOnSubscribe<Document>() {
             @Override
             public void subscribe(FlowableEmitter<Document> e) {
                 try {
-                    String word = new String(s.getBytes(),"utf-8");
-                    e.onNext((Document) Jsoup.connect(Url.SEARCH+word).get());
+                    String word = new String(s.getBytes(), "utf-8");
+                    e.onNext(Jsoup.connect(Url.SEARCH + Constants.PAGE + page + Constants.AND
+                            + Constants.SEARCH_WORD + word + Constants.AND + Constants.End).get());
                 } catch (Exception e1) {
                     listener.onError();
                     e1.printStackTrace();
                 }
                 e.onComplete();
             }
-        },BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.BUFFER);
     }
 }

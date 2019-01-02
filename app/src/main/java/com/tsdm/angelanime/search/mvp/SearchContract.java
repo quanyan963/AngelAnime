@@ -1,6 +1,8 @@
 package com.tsdm.angelanime.search.mvp;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -22,7 +24,7 @@ public interface SearchContract {
 
         void back();
 
-        void getSearchList(List<SearchList> searchLists);
+        void getSearchList(List<SearchList> searchLists,int allPage);
 
         void hideHistory();
 
@@ -44,7 +46,6 @@ public interface SearchContract {
         List<History> getHistory();
 
         void deleteHistory(History data, boolean isNone);
-
-        void search(String s, WebResponseListener listener);
+        void search(int page, @Nullable String word, WebResponseListener listener);
     }
 }

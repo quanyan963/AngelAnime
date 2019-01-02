@@ -68,6 +68,9 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     private int height;
     private HistoryAdapter historyAdapter;
     private SearchAdapter searchAdapter;
+    //用来标记是否正在向上滑动
+    private boolean isSlidingUpward = false;
+    private int page = 1;
 
     @Override
     public void setInject() {
@@ -134,6 +137,38 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
                 getResources().getColor(R.color.light_grey)));
         searchAdapter = new SearchAdapter(this);
         rlvSearchList.setAdapter(searchAdapter);
+        rlvSearchList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
+                //当不滑动时
+                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+                    int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+
+                    // 判断是否滑动到了最后一个item，并且是向上滑动
+                    if (lastItemPosition == (manager.getItemCount() - 1) && isSlidingUpward) {
+                        //加载更多
+                        searchAdapter.setLoadState(searchAdapter.LOADING);
+                        if (page < data.get(0).getTotal()) {
+                            page += 1;
+                            presenter.search(page,null,SearchActivity.this);
+                        }else {
+                            searchAdapter.setLoadState(searchAdapter.LOADING_END);
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //向左滑动的时候dx是大于0的，反方向滑动则小于0
+                // 大于0表示正在向上滑动，小于等于0表示停止或向下滑动
+                isSlidingUpward = dy > 0;
+            }
+        });
     }
 
     private void initHistory() {
@@ -160,7 +195,10 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             @Override
             public void onGlobalLayout() {
                 rlHistoryList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                height = rlHistoryList.getHeight();
+                if(rlHistoryList.getHeight() >10){
+                    height = rlHistoryList.getHeight();
+                }
+
             }
         });
 //        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -200,10 +238,12 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         if (rlvSearchList.getVisibility() == View.VISIBLE){
             //getHeight();
             showHistory();
-            rlvSearchList.setVisibility(View.GONE);
+            page = 1;
             rlvSearchList.removeAllViews();
-            searchAdapter.notifyDataSetChanged();
+            searchAdapter.removeAll();
             data = null;
+            rlvSearchList.setVisibility(View.GONE);
+
         }else {
             AlphaAnimation animation = new AlphaAnimation(1f, 0f);
             animation.setDuration(250);
@@ -246,7 +286,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     }
 
     @Override
-    public void getSearchList(List<SearchList> searchLists) {
+    public void getSearchList(List<SearchList> searchLists, int allPage) {
         data = searchLists;
         if (data.size() != 0) {
             searchAdapter.setList(data);
@@ -329,7 +369,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         hideHistory();
         showSearchView();
         hidKeyboard();
-        presenter.search(data.getHistory(),this);
+        presenter.search(page,data.getHistory(),this);
     }
 
     private void hidKeyboard(){

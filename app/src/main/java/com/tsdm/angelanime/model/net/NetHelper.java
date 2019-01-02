@@ -25,5 +25,6 @@ public interface NetHelper {
 
     Flowable<Document> getPlayUrl(String hrefUrl, WebResponseListener listener);
 
-    Flowable<Document> getSearch(String s, WebResponseListener listener);
+    Flowable<Document> getSearch(int page, String s, WebResponseListener listener);
+
 }

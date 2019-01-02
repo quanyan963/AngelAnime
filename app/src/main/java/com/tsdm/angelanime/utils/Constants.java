@@ -10,4 +10,8 @@ public class Constants {
     public static final int FIRST = 0;
     public static final String URL_HOME = "URL_HOME";
     public static final String INTRODUCTION = "introduction";
+    public static final String SEARCH_WORD = "searchword=";
+    public static final String PAGE = "page=";
+    public static final String AND = "&";
+    public static final String End = "searchtype=-1";
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/dp_16_y"
+    android:background="@color/light_grey">
+
+    <RelativeLayout
+        android:visibility="invisible"
+        android:id="@+id/rl_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:visibility="invisible"
+        android:id="@+id/rl_end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+        <View
+            style="@style/main_line"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/tv_end"
+            android:layout_marginLeft="@dimen/dp_16_x"
+            android:layout_marginRight="@dimen/dp_16_x"
+            android:background="@color/low_grey"
+            android:layout_centerInParent="true"/>
+        <TextView
+            android:id="@+id/tv_end"
+            style="@style/main_tv"
+            android:layout_centerInParent="true"
+            android:textColor="@color/low_grey"
+            android:text="我是有底线的"/>
+        <View
+            style="@style/main_line"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/tv_end"
+            android:layout_marginLeft="@dimen/dp_16_x"
+            android:layout_marginRight="@dimen/dp_16_x"
+            android:background="@color/low_grey"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</RelativeLayout>

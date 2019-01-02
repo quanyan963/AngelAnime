@@ -67,8 +67,8 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     }
 
     @Override
-    public Flowable<Document> getSearch(String s, WebResponseListener listener) {
-        return mNetHelper.getSearch(s,listener);
+    public Flowable<Document> getSearch(int page, String s, WebResponseListener listener) {
+        return mNetHelper.getSearch(page,s,listener);
     }
 
     @Override

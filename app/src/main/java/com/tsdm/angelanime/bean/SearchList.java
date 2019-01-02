@@ -13,6 +13,7 @@ public class SearchList implements Serializable {
     private String statue;
     private String updateTime;
     private String hrefUrl;
+    private int total;
 
     public SearchList(String imgUrl, String title, String statue, String updateTime, String hrefUrl) {
         this.imgUrl = imgUrl;
@@ -60,5 +61,13 @@ public class SearchList implements Serializable {
 
     public void setHrefUrl(String hrefUrl) {
         this.hrefUrl = hrefUrl;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 }

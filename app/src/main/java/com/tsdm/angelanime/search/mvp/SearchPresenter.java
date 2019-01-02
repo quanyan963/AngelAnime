@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.search.mvp;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,8 @@ import javax.inject.Inject;
 
 import io.reactivex.functions.Function;
 
+import static com.tsdm.angelanime.utils.Constants.FIRST;
+
 /**
  * Created by Mr.Quan on 2018/12/26.
  */
@@ -38,6 +41,8 @@ import io.reactivex.functions.Function;
 public class SearchPresenter extends RxPresenter<SearchContract.View> implements SearchContract.Presenter {
 
     private DataManagerModel mDataManagerModel;
+    private String searchWord;
+    private static final int FIRST_PAGE = 1;
 
     @Inject
     public SearchPresenter(DataManagerModel mDataManagerModel) {
@@ -53,8 +58,12 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
         }
     }
 
-    public void search(final String s, WebResponseListener listener) {
-        addSubscribe(mDataManagerModel.getSearch(s, listener)
+    @Override
+    public void search(int page, @Nullable String word, WebResponseListener listener) {
+        final int allPage = 0;
+        if (word != null)
+            searchWord = word;
+        addSubscribe(mDataManagerModel.getSearch(page, searchWord, listener)
                 .map(new Function<Document, List<SearchList>>() {
                     @Override
                     public List<SearchList> apply(Document document) throws Exception {
@@ -62,24 +71,25 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
                         Elements list = els.select("li");
                         List<SearchList> data = new ArrayList<>();
                         if (list.size() != 0) {
+                            Elements pageData = els.select("input[onclick]");
+
                             for (int i = 0; i < list.size(); i++) {
                                 String hrefUrl = list.get(i).select("a[href]").attr("href");
                                 String imgUrl = list.get(i).select("img[alt]").attr("src");
                                 String title = list.get(i).select("img[alt]").attr("alt");
                                 String statue = list.get(i).select("em").get(0).text();
                                 String updateTime = list.get(i).select("em").get(3).text();
-                                data.add(new SearchList(imgUrl,title,statue,updateTime,hrefUrl));
+                                data.add(new SearchList(imgUrl, title, statue, updateTime, hrefUrl));
                             }
                         }
                         return data;
                     }
-                })
-                .compose(RxUtil.<List<SearchList>>rxSchedulerHelper())
+                }).compose(RxUtil.<List<SearchList>>rxSchedulerHelper())
                 .subscribeWith(new CommonSubscriber<List<SearchList>>(view) {
 
                     @Override
                     public void onNext(List<SearchList> searchLists) {
-                        view.getSearchList(searchLists);
+                        view.getSearchList(searchLists, allPage);
                     }
                 }));
     }
@@ -95,23 +105,24 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
             String key = textView.getText().toString().trim();
             if (TextUtils.isEmpty(key))
                 return false;
+            searchWord = textView.getText().toString();
             int count = 0;
-            if (mList != null){
-                for (History data : mList){
-                    if (data.getHistory().equals(textView.getText().toString())){
+            if (mList != null) {
+                for (History data : mList) {
+                    if (data.getHistory().equals(searchWord)) {
                         continue;
-                    }else {
+                    } else {
                         count += 1;
                     }
                 }
             }
-            if (mList == null || count == mList.size()){
-                insertHistory(textView.getText().toString());
-                view.updateHistory(textView.getText().toString());
+            if (mList == null || count == mList.size()) {
+                insertHistory(searchWord);
+                view.updateHistory(searchWord);
             }
             view.hideHistory();
             view.showSearchView();
-            search(textView.getText().toString(), (WebResponseListener) activity);
+            search(FIRST_PAGE, searchWord, (WebResponseListener) activity);
             Utils.showOrHideSoftKeyboard(activity);
             return true;
         }
@@ -120,7 +131,7 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
     @Override
     public void onViewClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_delete_all:
                 mDataManagerModel.deleteAllHistory();
                 view.hideHistory();
@@ -135,9 +146,9 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
     @Override
     public void deleteHistory(History data, boolean isNone) {
-        if (!isNone){
+        if (!isNone) {
             mDataManagerModel.deleteHistory(data);
-        }else {
+        } else {
             mDataManagerModel.deleteAllHistory();
         }
 

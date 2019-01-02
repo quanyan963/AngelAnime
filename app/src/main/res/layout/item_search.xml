@@ -3,10 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <View
+        android:visibility="gone"
+        android:id="@+id/v_top"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/dp_16_y"/>
     <RelativeLayout
         android:id="@+id/rl_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/v_top"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:focusable="true"
@@ -52,4 +60,11 @@
             android:layout_below="@+id/tv_statue"/>
     </RelativeLayout>
 
+    <View
+        android:visibility="gone"
+        android:id="@+id/v_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_below="@+id/rl_bg"
+        android:layout_marginTop="@dimen/dp_16_y"/>
 </RelativeLayout>
