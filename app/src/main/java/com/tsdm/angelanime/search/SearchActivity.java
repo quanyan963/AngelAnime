@@ -71,6 +71,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     //用来标记是否正在向上滑动
     private boolean isSlidingUpward = false;
     private int page = 1;
+    private int allPage = 0;
 
     @Override
     public void setInject() {
@@ -150,7 +151,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
                     if (lastItemPosition == (manager.getItemCount() - 1) && isSlidingUpward) {
                         //加载更多
                         searchAdapter.setLoadState(searchAdapter.LOADING);
-                        if (page < data.get(0).getTotal()) {
+                        if (page < allPage) {
                             page += 1;
                             presenter.search(page,null,SearchActivity.this);
                         }else {
@@ -288,8 +289,10 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     @Override
     public void getSearchList(List<SearchList> searchLists, int allPage) {
         data = searchLists;
+        this.allPage = allPage;
+        //searchAdapter.setLoadState(searchAdapter.LOADING_COMPLETE);
         if (data.size() != 0) {
-            searchAdapter.setList(data);
+            searchAdapter.setList(searchLists);
         } else {
             showSnackBar(rlvSearchList,R.string.not_found);
         }

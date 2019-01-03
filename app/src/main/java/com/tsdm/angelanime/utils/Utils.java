@@ -45,6 +45,7 @@ import java.util.List;
 
 public class Utils {
     public static final boolean isLog = false;
+
     public static String getColorStr(int color) {
         int r = Color.red(color);
         int g = Color.green(color);
@@ -56,16 +57,16 @@ public class Utils {
     }
 
     /**
-     *
      * @param activity
      */
-    public static void showOrHideSoftKeyboard(Activity activity){
+    public static void showOrHideSoftKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     /**
      * 判断软键盘是否显示方法
+     *
      * @param activity
      * @return
      */
@@ -79,11 +80,12 @@ public class Utils {
         activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
         //考虑到虚拟导航栏的情况（虚拟导航栏情况下：screenHeight = rect.bottom + 虚拟导航栏高度）
         //选取screenHeight*2/3进行判断
-        return screenHeight*2/3 > rect.bottom+getSoftButtonsBarHeight(activity);
+        return screenHeight * 2 / 3 > rect.bottom + getSoftButtonsBarHeight(activity);
     }
 
     /**
      * 底部虚拟按键栏的高度
+     *
      * @return
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -139,9 +141,9 @@ public class Utils {
     }
 
     public static void showBottomPopUp(Activity activity, final List<String> animationList,
-                                        final PopUpListener listener,ViewGroup rootView, int position) {
+                                       final PopUpListener listener, ViewGroup rootView, int position) {
         final BottomSheetDialog dialog = new BottomSheetDialog(activity);
-        View dialogView = LayoutInflater.from(activity).inflate(R.layout.pop_anim_list, rootView,false);
+        View dialogView = LayoutInflater.from(activity).inflate(R.layout.pop_anim_list, rootView, false);
         dialogView.setBackgroundResource(R.color.transparent);
         TextView tvTitle = (TextView) dialogView.findViewById(R.id.mtv_title);
         ImageView ivclose = (ImageView) dialogView.findViewById(R.id.img_close);
@@ -155,11 +157,11 @@ public class Utils {
         });
         final RecyclerView animList = (RecyclerView) dialogView.findViewById(R.id.rlv_anim_list);
         animList.setHasFixedSize(true);
-        animList.setLayoutManager(new GridLayoutManager(activity,3));
+        animList.setLayoutManager(new GridLayoutManager(activity, 3));
         animList.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.BOTH_SET,
                 activity.getResources().getDimensionPixelSize(R.dimen.dp_16_x),
                 activity.getResources().getColor(R.color.white)));
-        final PopAnimAdapter popAnimAdapter = new PopAnimAdapter(animationList,activity);
+        final PopAnimAdapter popAnimAdapter = new PopAnimAdapter(animationList, activity);
         popAnimAdapter.setOnPopItemClickListener((new PopAnimAdapter.PopItemClick() {
             @Override
             public void onClick(int position) {
@@ -232,6 +234,82 @@ public class Utils {
 //        }
 //    }
 
+    public static String str2HexStr(String str) {
+
+        char[] chars = "0123456789ABCDEF".toCharArray();
+        StringBuilder sb = new StringBuilder("");
+        byte[] bs = str.getBytes();
+        int bit;
+
+        for (int i = 0; i < bs.length; i++) {
+            bit = (bs[i] & 0x0f0) >> 4;
+            sb.append(chars[bit]);
+            bit = bs[i] & 0x0f;
+            sb.append(chars[bit]);
+            sb.append(' ');
+        }
+        return sb.toString().trim();
+    }
+
+    public static byte[] getUTF8BytesFromGBKString(String gbkStr) {
+        int n = gbkStr.length();
+        byte[] utfBytes = new byte[3 * n];
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            int m = gbkStr.charAt(i);
+            if (m < 128 && m >= 0) {
+                utfBytes[k++] = (byte) m;
+                continue;
+            }
+            utfBytes[k++] = (byte) (0xe0 | (m >> 12));
+            utfBytes[k++] = (byte) (0x80 | ((m >> 6) & 0x3f));
+            utfBytes[k++] = (byte) (0x80 | (m & 0x3f));
+        }
+        if (k < utfBytes.length) {
+            byte[] tmp = new byte[k];
+            System.arraycopy(utfBytes, 0, tmp, 0, k);
+            return tmp;
+        }
+        return utfBytes;
+    }
+
+
+    public byte[] gbk2utf8(String chenese) {
+
+
+        char c[] = chenese.toCharArray();
+        byte[] fullByte = new byte[3 * c.length];
+        for (int i = 0; i < c.length; i++) {
+            int m = (int) c[i];
+            String word = Integer.toBinaryString(m);
+            System.out.println(word);
+            StringBuffer sb = new StringBuffer();
+            int len = 16 - word.length();
+            for (int j = 0; j < len; j++) {
+                sb.append("0");
+            }
+            sb.append(word);
+            sb.insert(0, "1110");
+            sb.insert(8, "10");
+            sb.insert(16, "10");
+            System.out.println(sb.toString());
+            String s1 = sb.substring(0, 8);
+            String s2 = sb.substring(8, 16);
+            String s3 = sb.substring(16);
+            byte b0 = Integer.valueOf(s1, 2).byteValue();
+            byte b1 = Integer.valueOf(s2, 2).byteValue();
+            byte b2 = Integer.valueOf(s3, 2).byteValue();
+            byte[] bf = new byte[3];
+            bf[0] = b0;
+            fullByte[i * 3] = bf[0];
+            bf[1] = b1;
+            fullByte[i * 3 + 1] = bf[1];
+            bf[2] = b2;
+            fullByte[i * 3 + 2] = bf[2];
+        }
+        return fullByte;
+    }
+
     public static String bytesToAscii(byte[] bytes, int offset, int dateLen) {
         if ((bytes == null) || (bytes.length == 0) || (offset < 0) || (dateLen <= 0)) {
             return null;
@@ -251,6 +329,7 @@ public class Utils {
     }
 
     static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -261,8 +340,7 @@ public class Utils {
         return new String(hexChars);
     }
 
-    public static String asciiToString(String value)
-    {
+    public static String asciiToString(String value) {
         StringBuffer sbu = new StringBuffer();
         String[] chars = value.split(",");
         for (int i = 0; i < chars.length; i++) {
@@ -355,16 +433,16 @@ public class Utils {
 //        }
 //    }
 
-    public static int getSoundValue(int value,float everyValue){
-        if (value % everyValue > everyValue / 2f){
-            return (int) (value / everyValue +1);
+    public static int getSoundValue(int value, float everyValue) {
+        if (value % everyValue > everyValue / 2f) {
+            return (int) (value / everyValue + 1);
         }
         return (int) (value / everyValue);
     }
 
-    public static void Logger(String TAG, String type, String value){
+    public static void Logger(String TAG, String type, String value) {
         if (!isLog)
             return;
-        Log.i(TAG, type+":------"+value);
+        Log.i(TAG, type + ":------" + value);
     }
 }

@@ -60,7 +60,7 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
     @Override
     public void search(int page, @Nullable String word, WebResponseListener listener) {
-        final int allPage = 0;
+        final int[] allPage = {0};
         if (word != null)
             searchWord = word;
         addSubscribe(mDataManagerModel.getSearch(page, searchWord, listener)
@@ -71,8 +71,10 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
                         Elements list = els.select("li");
                         List<SearchList> data = new ArrayList<>();
                         if (list.size() != 0) {
-                            Elements pageData = els.select("input[onclick]");
 
+                            allPage[0] = Integer.parseInt(els.select("input[onclick]")
+                                    .attr("onclick").split("\\(")[1]
+                                    .split(",")[0]);
                             for (int i = 0; i < list.size(); i++) {
                                 String hrefUrl = list.get(i).select("a[href]").attr("href");
                                 String imgUrl = list.get(i).select("img[alt]").attr("src");
@@ -89,7 +91,7 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
                     @Override
                     public void onNext(List<SearchList> searchLists) {
-                        view.getSearchList(searchLists, allPage);
+                        view.getSearchList(searchLists, allPage[0]);
                     }
                 }));
     }

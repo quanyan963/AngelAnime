@@ -8,6 +8,7 @@ import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.FileEncodingDetect;
 import com.tsdm.angelanime.utils.Url;
+import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.Jsoup;
@@ -17,6 +18,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -210,9 +212,11 @@ public class NetHelperImpl implements NetHelper {
             @Override
             public void subscribe(FlowableEmitter<Document> e) {
                 try {
-                    String word = new String(s.getBytes(), "utf-8");
+                    String word = new String(s.getBytes(), "gb2312");//new String(Utils.getUTF8BytesFromGBKString(s),"utf-8")
+                    String str = new String(word.getBytes("gb2312"),"utf-8");
+                    //word = URLDecoder.decode(s,"utf-8");
                     e.onNext(Jsoup.connect(Url.SEARCH + Constants.PAGE + page + Constants.AND
-                            + Constants.SEARCH_WORD + word + Constants.AND + Constants.End).get());
+                            + Constants.SEARCH_WORD + str + Constants.AND + Constants.End).get());
                 } catch (Exception e1) {
                     listener.onError();
                     e1.printStackTrace();

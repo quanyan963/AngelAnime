@@ -19,6 +19,7 @@ import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.RoundImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,11 +50,12 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     public SearchAdapter(Context mContext) {
+        mList = new ArrayList<>();
         this.mContext = mContext;
     }
 
     public void setList(List<SearchList> mList) {
-        this.mList = mList;
+        this.mList.addAll(mList);
         notifyDataSetChanged();
     }
 
@@ -74,7 +76,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return new SearchViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.footer_view, null);
-            return new SearchViewHolder(view);
+            return new FooterViewHolder(view);
         }
     }
 
@@ -82,7 +84,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof SearchViewHolder) {
             SearchViewHolder searchViewHolder = (SearchViewHolder) holder;
-            if (position == 1 || position == 2) {
+            if (position == 0 || position == 1) {
                 searchViewHolder.vTop.setVisibility(View.VISIBLE);
             } else {
                 searchViewHolder.vTop.setVisibility(View.GONE);
@@ -132,7 +134,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setLoadState(int loadState){
         this.loadState = loadState;
-        notifyItemChanged(getItemCount());
+        notifyItemChanged(getItemCount()-1);
     }
 
     //网格布局添加footer关键一步
@@ -158,7 +160,8 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void removeAll() {
-        mList = null;
+        setLoadState(LOADING_COMPLETE);
+        mList.clear();
         notifyDataSetChanged();
     }
 
