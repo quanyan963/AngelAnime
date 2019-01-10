@@ -5,6 +5,7 @@ import android.view.View;
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.RecentlyDetail;
+import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.bean.TopEight;
 
 import java.util.List;
@@ -26,5 +27,7 @@ public interface MainContract {
         List<RecentlyDetail> getRecently();
 
         void onClick(android.view.View view);
+
+        List<List<ScheduleDetail>> getSchedule();
     }
 }

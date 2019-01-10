@@ -71,7 +71,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onBackPressed();
+                    if (isBack){
+                        onBackPressed();
+                    }else {
+                        onLeftClick();
+                    }
+
                 }
             });
         }
@@ -81,12 +86,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void onLeftClick() {
+    }
+
     public void setNavigationIcon(boolean isBack) {
         this.isBack = isBack;
         if (isBack) {
             toolbar.setNavigationIcon(R.mipmap.back);
         } else {
-            //toolbar.setNavigationIcon(R.mipmap.ic_left_arrow);
+            toolbar.setNavigationIcon(R.mipmap.schedule);
         }
 
     }

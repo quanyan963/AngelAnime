@@ -14,11 +14,14 @@ import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.MvpBaseActivity;
 import com.tsdm.angelanime.bean.RecentlyDetail;
+import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.calendar.CalendarActivity;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.main.mvp.MainContract;
 import com.tsdm.angelanime.main.mvp.MainPresenter;
 import com.tsdm.angelanime.search.SearchActivity;
+import com.tsdm.angelanime.utils.AlertUtils;
 import com.tsdm.angelanime.widget.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -46,16 +49,18 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     private String[] titles;
     private List<Fragment> fragments = new ArrayList<>();
     private MainFragmentAdapter pagerAdapter;
+    private List<List<ScheduleDetail>> mScheduleList;
     @Override
     public void init() {
         //TitleUtils.transparencyBar(this);
         initToolbar();
+        setNavigationIcon(false);
         VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources()
                 ,R.drawable.search,getTheme());
         vectorDrawableCompat.setTint(getResources().getColor(R.color.white));
         setRightImg(true,vectorDrawableCompat,this);
         detailList = presenter.getRecently();
-
+        mScheduleList = presenter.getSchedule();
         titles = getResources().getStringArray(R.array.classify);
         for(int i=0;i<titles.length;i++){
             fragments.add(new MainFragment());
@@ -77,9 +82,12 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
         bnTop.setImages(mData);
         bnTop.setDelayTime(3000);
         bnTop.setIndicatorGravity(BannerConfig.CENTER);
+
         bnTop.start();
 
     }
+
+
 
     private void initListener() {
         bnTop.setOnBannerListener(new OnBannerListener() {
@@ -91,6 +99,23 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
                 //.putExtra(POSITION,0)
             }
         });
+    }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        bnTop.startAutoPlay();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        bnTop.stopAutoPlay();
+//    }
+
+    @Override
+    public void onLeftClick() {
+        AlertUtils.showScheduleDialog(this,mScheduleList);
     }
 
     @Override

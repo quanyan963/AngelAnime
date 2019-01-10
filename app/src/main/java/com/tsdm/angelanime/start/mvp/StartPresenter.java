@@ -43,8 +43,13 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
                         Elements els = document.getElementsByClass("box720 fl");
                         Element elt = els.get(0).select("iframe").first();
                         String imgUrl = elt.attr("src");
+
+                        //小分类
                         Elements data = document.getElementsByClass("serial");
-                        mManagerModel.insertRecently(new RecentlyData(data.toString()));
+                        //时间表
+                        Elements schedule = document.getElementsByClass("contect_week");
+
+                        mManagerModel.insertRecently(new RecentlyData(data.toString(),schedule.toString()));
                         if (imgUrl != null){
                             return imgUrl;
                         }else {

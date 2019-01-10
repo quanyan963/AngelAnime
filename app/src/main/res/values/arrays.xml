@@ -7,4 +7,14 @@
         <item>恋爱</item>
         <item>热血</item>
     </array>
+
+    <array name="day">
+        <item>Sat</item>
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+    </array>
 </resources>

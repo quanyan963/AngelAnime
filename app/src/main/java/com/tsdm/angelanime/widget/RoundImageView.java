@@ -17,7 +17,7 @@ import com.tsdm.angelanime.R;
 public class RoundImageView extends AppCompatImageView {
     private float width, height;
     private int radius;
-    private int defaultRadius = 10;
+    private int defaultRadius = 20;
     private int leftTopRadius;
     private int rightTopRadius;
     private int rightBottomRadius;

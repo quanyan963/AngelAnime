@@ -65,11 +65,14 @@ public class NetHelperImpl implements NetHelper {
 //                            @Override
 //                            public void onSuccess(Response<String> response) {
 //                                try {
-//                                    String s = new String(response.body().getBytes("8859_1"),"gb2312");
+//                                    String s = new String(response.body().getBytes("utf-8"),"");
+//                                    String data = new String(s.getBytes("iso-8859-1"),"gbk");
+//                                    e.onNext(Jsoup.parse(data));
+//                                    e.onComplete();
 //                                } catch (UnsupportedEncodingException e1) {
 //                                    e1.printStackTrace();
 //                                }
-//                                Document document = Jsoup.parse(response.body());
+//
 //
 //                            }
 //
@@ -212,11 +215,10 @@ public class NetHelperImpl implements NetHelper {
             @Override
             public void subscribe(FlowableEmitter<Document> e) {
                 try {
-                    String word = new String(s.getBytes(), "gb2312");//new String(Utils.getUTF8BytesFromGBKString(s),"utf-8")
-                    String str = new String(word.getBytes("gb2312"),"utf-8");
-                    //word = URLDecoder.decode(s,"utf-8");
+                    String  gb2312 = new String(s.getBytes("iso-8859-1"),"gb2312");
+                    String word = new String(gb2312.getBytes("gb2312"),"utf-8");
                     e.onNext(Jsoup.connect(Url.SEARCH + Constants.PAGE + page + Constants.AND
-                            + Constants.SEARCH_WORD + str + Constants.AND + Constants.End).get());
+                            + Constants.SEARCH_WORD + word + Constants.AND + Constants.End).get());
                 } catch (Exception e1) {
                     listener.onError();
                     e1.printStackTrace();

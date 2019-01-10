@@ -16,28 +16,39 @@ public class RecentlyData implements Serializable {
     static final long serialVersionUID = 42L;
 
     @Id
-    private long Id;
+    private Long id;
     private String elements;
+    private String schedule;
 
     public RecentlyData() {
     }
 
-    public RecentlyData(String elements) {
+    public RecentlyData(String elements, String schedule) {
         this.elements = elements;
+        this.schedule = schedule;
     }
 
-    @Generated(hash = 1726737336)
-    public RecentlyData(long Id, String elements) {
-        this.Id = Id;
+    @Generated(hash = 1038624151)
+    public RecentlyData(Long id, String elements, String schedule) {
+        this.id = id;
         this.elements = elements;
+        this.schedule = schedule;
     }
 
-    public long getId() {
-        return Id;
+    public String getSchedule() {
+        return schedule;
     }
 
-    public void setId(long id) {
-        Id = id;
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getElements() {

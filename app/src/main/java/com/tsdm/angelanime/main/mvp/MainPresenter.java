@@ -7,6 +7,7 @@ import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.RecentlyDetail;
+import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.search.SearchActivity;
@@ -75,5 +76,26 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
                 view.toSearchActivity(v);
                 break;
         }
+    }
+
+    @Override
+    public List<List<ScheduleDetail>> getSchedule() {
+        List<List<ScheduleDetail>> data = new ArrayList<>();
+
+        if (mData == null){
+            mData = mDataManagerModel.getRecently();
+        }
+        Document document = Jsoup.parse(mData.getSchedule());
+        Elements week = document.getElementsByClass("contect_week");
+        for (int i = 0; i < 7; i++) {
+            List<ScheduleDetail> detail = new ArrayList<>();
+            Elements temp = week.get(i).select("a[href]");
+            for (int j = 0; j < temp.size(); j++) {
+                detail.add(new ScheduleDetail(temp.get(j).attr("href"),
+                        temp.get(j).text()));
+            }
+            data.add(detail);
+        }
+        return data;
     }
 }

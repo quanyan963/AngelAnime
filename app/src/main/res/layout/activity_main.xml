@@ -21,7 +21,12 @@
             <com.youth.banner.Banner
                 android:id="@+id/bn_top"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_210_y"
+                android:layout_height="@dimen/dp_160_y"
+                android:layout_marginTop="@dimen/dp_16_y"
+                android:layout_marginBottom="@dimen/dp_16_y"
+                android:layout_marginRight="@dimen/dp_16_x"
+                android:layout_marginLeft="@dimen/dp_16_x"
+                app:image_scale_type="fit_xy"
                 android:layout_below="@+id/i_toolbar">
 
             </com.youth.banner.Banner>
