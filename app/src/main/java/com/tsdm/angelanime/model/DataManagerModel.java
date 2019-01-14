@@ -72,6 +72,11 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     }
 
     @Override
+    public Flowable<Document> getClassifyDetail(String s, WebResponseListener listener) {
+        return mNetHelper.getClassifyDetail(s, listener);
+    }
+
+    @Override
     public void insertTopEight(List<TopEight> value) {
         mDBDbHelper.insertTopEight(value);
     }

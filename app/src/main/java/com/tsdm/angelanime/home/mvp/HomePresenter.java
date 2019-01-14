@@ -1,8 +1,5 @@
-package com.tsdm.angelanime.main.mvp;
+package com.tsdm.angelanime.home.mvp;
 
-import android.view.View;
-
-import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.RecentlyDetail;
@@ -21,16 +18,15 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Created by Mr.Quan on 2018/11/10.
+ * Created by Mr.Quan on 2019/1/11.
  */
 
-public class MainPresenter extends RxPresenter<MainContract.View> implements MainContract.Presenter{
-
+public class HomePresenter extends RxPresenter<HomeContract.View> implements HomeContract.Presenter {
     private DataManagerModel mDataManagerModel;
     private RecentlyData mData;
-    @Inject
 
-    public MainPresenter(DataManagerModel mDataManagerModel) {
+    @Inject
+    public HomePresenter(DataManagerModel mDataManagerModel) {
         this.mDataManagerModel = mDataManagerModel;
     }
 
@@ -62,16 +58,6 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
             data.add(new RecentlyDetail(dates,hrefUrls,names,setNumS));
         }
         return data;
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.iv_right:
-                view.toSearchActivity(v);
-                break;
-        }
     }
 
     @Override
@@ -93,17 +79,5 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
             data.add(detail);
         }
         return data;
-    }
-
-    @Override
-    public void switchNavView(int id) {
-        switch (id){
-            case R.id.rb_home:
-                view.switchHome();
-                break;
-            case R.id.rb_classify:
-                view.switchClassify();
-                break;
-        }
     }
 }

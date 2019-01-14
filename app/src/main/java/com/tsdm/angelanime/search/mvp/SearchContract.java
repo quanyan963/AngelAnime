@@ -11,6 +11,7 @@ import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.SearchList;
+import com.tsdm.angelanime.search.SearchAdapter;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface SearchContract {
 
         void back();
 
-        void getSearchList(List<SearchList> searchLists,int allPage);
+        void getSearchList(List<SearchList> searchLists);
 
         void hideHistory();
 
@@ -46,6 +47,13 @@ public interface SearchContract {
         List<History> getHistory();
 
         void deleteHistory(History data, boolean isNone);
-        void search(int page, @Nullable String word, WebResponseListener listener);
+        void search(@Nullable String word, WebResponseListener listener);
+
+        void onStateChanged(RecyclerView recyclerView, int newState, SearchAdapter searchAdapter
+                , WebResponseListener listener);
+
+        void onScrolled(boolean isSlidingUpward);
+
+        void initPage();
     }
 }

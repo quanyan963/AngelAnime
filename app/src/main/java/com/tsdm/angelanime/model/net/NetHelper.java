@@ -27,4 +27,6 @@ public interface NetHelper {
 
     Flowable<Document> getSearch(int page, String s, WebResponseListener listener);
 
+    Flowable<Document> getClassifyDetail(String s, WebResponseListener listener);
+
 }

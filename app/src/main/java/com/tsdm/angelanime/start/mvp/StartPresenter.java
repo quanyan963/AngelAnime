@@ -49,7 +49,13 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
                         //时间表
                         Elements schedule = document.getElementsByClass("contect_week");
 
-                        mManagerModel.insertRecently(new RecentlyData(data.toString(),schedule.toString()));
+                        //大分类
+                        elt = document.getElementById("naviin");
+                        els = elt.select("ul[style]");
+                        Elements classify = els.get(0).select("a[href]");
+
+                        mManagerModel.insertRecently(new RecentlyData(data.toString(),
+                                schedule.toString(),classify.toString()));
                         if (imgUrl != null){
                             return imgUrl;
                         }else {

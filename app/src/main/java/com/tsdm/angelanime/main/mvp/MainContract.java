@@ -18,6 +18,10 @@ public interface MainContract {
     interface View extends BaseView {
 
         void toSearchActivity(android.view.View v);
+
+        void switchHome();
+
+        void switchClassify();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -29,5 +33,7 @@ public interface MainContract {
         void onClick(android.view.View view);
 
         List<List<ScheduleDetail>> getSchedule();
+
+        void switchNavView(int id);
     }
 }

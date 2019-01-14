@@ -2,6 +2,8 @@ package com.tsdm.angelanime.search.mvp;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,15 +16,12 @@ import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.SearchList;
 import com.tsdm.angelanime.model.DataManagerModel;
-import com.tsdm.angelanime.search.SearchActivity;
-import com.tsdm.angelanime.utils.HiddenAnimUtils;
+import com.tsdm.angelanime.search.SearchAdapter;
 import com.tsdm.angelanime.utils.RxUtil;
-import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -32,8 +31,6 @@ import javax.inject.Inject;
 
 import io.reactivex.functions.Function;
 
-import static com.tsdm.angelanime.utils.Constants.FIRST;
-
 /**
  * Created by Mr.Quan on 2018/12/26.
  */
@@ -42,7 +39,9 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
     private DataManagerModel mDataManagerModel;
     private String searchWord;
-    private static final int FIRST_PAGE = 1;
+    private boolean isSlidingUpward = false;
+    private int page = 1;
+    private int allPage = 0;
 
     @Inject
     public SearchPresenter(DataManagerModel mDataManagerModel) {
@@ -59,8 +58,7 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
     }
 
     @Override
-    public void search(int page, @Nullable String word, WebResponseListener listener) {
-        final int[] allPage = {0};
+    public void search(@Nullable String word, WebResponseListener listener) {
         if (word != null)
             searchWord = word;
         addSubscribe(mDataManagerModel.getSearch(page, searchWord, listener)
@@ -72,7 +70,7 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
                         List<SearchList> data = new ArrayList<>();
                         if (list.size() != 0) {
 
-                            allPage[0] = Integer.parseInt(els.select("input[onclick]")
+                            allPage = Integer.parseInt(els.select("input[onclick]")
                                     .attr("onclick").split("\\(")[1]
                                     .split(",")[0]);
                             for (int i = 0; i < list.size(); i++) {
@@ -91,9 +89,44 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
                     @Override
                     public void onNext(List<SearchList> searchLists) {
-                        view.getSearchList(searchLists, allPage[0]);
+
+                        view.getSearchList(searchLists);
                     }
                 }));
+    }
+
+    @Override
+    public void onStateChanged(RecyclerView recyclerView, int newState, SearchAdapter searchAdapter
+            ,WebResponseListener listener) {
+        GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
+        //当不滑动时
+        if (newState == RecyclerView.SCROLL_STATE_IDLE){
+            int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+
+            // 判断是否滑动到了最后一个item，并且是向上滑动
+            if (lastItemPosition == (manager.getItemCount() - 1) && isSlidingUpward) {
+                //加载更多
+                searchAdapter.setLoadState(searchAdapter.LOADING);
+                if (page < allPage) {
+                    page += 1;
+                    search(null,listener);
+                }else {
+                    searchAdapter.setLoadState(searchAdapter.LOADING_END);
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public void onScrolled(boolean isSlidingUpward) {
+        this.isSlidingUpward = isSlidingUpward;
+    }
+
+    @Override
+    public void initPage() {
+        page = 1;
+        allPage = 0;
     }
 
     @Override
@@ -124,7 +157,7 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
             }
             view.hideHistory();
             view.showSearchView();
-            search(FIRST_PAGE, searchWord, (WebResponseListener) activity);
+            search(searchWord, (WebResponseListener) activity);
             Utils.showOrHideSoftKeyboard(activity);
             return true;
         }

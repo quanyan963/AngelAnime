@@ -1,19 +1,15 @@
 package com.tsdm.angelanime.search;
 
 import android.animation.Animator;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -35,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.icheny.transition.CySharedElementTransition;
 
 /**
@@ -68,10 +63,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     private int height;
     private HistoryAdapter historyAdapter;
     private SearchAdapter searchAdapter;
-    //用来标记是否正在向上滑动
-    private boolean isSlidingUpward = false;
-    private int page = 1;
-    private int allPage = 0;
+
 
     @Override
     public void setInject() {
@@ -90,10 +82,6 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
             @Override
             public void onAnimationEnd(Animator animator) {
-//                VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources()
-//                        ,R.drawable.search,getTheme());
-//                vectorDrawableCompat.setTint(getResources().getColor(R.color.low_grey));
-//                ivRight.setImageDrawable(vectorDrawableCompat);
                 rlSearch.setBackgroundResource(R.drawable.background_search);
                 AlphaAnimation animation = new AlphaAnimation(0f, 1f);
                 animation.setDuration(250);
@@ -142,24 +130,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
-                //当不滑动时
-                if (newState == RecyclerView.SCROLL_STATE_IDLE){
-                    int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
+                presenter.onStateChanged(recyclerView,newState,searchAdapter,SearchActivity.this);
 
-                    // 判断是否滑动到了最后一个item，并且是向上滑动
-                    if (lastItemPosition == (manager.getItemCount() - 1) && isSlidingUpward) {
-                        //加载更多
-                        searchAdapter.setLoadState(searchAdapter.LOADING);
-                        if (page < allPage) {
-                            page += 1;
-                            presenter.search(page,null,SearchActivity.this);
-                        }else {
-                            searchAdapter.setLoadState(searchAdapter.LOADING_END);
-                        }
-
-                    }
-                }
             }
 
             @Override
@@ -167,7 +139,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
                 super.onScrolled(recyclerView, dx, dy);
                 //向左滑动的时候dx是大于0的，反方向滑动则小于0
                 // 大于0表示正在向上滑动，小于等于0表示停止或向下滑动
-                isSlidingUpward = dy > 0;
+                presenter.onScrolled(dy > 0);
             }
         });
     }
@@ -220,6 +192,12 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                presenter.initPage();
+                if (data != null){
+                    rlvSearchList.removeAllViews();
+                    searchAdapter.removeAll();
+                    data = null;
+                }
                 return presenter.onSearch(textView,i,SearchActivity.this,histories);
             }
         });
@@ -239,7 +217,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         if (rlvSearchList.getVisibility() == View.VISIBLE){
             //getHeight();
             showHistory();
-            page = 1;
+            presenter.initPage();
             rlvSearchList.removeAllViews();
             searchAdapter.removeAll();
             data = null;
@@ -287,9 +265,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     }
 
     @Override
-    public void getSearchList(List<SearchList> searchLists, int allPage) {
+    public void getSearchList(List<SearchList> searchLists) {
         data = searchLists;
-        this.allPage = allPage;
         //searchAdapter.setLoadState(searchAdapter.LOADING_COMPLETE);
         if (data.size() != 0) {
             searchAdapter.setList(searchLists);
@@ -372,7 +349,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         hideHistory();
         showSearchView();
         hidKeyboard();
-        presenter.search(page,data.getHistory(),this);
+        presenter.search(data.getHistory(),this);
     }
 
     private void hidKeyboard(){

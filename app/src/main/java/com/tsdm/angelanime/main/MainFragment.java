@@ -39,11 +39,11 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
         getFragmentComponent().inject(this);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        callBackValue = (CallBackValue) context;
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        callBackValue = (CallBackValue) context;
+//    }
 
     @Override
     public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +62,10 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
         adapter = new FRecycleAdapter(detail,getContext());
         rlvAnimationList.setAdapter(adapter);
         adapter.setOnItemClick(this);
+    }
+
+    public void setListener(CallBackValue callBackValue){
+        this.callBackValue = callBackValue;
     }
 
     @Override

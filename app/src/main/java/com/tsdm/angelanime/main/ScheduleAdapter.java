@@ -78,10 +78,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
             manager.setOrientation(LinearLayoutManager.HORIZONTAL);
             rlvDayList.setHasFixedSize(true);
             rlvDayList.setLayoutManager(manager);
-            rlvDayList.addItemDecoration(new DividerItemDecoration(mContext,
-                    DividerItemDecoration.VERTICAL_LIST,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.dp_8_x),
-                    mContext.getResources().getColor(R.color.light_grey)));
+//            rlvDayList.addItemDecoration(new DividerItemDecoration(mContext,
+//                    DividerItemDecoration.VERTICAL_LIST,
+//                    mContext.getResources().getDimensionPixelSize(R.dimen.dp_8_x),
+//                    mContext.getResources().getColor(R.color.light_grey)));
         }
     }
 }

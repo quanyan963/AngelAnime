@@ -3,8 +3,11 @@ package com.tsdm.angelanime.di.component;
 import android.app.Activity;
 
 
+import com.tsdm.angelanime.classify.ClassifyDetailFragment;
+import com.tsdm.angelanime.classify.ClassifyFragment;
 import com.tsdm.angelanime.di.module.FragmentModule;
 import com.tsdm.angelanime.di.scope.FragmentScope;
+import com.tsdm.angelanime.home.HomeFragment;
 import com.tsdm.angelanime.introduction.IntroductionFragment;
 import com.tsdm.angelanime.main.MainFragment;
 
@@ -22,4 +25,7 @@ public interface FragmentComponent {
 
     void inject(IntroductionFragment introductionFragment);
     void inject(MainFragment mainFragment);
+    void inject(HomeFragment homeFragment);
+    void inject(ClassifyFragment classifyFragment);
+    void inject(ClassifyDetailFragment detailFragment);
 }

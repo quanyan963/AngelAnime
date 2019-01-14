@@ -19,28 +19,23 @@ public class RecentlyData implements Serializable {
     private Long id;
     private String elements;
     private String schedule;
+    private String classify;
 
     public RecentlyData() {
     }
 
-    public RecentlyData(String elements, String schedule) {
-        this.elements = elements;
-        this.schedule = schedule;
-    }
-
-    @Generated(hash = 1038624151)
-    public RecentlyData(Long id, String elements, String schedule) {
+    @Generated(hash = 2090676723)
+    public RecentlyData(Long id, String elements, String schedule, String classify) {
         this.id = id;
         this.elements = elements;
         this.schedule = schedule;
+        this.classify = classify;
     }
 
-    public String getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(String schedule) {
+    public RecentlyData(String elements, String schedule, String classify) {
+        this.elements = elements;
         this.schedule = schedule;
+        this.classify = classify;
     }
 
     public Long getId() {
@@ -57,5 +52,21 @@ public class RecentlyData implements Serializable {
 
     public void setElements(String elements) {
         this.elements = elements;
+    }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
+    public String getClassify() {
+        return classify;
+    }
+
+    public void setClassify(String classify) {
+        this.classify = classify;
     }
 }

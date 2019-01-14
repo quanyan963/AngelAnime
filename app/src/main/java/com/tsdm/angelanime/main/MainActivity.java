@@ -2,120 +2,80 @@ package com.tsdm.angelanime.main;
 
 
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.MvpBaseActivity;
-import com.tsdm.angelanime.bean.RecentlyDetail;
 import com.tsdm.angelanime.bean.ScheduleDetail;
-import com.tsdm.angelanime.bean.TopEight;
-import com.tsdm.angelanime.calendar.CalendarActivity;
-import com.tsdm.angelanime.detail.AnimationDetailActivity;
+import com.tsdm.angelanime.classify.ClassifyFragment;
+import com.tsdm.angelanime.home.HomeFragment;
 import com.tsdm.angelanime.main.mvp.MainContract;
 import com.tsdm.angelanime.main.mvp.MainPresenter;
 import com.tsdm.angelanime.search.SearchActivity;
 import com.tsdm.angelanime.utils.AlertUtils;
-import com.tsdm.angelanime.widget.GlideImageLoader;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.listener.OnBannerListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import cn.icheny.transition.CySharedElementTransition;
 
-import static com.tsdm.angelanime.utils.Constants.HREF_URL;
-
 public class MainActivity extends MvpBaseActivity<MainPresenter> implements MainContract.View,
-        MainFragment.CallBackValue, View.OnClickListener {
+        View.OnClickListener, RadioGroup.OnCheckedChangeListener {//MainFragment.CallBackValue,
+    @BindView(R.id.fl_main)
+    FrameLayout flMain;
+    @BindView(R.id.rb_home)
+    RadioButton rbHome;
+    @BindView(R.id.rb_classify)
+    RadioButton rbClassify;
+    @BindView(R.id.rg_navigation)
+    RadioGroup rgNavigation;
 
-    @BindView(R.id.bn_top)
-    Banner bnTop;
-    @BindView(R.id.tab_top)
-    TabLayout tabTop;
-    @BindView(R.id.vp_main)
-    ViewPager vpMain;
-    private List<TopEight> mData;
-    private List<RecentlyDetail> detailList;
-    private String[] titles;
-    private List<Fragment> fragments = new ArrayList<>();
-    private MainFragmentAdapter pagerAdapter;
     private List<List<ScheduleDetail>> mScheduleList;
+
+    private Fragment mCurrentFragment;
+    private HomeFragment mHomeFragment;
+    private ClassifyFragment mClassifyFragment;
     @Override
     public void init() {
-        //TitleUtils.transparencyBar(this);
         initToolbar();
         setNavigationIcon(false);
-        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources()
-                ,R.drawable.search,getTheme());
-        vectorDrawableCompat.setTint(getResources().getColor(R.color.white));
-        setRightImg(true,vectorDrawableCompat,this);
-        detailList = presenter.getRecently();
+
+        setRightImg(true, changeSVGColor(R.drawable.search,R.color.white), this);
         mScheduleList = presenter.getSchedule();
-        titles = getResources().getStringArray(R.array.classify);
-        for(int i=0;i<titles.length;i++){
-            fragments.add(new MainFragment());
-            tabTop.addTab(tabTop.newTab());
-        }
-
-        tabTop.setupWithViewPager(vpMain,false);
-        pagerAdapter = new MainFragmentAdapter(getSupportFragmentManager(), fragments);
-        vpMain.setAdapter(pagerAdapter);
-
-        for(int i=0;i<titles.length;i++){
-            tabTop.getTabAt(i).setText(titles[i]);
-        }
-
         initListener();
-        mData = presenter.geTopEight();
-        bnTop.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
-        bnTop.setImageLoader(new GlideImageLoader());
-        bnTop.setImages(mData);
-        bnTop.setDelayTime(3000);
-        bnTop.setIndicatorGravity(BannerConfig.CENTER);
-
-        bnTop.start();
+        mCurrentFragment = new ClassifyFragment();
+        rgNavigation.check(R.id.rb_home);
 
     }
 
+    private VectorDrawableCompat changeSVGColor(@DrawableRes int drawable,@ColorRes int color) {
+        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources()
+                , drawable, getTheme());
+        vectorDrawableCompat.setTint(getResources().getColor(color));
+        return vectorDrawableCompat;
+    }
 
 
     private void initListener() {
-        bnTop.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                startActivity(new Intent(MainActivity.this,
-                        AnimationDetailActivity.class)
-                        .putExtra(HREF_URL, mData.get(position).getHrefUrl()));
-                //.putExtra(POSITION,0)
-            }
-        });
+        rgNavigation.setOnCheckedChangeListener(this);
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        bnTop.startAutoPlay();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        bnTop.stopAutoPlay();
-//    }
-
+    //ToolbarLeft
     @Override
     public void onLeftClick() {
-        AlertUtils.showScheduleDialog(this,mScheduleList);
+        AlertUtils.showScheduleDialog(this, mScheduleList);
     }
 
     @Override
@@ -134,12 +94,6 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     }
 
     @Override
-    public RecentlyDetail SendMessageValue(MainFragment fragment) {
-        int position = pagerAdapter.getItemPosition(fragment);
-        return detailList.get(position);
-    }
-
-    @Override
     public void onDestroy() {
         MyApplication.getImageLoader(this).clearMemoryCache();
         super.onDestroy();
@@ -154,6 +108,52 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     @Override
     public void toSearchActivity(View v) {
         CySharedElementTransition.startActivity(new Intent(this,
-                SearchActivity.class),this,v);
+                SearchActivity.class), this, v);
+    }
+
+    @Override
+    public void switchHome() {
+        if (mHomeFragment == null) {
+            mHomeFragment = new HomeFragment();
+        }
+        switchContent(mCurrentFragment, mHomeFragment);
+        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.home,R.color.colorAccent),
+                null,null);
+        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.classify,R.color.low_grey),
+                null,null);
+    }
+
+    @Override
+    public void switchClassify() {
+        if (mClassifyFragment == null) {
+            mClassifyFragment = new ClassifyFragment();
+        }
+        switchContent(mCurrentFragment, mClassifyFragment);
+        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.classify,R.color.colorAccent),
+                null,null);
+        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.home,R.color.low_grey),
+                null,null);
+
+    }
+
+    private void switchContent(Fragment from, Fragment to) {
+        if (mCurrentFragment != to) {
+            mCurrentFragment = to;
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            if (!to.isAdded()) {
+                // 隐藏当前的fragment，add下一个到Activity中
+                transaction.hide(from).add(R.id.fl_main, to).commit();
+            } else {
+                // 隐藏当前的fragment，显示下一个
+                transaction.hide(from).show(to).commit();
+            }
+        }
+    }
+
+    //RadioGroup
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup,@IdRes int i) {
+        presenter.switchNavView(i);
     }
 }

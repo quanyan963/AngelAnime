@@ -37,4 +37,27 @@
         <item name="android:background">@color/grey_back</item>
     </style>
 
+    <style name="nav_rb">
+        <item name="android:button">@null</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">@dimen/dp_2_y</item>
+        <item name="android:drawablePadding">-16dp</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="android:Widget">
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+        <item name="tabIndicatorHeight">@dimen/dp_2_y</item>
+        <item name="tabSelectedTextColor">@color/colorAccent</item>
+        <item name="tabTextColor">@color/low_grey</item>
+        <item name="tabTextAppearance">@style/TabLayoutTextAppearance</item>
+    </style>
+
+
+    <style name="TabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">@dimen/dp_14_x</item>
+    </style>
 </resources>

@@ -14,4 +14,6 @@ public class Constants {
     public static final String PAGE = "page=";
     public static final String AND = "&";
     public static final String End = "searchtype=-1";
+    public static final String INDEX = "index";
+    public static final String HTML = ".html";
 }

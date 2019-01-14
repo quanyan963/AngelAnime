@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/tv_day_title"
@@ -17,4 +18,9 @@
         android:paddingRight="@dimen/dp_16_x"
         android:textColor="@color/low_grey"
         android:background="@drawable/list_statue"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_day_title"
+        android:layout_marginLeft="@dimen/dp_8_x"/>
 </android.support.constraint.ConstraintLayout>

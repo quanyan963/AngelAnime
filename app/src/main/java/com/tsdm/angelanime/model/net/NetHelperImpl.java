@@ -227,4 +227,19 @@ public class NetHelperImpl implements NetHelper {
             }
         }, BackpressureStrategy.BUFFER);
     }
+
+    @Override
+    public Flowable<Document> getClassifyDetail(final String s, final WebResponseListener listener) {
+        return Flowable.create(new FlowableOnSubscribe<Document>() {
+            @Override
+            public void subscribe(FlowableEmitter<Document> e) {
+                try {
+                    e.onNext(Jsoup.connect(s).get());
+                    e.onComplete();
+                } catch (IOException e1) {
+                    listener.onError();
+                }
+            }
+        },BackpressureStrategy.BUFFER);
+    }
 }
