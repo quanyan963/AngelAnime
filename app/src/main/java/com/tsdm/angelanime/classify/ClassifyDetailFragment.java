@@ -3,6 +3,7 @@ package com.tsdm.angelanime.classify;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import com.tsdm.angelanime.search.SearchAdapter;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
+import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -80,7 +84,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
 
     @Override
     public void onError() {
-
+        Log.e("Error:","走到这了");
     }
 
     @Override

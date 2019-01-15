@@ -89,6 +89,11 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else {
                 searchViewHolder.vTop.setVisibility(View.GONE);
             }
+            if (position % 2 == 1){
+                searchViewHolder.vRight.setVisibility(View.VISIBLE);
+            }else {
+                searchViewHolder.vRight.setVisibility(View.GONE);
+            }
             if (mList.get(position).getImgUrl().contains("gif")) {
                 Utils.displayImage(mContext, mList.get(position).getImgUrl(), searchViewHolder.rivImg, Utils.getImageOptions());
             } else {
@@ -112,7 +117,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         } else {
             FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
-            switch (loadState){
+            switch (loadState) {
                 case LOADING:
                     footerViewHolder.rlLoading.setVisibility(View.VISIBLE);
                     footerViewHolder.rlEnd.setVisibility(View.INVISIBLE);
@@ -132,9 +137,9 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    public void setLoadState(int loadState){
+    public void setLoadState(int loadState) {
         this.loadState = loadState;
-        notifyItemChanged(getItemCount()-1);
+        notifyItemChanged(getItemCount() - 1);
     }
 
     //网格布局添加footer关键一步
@@ -142,7 +147,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-        if (manager instanceof GridLayoutManager){
+        if (manager instanceof GridLayoutManager) {
             final GridLayoutManager layoutManager = (GridLayoutManager) manager;
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
@@ -156,7 +161,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return mList == null ? 0 : mList.size() + 1;
+        return mList == null ? 1 : mList.size() + 1;
     }
 
     public void removeAll() {
@@ -178,6 +183,8 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         RelativeLayout rlBg;
         @BindView(R.id.v_top)
         View vTop;
+        @BindView(R.id.v_right)
+        View vRight;
 
         public SearchViewHolder(View itemView) {
             super(itemView);
@@ -192,9 +199,10 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView tvEnd;
         @BindView(R.id.rl_end)
         RelativeLayout rlEnd;
+
         public FooterViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

@@ -25,6 +25,7 @@ import com.tsdm.angelanime.main.mvp.MainContract;
 import com.tsdm.angelanime.main.mvp.MainPresenter;
 import com.tsdm.angelanime.search.SearchActivity;
 import com.tsdm.angelanime.utils.AlertUtils;
+import com.tsdm.angelanime.utils.Utils;
 
 import java.util.List;
 
@@ -52,7 +53,8 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
         initToolbar();
         setNavigationIcon(false);
 
-        setRightImg(true, changeSVGColor(R.drawable.search,R.color.white), this);
+        setRightImg(true, Utils.changeSVGColor(R.drawable.search,R.color.white
+                ,this), this);
         mScheduleList = presenter.getSchedule();
         initListener();
         mCurrentFragment = new ClassifyFragment();
@@ -60,12 +62,7 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
 
     }
 
-    private VectorDrawableCompat changeSVGColor(@DrawableRes int drawable,@ColorRes int color) {
-        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources()
-                , drawable, getTheme());
-        vectorDrawableCompat.setTint(getResources().getColor(color));
-        return vectorDrawableCompat;
-    }
+
 
 
     private void initListener() {
@@ -117,9 +114,11 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
             mHomeFragment = new HomeFragment();
         }
         switchContent(mCurrentFragment, mHomeFragment);
-        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.home,R.color.colorAccent),
+        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(R.drawable.home
+                ,R.color.colorAccent,this),
                 null,null);
-        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.classify,R.color.low_grey),
+        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(
+                R.drawable.classify,R.color.low_grey,this),
                 null,null);
     }
 
@@ -129,9 +128,11 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
             mClassifyFragment = new ClassifyFragment();
         }
         switchContent(mCurrentFragment, mClassifyFragment);
-        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.classify,R.color.colorAccent),
+        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(
+                R.drawable.classify,R.color.colorAccent,this),
                 null,null);
-        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,changeSVGColor(R.drawable.home,R.color.low_grey),
+        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(
+                R.drawable.home,R.color.low_grey,this),
                 null,null);
 
     }

@@ -15,10 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/v_top"
+        android:layout_toLeftOf="@+id/v_right"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:focusable="true"
-        android:paddingBottom="@dimen/dp_16_y"
+        android:paddingBottom="@dimen/dp_6_y"
         android:background="@drawable/list_statue">
         <com.tsdm.angelanime.widget.RoundImageView
             android:id="@+id/riv_img"
@@ -33,9 +34,10 @@
         <TextView
             android:id="@+id/tv_title"
             style="@style/main_tv"
-            android:layout_marginLeft="@dimen/dp_16_x"
-            android:layout_marginRight="@dimen/dp_16_x"
+            android:layout_marginLeft="@dimen/dp_12_x"
+            android:layout_marginRight="@dimen/dp_12_x"
             android:layout_centerInParent="true"
+            android:textSize="@dimen/dp_14_x"
             android:gravity="center"
             android:lines="2"
             android:ellipsize="end"
@@ -43,28 +45,29 @@
         <TextView
             android:id="@+id/tv_statue"
             style="@style/main_tv"
-            android:layout_marginLeft="@dimen/dp_16_x"
-            android:layout_marginRight="@dimen/dp_16_x"
-            android:textSize="@dimen/dp_14_x"
+            android:layout_marginLeft="@dimen/dp_6_x"
+            android:layout_marginRight="@dimen/dp_6_x"
+            android:textSize="@dimen/dp_12_x"
             android:textColor="@color/low_grey"
             android:layout_below="@+id/tv_title"
+            android:lines="1"
+            android:ellipsize="end"
             android:layout_alignParentLeft="true" />
         <TextView
             android:id="@+id/tv_update"
             style="@style/main_tv"
-            android:layout_marginLeft="@dimen/dp_16_x"
-            android:layout_marginRight="@dimen/dp_16_x"
-            android:textSize="@dimen/dp_14_x"
+            android:layout_marginLeft="@dimen/dp_6_x"
+            android:layout_marginRight="@dimen/dp_6_x"
+            android:textSize="@dimen/dp_12_x"
             android:textColor="@color/low_grey"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tv_statue"/>
     </RelativeLayout>
-
     <View
         android:visibility="gone"
-        android:id="@+id/v_bottom"
-        android:layout_width="wrap_content"
+        android:id="@+id/v_right"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_below="@+id/rl_bg"
-        android:layout_marginTop="@dimen/dp_16_y"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_16_y"/>
 </RelativeLayout>

@@ -38,8 +38,9 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
     private DataManagerModel mDataManagerModel;
     //用来标记是否正在向上滑动
     private boolean isSlidingUpward = false;
-    private int page = 0;
+    private int page = 1;
     private int allPage = 0;
+    private String url;
 
     @Inject
     public ClassifyDPresenter(DataManagerModel mDataManagerModel) {
@@ -48,8 +49,9 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
 
     @Override
     public void getClassifyDetail(String url, WebResponseListener listener) {
+        this.url = url;
         addSubscribe(mDataManagerModel.getClassifyDetail(Url.URL+url
-                + Constants.INDEX+(page == 0 ? "" : page)+Constants.HTML,listener)
+                + Constants.INDEX+(page == 1 ? "" : page)+Constants.HTML,listener)
                 .map(new Function<Document, List<SearchList>>() {
                     @Override
                     public List<SearchList> apply(Document document) throws Exception {
@@ -66,7 +68,7 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
                                 String imgUrl = list.get(i).select("img[alt]").attr("src");
                                 String title = list.get(i).select("img[alt]").attr("alt");
                                 String statue = list.get(i).select("em").get(0).text();
-                                String updateTime = list.get(i).select("em").get(3).text();
+                                String updateTime = list.get(i).select("em").get(2).text();
                                 data.add(new SearchList(imgUrl, title, statue, updateTime, hrefUrl));
                             }
                         }
@@ -96,7 +98,7 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
                 adapter.setLoadState(adapter.LOADING);
                 if (page < allPage) {
                     page += 1;
-                    getClassifyDetail(null,listener);
+                    getClassifyDetail(url,listener);
                 }else {
                     adapter.setLoadState(adapter.LOADING_END);
                 }

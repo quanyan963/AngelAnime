@@ -8,6 +8,8 @@ import com.tsdm.angelanime.bean.SearchList;
 import com.tsdm.angelanime.search.SearchAdapter;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
+import org.jsoup.select.Elements;
+
 import java.util.List;
 
 /**

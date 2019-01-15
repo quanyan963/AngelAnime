@@ -10,7 +10,10 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -55,6 +58,13 @@ public class Utils {
         String g1 = Utils.getBothColor(g);
         String b1 = Utils.getBothColor(b);
         return r1 + g1 + b1;
+    }
+
+    public static VectorDrawableCompat changeSVGColor(@DrawableRes int drawable, @ColorRes int color, Context context) {
+        VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(context.getResources()
+                , drawable, context.getTheme());
+        vectorDrawableCompat.setTint(context.getResources().getColor(color));
+        return vectorDrawableCompat;
     }
 
     /**
@@ -160,7 +170,7 @@ public class Utils {
         animList.setHasFixedSize(true);
         animList.setLayoutManager(new GridLayoutManager(activity, 3));
         animList.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.BOTH_SET,
-                activity.getResources().getDimensionPixelSize(R.dimen.dp_16_x),
+                activity.getResources().getDimensionPixelSize(R.dimen.dp_8_x),
                 activity.getResources().getColor(R.color.white)));
         final PopAnimAdapter popAnimAdapter = new PopAnimAdapter(animationList, activity);
         popAnimAdapter.setOnPopItemClickListener((new PopAnimAdapter.PopItemClick() {

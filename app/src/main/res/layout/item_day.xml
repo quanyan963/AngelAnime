@@ -12,10 +12,10 @@
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:textSize="@dimen/dp_14_x"
-        android:paddingTop="@dimen/dp_8_y"
-        android:paddingBottom="@dimen/dp_8_y"
-        android:paddingLeft="@dimen/dp_16_x"
-        android:paddingRight="@dimen/dp_16_x"
+        android:paddingTop="@dimen/dp_6_y"
+        android:paddingBottom="@dimen/dp_6_y"
+        android:paddingLeft="@dimen/dp_12_x"
+        android:paddingRight="@dimen/dp_12_x"
         android:textColor="@color/low_grey"
         android:background="@drawable/list_statue"/>
     <View

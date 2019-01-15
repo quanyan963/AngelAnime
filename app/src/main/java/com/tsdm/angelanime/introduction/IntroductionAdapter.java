@@ -39,11 +39,11 @@ public class IntroductionAdapter extends RecyclerView.Adapter<IntroductionAdapte
     @NonNull
     @Override
     public ListItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, parent, false);
         return new ListItemHolder(view);
     }
 
-    public void setPosition(int position){
+    public void setPosition(int position) {
         int temp = this.position;
         this.position = position;
         notifyItemChanged(temp);
@@ -54,17 +54,22 @@ public class IntroductionAdapter extends RecyclerView.Adapter<IntroductionAdapte
     public void onBindViewHolder(@NonNull ListItemHolder holder, final int position) {
         holder.tvListName.setText(mTitleList.get(position));
 
-        if (this.position == position){
+        if (position == 0){
+            holder.vLeft.setVisibility(View.VISIBLE);
+        }else {
+            holder.vLeft.setVisibility(View.GONE);
+        }
+        if (this.position == position) {
             holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
             holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_selected);
-        }else {
+        } else {
             holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.black));
             holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_unselected);
         }
         holder.tvListName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
+                switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
                         view.setBackgroundResource(R.drawable.blue_rectangle_selecting);
@@ -73,16 +78,16 @@ public class IntroductionAdapter extends RecyclerView.Adapter<IntroductionAdapte
                         listener.onItemClick(position);
                         break;
                     case MotionEvent.ACTION_CANCEL:
-                        ((TextView)view).setTextColor(mContext.getResources().getColor(R.color.black));
+                        ((TextView) view).setTextColor(mContext.getResources().getColor(R.color.black));
                         view.setBackgroundResource(R.drawable.blue_rectangle_unselected);
                         break;
                 }
                 return false;
             }
         });
-        if (position == mTitleList.size()-1){
+        if (position == mTitleList.size() - 1) {
             holder.tvListNew.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.tvListNew.setVisibility(View.GONE);
         }
     }
@@ -97,7 +102,8 @@ public class IntroductionAdapter extends RecyclerView.Adapter<IntroductionAdapte
         TextView tvListName;
         @BindView(R.id.tv_list_new)
         ImageView tvListNew;
-
+        @BindView(R.id.v_left)
+        View vLeft;
         public ListItemHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

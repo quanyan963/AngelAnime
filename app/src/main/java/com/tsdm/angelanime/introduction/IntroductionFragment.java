@@ -20,6 +20,7 @@ import com.tsdm.angelanime.introduction.mvp.IntroductionContract;
 import com.tsdm.angelanime.introduction.mvp.IntroductionPresenter;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.utils.Utils;
+import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.RoundImageView;
 import com.tsdm.angelanime.widget.listener.PopUpListener;
 
@@ -72,6 +73,9 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rlvPlayList.setHasFixedSize(true);
         rlvPlayList.setLayoutManager(manager);
+        rlvPlayList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,
+                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x),
+                getActivity().getResources().getColor(R.color.light_grey)));
         listAdapter = new IntroductionAdapter(getContext());
         rlvPlayList.setAdapter(listAdapter);
         initListener();

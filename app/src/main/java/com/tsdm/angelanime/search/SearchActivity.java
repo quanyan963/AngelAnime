@@ -82,6 +82,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
             @Override
             public void onAnimationEnd(Animator animator) {
+                ivRight.setImageDrawable(Utils.changeSVGColor(R.drawable.search,R.color.low_grey
+                        ,SearchActivity.this));
                 rlSearch.setBackgroundResource(R.drawable.background_search);
                 AlphaAnimation animation = new AlphaAnimation(0f, 1f);
                 animation.setDuration(250);

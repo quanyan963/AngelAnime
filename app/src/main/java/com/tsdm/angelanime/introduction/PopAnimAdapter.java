@@ -35,11 +35,11 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     @NonNull
     @Override
     public AnimViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, parent, false);
         return new AnimViewHolder(view);
     }
 
-    public void setPosition(int position){
+    public void setPosition(int position) {
         int temp = this.position;
         this.position = position;
         notifyItemChanged(temp);
@@ -49,27 +49,32 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     @Override
     public void onBindViewHolder(@NonNull AnimViewHolder holder, final int position) {
         holder.tvListName.setText(data.get(position));
-        if (this.position == position){
+        if (position % 3 == 0){
+            holder.vLeft.setVisibility(View.VISIBLE);
+        }else {
+            holder.vLeft.setVisibility(View.GONE);
+        }
+        if (this.position == position) {
             holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
             holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_selected);
-        }else {
+        } else {
             holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.black));
             holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_unselected);
         }
         holder.tvListName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
+                switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
                         view.setBackgroundResource(R.drawable.blue_rectangle_selecting);
                         break;
                     case MotionEvent.ACTION_UP:
-                        ((TextView)view).setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+                        ((TextView) view).setTextColor(mContext.getResources().getColor(R.color.colorAccent));
                         view.setBackgroundResource(R.drawable.blue_rectangle_selected);
                         break;
                     case MotionEvent.ACTION_CANCEL:
-                        ((TextView)view).setTextColor(mContext.getResources().getColor(R.color.black));
+                        ((TextView) view).setTextColor(mContext.getResources().getColor(R.color.black));
                         view.setBackgroundResource(R.drawable.blue_rectangle_unselected);
                         break;
                 }
@@ -94,17 +99,19 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     public class AnimViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_list_name)
         TextView tvListName;
+        @BindView(R.id.v_left)
+        View vLeft;
         public AnimViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    public void setOnPopItemClickListener(PopItemClick listener){
+    public void setOnPopItemClickListener(PopItemClick listener) {
         this.listener = listener;
     }
 
-    public interface PopItemClick{
+    public interface PopItemClick {
         void onClick(int position);
     }
 }

@@ -48,10 +48,8 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
             viewHolder.vTop.setVisibility(View.GONE);
         }
         if (i % 2 == 1) {
-            viewHolder.vLeft.setVisibility(View.GONE);
             viewHolder.vRight.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.vLeft.setVisibility(View.VISIBLE);
             viewHolder.vRight.setVisibility(View.GONE);
         }
         viewHolder.rlMain.setOnTouchListener(new View.OnTouchListener() {
@@ -77,8 +75,6 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
         TextView tvUpdate;
         @BindView(R.id.v_right)
         View vRight;
-        @BindView(R.id.v_left)
-        View vLeft;
         @BindView(R.id.v_top)
         View vTop;
         @BindView(R.id.rl_main)
