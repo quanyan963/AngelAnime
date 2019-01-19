@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_grey">
-
     <RelativeLayout
         android:id="@+id/rl_top"
         android:layout_width="match_parent"
@@ -14,49 +13,86 @@
         android:padding="@dimen/dp_16_x"
         android:background="@drawable/ripple_item_layout_effect"
         app:layout_constraintTop_toTopOf="parent">
-        <com.tsdm.angelanime.widget.RoundImageView
-            android:id="@+id/iv_title"
-            android:layout_width="@dimen/dp_100_x"
-            android:layout_height="@dimen/dp_130_y"
-            android:scaleType="fitXY"
+        <io.supercharge.shimmerlayout.ShimmerLayout
+            android:id="@+id/sl_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            app:left_top_radius="@dimen/dp_10_x"
-            app:right_top_radius="@dimen/dp_10_x"
-            app:right_bottom_radius="@dimen/dp_10_x"
-            app:left_bottom_radius="@dimen/dp_10_x" />
+            app:shimmer_color="@color/white"
+            app:shimmer_animation_duration="1200"
+            android:layout_alignParentLeft="true">
+            <com.tsdm.angelanime.widget.RoundImageView
+                android:id="@+id/iv_title"
+                android:layout_width="@dimen/dp_100_x"
+                android:layout_height="@dimen/dp_130_y"
+                android:scaleType="fitXY"
+                app:left_top_radius="@dimen/dp_10_x"
+                app:right_top_radius="@dimen/dp_10_x"
+                app:right_bottom_radius="@dimen/dp_10_x"
+                app:left_bottom_radius="@dimen/dp_10_x"
+                android:background="@color/grey_back"/>
+        </io.supercharge.shimmerlayout.ShimmerLayout>
 
-        <TextView
-            android:id="@+id/tv_name"
-            style="@style/main_tv"
+
+        <io.supercharge.shimmerlayout.ShimmerLayout
+            android:id="@+id/sl_name"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16_y"
-            android:layout_toRightOf="@+id/iv_title"
+            android:layout_toRightOf="@+id/sl_img"
             android:layout_alignParentTop="true"
-            android:textSize="@dimen/dp_14_x"
-            android:layout_marginRight="@dimen/dp_16_y"/>
-        <TextView
-            android:id="@+id/tv_update_time"
-            style="@style/main_tv"
-            android:layout_marginLeft="@dimen/dp_16_y"
-            android:layout_toRightOf="@+id/iv_title"
-            android:layout_below="@+id/tv_name"
-            android:textSize="@dimen/dp_12_x"
-            android:textColor="@color/low_grey"
-            android:layout_marginTop="@dimen/dp_4_y"/>
-        <TextView
-            android:id="@+id/tv_introduction"
-            style="@style/main_tv"
+            app:shimmer_color="@color/white"
+            app:shimmer_animation_duration="1200">
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/main_tv"
+                android:layout_width="match_parent"
+                android:background="@color/grey_back"
+                android:textSize="@dimen/dp_14_x"
+                />
+        </io.supercharge.shimmerlayout.ShimmerLayout>
+
+        <io.supercharge.shimmerlayout.ShimmerLayout
+            android:id="@+id/sl_time"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16_y"
-            android:layout_toRightOf="@+id/iv_title"
-            android:layout_below="@+id/tv_update_time"
-            android:maxLines="6"
-            android:textSize="@dimen/dp_12_x"
-            android:textColor="@color/low_grey"
-            android:layout_marginRight="@dimen/dp_16_y"
-            android:layout_marginTop="@dimen/dp_4_y"
-            android:ellipsize="end"/>
+            android:layout_toRightOf="@+id/sl_img"
+            android:layout_below="@+id/sl_name"
+            app:shimmer_color="@color/white"
+            app:shimmer_animation_duration="1200"
+            android:layout_marginTop="@dimen/dp_4_y">
+            <TextView
+                android:id="@+id/tv_update_time"
+                style="@style/main_tv"
+                android:layout_width="match_parent"
+                android:textSize="@dimen/dp_12_x"
+                android:background="@color/grey_back"
+                android:textColor="@color/low_grey"
+                />
+        </io.supercharge.shimmerlayout.ShimmerLayout>
+
+        <io.supercharge.shimmerlayout.ShimmerLayout
+            android:id="@+id/sl_introduction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16_y"
+            android:layout_toRightOf="@+id/sl_img"
+            android:layout_below="@+id/sl_time"
+            app:shimmer_color="@color/white"
+            app:shimmer_animation_duration="1200"
+            android:layout_marginTop="@dimen/dp_4_y">
+            <TextView
+                android:id="@+id/tv_introduction"
+                style="@style/main_tv"
+                android:layout_width="match_parent"
+                android:maxLines="6"
+                android:textSize="@dimen/dp_12_x"
+                android:background="@color/grey_back"
+                android:textColor="@color/low_grey"
+                android:ellipsize="end"/>
+        </io.supercharge.shimmerlayout.ShimmerLayout>
+
     </RelativeLayout>
 
 
@@ -70,8 +106,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16_x"
         android:paddingRight="@dimen/dp_16_x"
-        android:paddingTop="@dimen/dp_6_y"
-        android:paddingBottom="@dimen/dp_6_y"
+        android:paddingTop="@dimen/dp_8_y"
+        android:paddingBottom="@dimen/dp_8_y"
         app:layout_constraintTop_toBottomOf="@+id/v_line"
         android:background="@drawable/ripple_item_layout_effect">
         <TextView

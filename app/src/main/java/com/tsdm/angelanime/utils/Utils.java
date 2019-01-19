@@ -124,7 +124,7 @@ public class Utils {
     }
 
     public static DisplayImageOptions getImageOptions() {
-        return getImageOptions(R.mipmap.ic_launcher_round, 0);
+        return getImageOptions(R.mipmap.defult_img, 0);
     }
 
     public static DisplayImageOptions getImageOptions(int defaultIconId) {
@@ -138,7 +138,7 @@ public class Utils {
                 .showImageOnFail(defaultIconId)
                 .showImageForEmptyUri(defaultIconId)
                 .cacheInMemory(true)
-                .cacheOnDisc()
+                .cacheOnDisk(true)
                 .build();
     }
 
@@ -170,7 +170,7 @@ public class Utils {
         animList.setHasFixedSize(true);
         animList.setLayoutManager(new GridLayoutManager(activity, 3));
         animList.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.BOTH_SET,
-                activity.getResources().getDimensionPixelSize(R.dimen.dp_8_x),
+                activity.getResources().getDimensionPixelSize(R.dimen.dp_16_x),
                 activity.getResources().getColor(R.color.white)));
         final PopAnimAdapter popAnimAdapter = new PopAnimAdapter(animationList, activity);
         popAnimAdapter.setOnPopItemClickListener((new PopAnimAdapter.PopItemClick() {

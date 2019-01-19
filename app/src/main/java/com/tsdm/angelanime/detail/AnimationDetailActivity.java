@@ -32,16 +32,18 @@ import butterknife.BindView;
 import tv.danmaku.ijk.media.exo2.Exo2PlayerManager;
 import tv.danmaku.ijk.media.exo2.ExoPlayerCacheManager;
 
+import static com.tsdm.angelanime.utils.Constants.ERROR;
 import static com.tsdm.angelanime.utils.Constants.HREF_URL;
 import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
 import static com.tsdm.angelanime.utils.Constants.POSITION;
+import static com.tsdm.angelanime.utils.Constants.RETRY;
 
 /**
  * Created by Mr.Quan on 2018/11/21.
  */
 
 public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPresenter>
-        implements AnimationDetailContract.View, WebResponseListener {
+        implements AnimationDetailContract.View, WebResponseListener,View.OnClickListener {
 
     @BindView(R.id.sp_player)
     StandardGSYVideoPlayer spPlayer;
@@ -82,7 +84,6 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         Intent intent = getIntent();
         url = intent.getStringExtra(HREF_URL);
         //position = intent.getIntExtra(POSITION,0);
-        presenter.getDetail(url, this);
         initGSYView();
         titleList = new ArrayList<>();
         titleList.add(getString(R.string.introduction));
@@ -95,6 +96,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         vpDetail.setAdapter(detAdapter);
         tlCard.setupWithViewPager(vpDetail);
         tlCard.setTabsFromPagerAdapter(detAdapter);
+        presenter.getDetail(url, this);
     }
 
     private void initGSYView() {
@@ -139,9 +141,16 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     public void getPlayUrl(String s) {
-        spPlayer.setUp(s, true, detail.getTitle() + detail.getPlayListTitle().get(position));
+        spPlayer.setUp(s, true, detail.getTitle()
+                + detail.getPlayListTitle().get(position));
         spPlayer.startPlayLogic();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
     }
 
     @Override
@@ -155,12 +164,25 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     public void onError() {
-        showSnackBar(vpDetail,R.string.net_error);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new AnimationDetail(ERROR));
+                showSnackBar(vpDetail,R.string.network_error,R.string.retry
+                        ,AnimationDetailActivity.this);
+            }
+        });
     }
 
     @Override
     public void onParseError() {
-
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new AnimationDetail(ERROR));
+                showSnackBar(vpDetail,R.string.parse_error);
+            }
+        });
     }
 
     @Override
@@ -190,5 +212,12 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             }
             //presenter.getPlayUrl(detail.getPlayList().get(position), this);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        EventBus.getDefault().post(new AnimationDetail(RETRY));
+        hideSnackBar();
+        presenter.getDetail(url, this);
     }
 }

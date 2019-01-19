@@ -7,8 +7,10 @@ import android.graphics.Path;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.utils.Utils;
 import com.youth.banner.loader.ImageLoader;
 import com.youth.banner.loader.ImageLoaderInterface;
 
@@ -39,14 +41,9 @@ public class GlideImageLoader implements ImageLoaderInterface<RoundImageView> {
 
     @Override
     public void displayImage(Context context, Object path, RoundImageView imageView) {
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)//让图片进行内存缓存
-                .cacheOnDisk(true)//让图片进行sdcard缓存
-                        /*.showImageForEmptyUri(R.mipmap.ic_empty)//图片地址有误
-                        .showImageOnFail(R.mipmap.ic_error)//当图片加载出现错误的时候显示的图片
-                        .showImageOnLoading(R.mipmap.loading)//图片正在加载的时候显示的图片*/
-                .build();
-        MyApplication.getImageLoader(context).displayImage(((TopEight)path).getImgUrl(),imageView,options);
+        Utils.displayImage(context,((TopEight)path).getImgUrl(),imageView,Utils
+                .getImageOptions(R.mipmap.defult_img,0));
+        //MyApplication.getImageLoader(context).displayImage(((TopEight)path).getImgUrl(),imageView,options);
     }
 
     @Override

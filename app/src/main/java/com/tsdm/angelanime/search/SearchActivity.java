@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.search;
 
 import android.animation.Animator;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.icheny.transition.CySharedElementTransition;
 
 /**
@@ -57,13 +60,27 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     RelativeLayout rlHistoryList;
     @BindView(R.id.rlv_search_list)
     RecyclerView rlvSearchList;
+    @BindView(R.id.pb_loading)
+    ProgressBar pbLoading;
+    @BindView(R.id.tv_retry)
+    TextView tvRetry;
+    @BindView(R.id.rl_net_error)
+    RelativeLayout rlNetError;
+    @BindView(R.id.iv_no_data)
+    ImageView ivNoData;
+    @BindView(R.id.rl_data)
+    RelativeLayout rlData;
+    @BindView(R.id.tv_error_msg)
+    TextView tvErrorMsg;
+    @BindView(R.id.rl_data_error)
+    RelativeLayout rlDataError;
 
     private List<SearchList> data;
     private List<History> histories;
     private int height;
     private HistoryAdapter historyAdapter;
     private SearchAdapter searchAdapter;
-
+    private View vLoading;
 
     @Override
     public void setInject() {
@@ -72,6 +89,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     @Override
     public void init() {
+        vLoading = findViewById(R.id.v_loading);
         initHistory();
         initSearch();
         CySharedElementTransition.runEnterAnim(this, 300, new Animator.AnimatorListener() {
@@ -82,13 +100,13 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                ivRight.setImageDrawable(Utils.changeSVGColor(R.drawable.search,R.color.low_grey
-                        ,SearchActivity.this));
+                ivRight.setImageDrawable(Utils.changeSVGColor(R.drawable.search, R.color.low_grey
+                        , SearchActivity.this));
                 rlSearch.setBackgroundResource(R.drawable.background_search);
                 AlphaAnimation animation = new AlphaAnimation(0f, 1f);
                 animation.setDuration(250);
                 rlSearch.startAnimation(animation);
-                if (histories.size() != 0){
+                if (histories.size() != 0) {
                     //getHeight();
                     rlHistoryList.post(new Runnable() {
                         @Override
@@ -121,7 +139,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     private void initSearch() {
         rlvSearchList.setHasFixedSize(true);
-        rlvSearchList.setLayoutManager(new GridLayoutManager(this,2));
+        rlvSearchList.setLayoutManager(new GridLayoutManager(this, 2));
         rlvSearchList.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.BOTH_SET,
                 getResources().getDimensionPixelSize(R.dimen.dp_16_x),
@@ -132,7 +150,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                presenter.onStateChanged(recyclerView,newState,searchAdapter,SearchActivity.this);
+                presenter.onStateChanged(recyclerView, newState, searchAdapter, SearchActivity.this);
 
             }
 
@@ -156,9 +174,9 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         historyAdapter = new HistoryAdapter(this);
         rlvHistory.setAdapter(historyAdapter);
         histories = presenter.getHistory();
-        if (histories.size() == 0){
+        if (histories.size() == 0) {
             rlHistoryList.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             historyAdapter.setList(histories);
         }
     }
@@ -170,7 +188,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             @Override
             public void onGlobalLayout() {
                 rlHistoryList.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                if(rlHistoryList.getHeight() >10){
+                if (rlHistoryList.getHeight() > 10) {
                     height = rlHistoryList.getHeight();
                 }
 
@@ -184,6 +202,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     private void initListener() {
         tvDeleteAll.setOnClickListener(this);
+        tvRetry.setOnClickListener(this);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -195,12 +214,13 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 presenter.initPage();
-                if (data != null){
+                if (data != null) {
                     rlvSearchList.removeAllViews();
                     searchAdapter.removeAll();
                     data = null;
                 }
-                return presenter.onSearch(textView,i,SearchActivity.this,histories);
+
+                return presenter.onSearch(textView, i, SearchActivity.this, histories);
             }
         });
     }
@@ -216,16 +236,16 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         if (Utils.isSoftShowing(this)) {
             Utils.showOrHideSoftKeyboard(this);
         }
-        if (rlvSearchList.getVisibility() == View.VISIBLE){
+        if (rlData.getVisibility() == View.VISIBLE) {
             //getHeight();
             showHistory();
             presenter.initPage();
             rlvSearchList.removeAllViews();
             searchAdapter.removeAll();
             data = null;
-            rlvSearchList.setVisibility(View.GONE);
+            rlData.setVisibility(View.GONE);
 
-        }else {
+        } else {
             AlphaAnimation animation = new AlphaAnimation(1f, 0f);
             animation.setDuration(250);
             animation.setFillAfter(true);
@@ -271,9 +291,14 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         data = searchLists;
         //searchAdapter.setLoadState(searchAdapter.LOADING_COMPLETE);
         if (data.size() != 0) {
+            vLoading.setVisibility(View.GONE);
             searchAdapter.setList(searchLists);
+            rlvSearchList.setVisibility(View.VISIBLE);
         } else {
-            showSnackBar(rlvSearchList,R.string.not_found);
+            pbLoading.setVisibility(View.GONE);
+            rlDataError.setVisibility(View.VISIBLE);
+            tvErrorMsg.setText(R.string.no_data);
+
         }
     }
 
@@ -282,23 +307,23 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     public void hideHistory() {
         //getHeight();
         if (rlHistoryList.getVisibility() == View.VISIBLE)
-            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
+            HiddenAnimUtils.newInstance(this, rlHistoryList, height).hidOrShow();
     }
 
-    public void showHistory(){
+    public void showHistory() {
         if (rlHistoryList.getVisibility() == View.GONE
                 || rlHistoryList.getVisibility() == View.INVISIBLE)
-            HiddenAnimUtils.newInstance(this,rlHistoryList,height).hidOrShow();
+            HiddenAnimUtils.newInstance(this, rlHistoryList, height).hidOrShow();
     }
 
     @Override
     public void updateHistory(String value) {
-        if (histories == null || histories.size() == 0){
+        if (histories == null || histories.size() == 0) {
             histories = new ArrayList<>();
             histories.add(new History(value));
             historyAdapter.setList(histories);
             rlHistoryList.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             histories.add(new History(value));
             historyAdapter.addItem(value);
         }
@@ -309,7 +334,18 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     @Override
     public void showSearchView() {
-        rlvSearchList.setVisibility(View.VISIBLE);
+        rlData.setVisibility(View.VISIBLE);
+        vLoading.setVisibility(View.VISIBLE);
+        pbLoading.setVisibility(View.VISIBLE);
+        rlNetError.setVisibility(View.GONE);
+        rlvSearchList.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void retry() {
+        rlNetError.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.VISIBLE);
+        presenter.search(null, this);
     }
 
     @Override
@@ -320,13 +356,27 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     //network
     @Override
     public void onError() {
-
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rlvSearchList.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.GONE);
+                rlNetError.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     //network
     @Override
     public void onParseError() {
-
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pbLoading.setVisibility(View.GONE);
+                rlDataError.setVisibility(View.VISIBLE);
+                tvErrorMsg.setText(R.string.parse_error);
+            }
+        });
     }
 
     //itemClick
@@ -339,8 +389,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     @Override
     public void onDeleteClick(History data, boolean isNone) {
-        presenter.deleteHistory(data,isNone);
-        if (isNone){
+        presenter.deleteHistory(data, isNone);
+        if (isNone) {
             hideHistory();
         }
     }
@@ -351,10 +401,10 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         hideHistory();
         showSearchView();
         hidKeyboard();
-        presenter.search(data.getHistory(),this);
+        presenter.search(data.getHistory(), this);
     }
 
-    private void hidKeyboard(){
+    private void hidKeyboard() {
         if (Utils.isSoftShowing(this)) {
             Utils.showOrHideSoftKeyboard(this);
         }

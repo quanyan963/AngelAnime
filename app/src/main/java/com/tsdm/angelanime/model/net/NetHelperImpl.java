@@ -54,7 +54,6 @@ public class NetHelperImpl implements NetHelper {
                     e.onComplete();
                 } catch (IOException e1) {
                     listener.onError();
-                    e1.printStackTrace();
                 }
 //                OkGo.<String>get(Url.URL + Url.HOME_PAGE)
 //                        .cacheKey(URL_HOME)
@@ -94,13 +93,15 @@ public class NetHelperImpl implements NetHelper {
 
     @Override
     public List<TopEight> getTopEight(String url, final WebResponseListener listener) {
-
+        mData = new ArrayList<>();
+        Document doc = null;
         try {
-            mData = new ArrayList<>();
-            Document doc = Jsoup.connect(Url.URL + url).get();
-            if (doc == null) {
-                return null;
-            } else {
+            doc = Jsoup.connect(Url.URL + url).get();
+        } catch (Exception e) {
+            listener.onError();
+        }
+        try {
+            if (doc != null) {
                 Element data = doc.getElementById("au");
                 Elements els = data.getElementsByTag("a");
                 Elements img = data.getElementsByTag("img");
@@ -108,14 +109,11 @@ public class NetHelperImpl implements NetHelper {
                     mData.add(new TopEight(els.get(i).attr("href"),
                             img.get(i).attr("src")));
                 }
-                return mData;
             }
-
-        } catch (Exception e) {
-            listener.onError();
-            return null;
+        }catch (Exception e){
+            listener.onParseError();
         }
-
+        return mData;
     }
 
 
@@ -128,10 +126,11 @@ public class NetHelperImpl implements NetHelper {
             public void subscribe(final FlowableEmitter<Document> e) {
                 try {
                     e.onNext(Jsoup.connect(hrefUrl).get());
+                    e.onComplete();
                 } catch (IOException e1) {
-                    e.onNext(new Document(""));
+                    listener.onError();
                 }
-                e.onComplete();
+
 //                OkGo.<String>get(hrefUrl)
 //                        .headers("Content-Type", "text/html; charset=utf-8")
 //                        .headers("Accept-Charset","gb2312")
@@ -168,21 +167,39 @@ public class NetHelperImpl implements NetHelper {
                         .execute(new StringCallback() {
                             @Override
                             public void onSuccess(Response<String> response) {
-                                Document document = Jsoup.parse(response.body());
-                                Element elt = document.getElementById("ccplay");
-                                Element els = elt.select("script").first();
-                                String temp = els.attr("src");
-                                OkGo.<String>get(Url.URL + temp)
-                                        .tag(this)
-                                        .execute(new StringCallback() {
-                                            @Override
-                                            public void onSuccess(Response<String> response) {
-                                                String[] body = response.body().split("\\$");
-                                                e.onNext(body);
-                                                e.onComplete();
-                                            }
-                                        });
+                                try {
+                                    Document document = Jsoup.parse(response.body());
+                                    Element elt = document.getElementById("ccplay");
+                                    Element els = elt.select("script").first();
+                                    String temp = els.attr("src");
+                                    OkGo.<String>get(Url.URL + temp)
+                                            .tag(this)
+                                            .execute(new StringCallback() {
+                                                @Override
+                                                public void onSuccess(Response<String> response) {
+                                                    try {
+                                                        String[] body = response.body().split("\\$");
+                                                        e.onNext(body);
+                                                        e.onComplete();
+                                                    }catch (Exception e){
+                                                        listener.onParseError();
+                                                    }
 
+                                                }
+
+                                                @Override
+                                                public void onError(Response<String> response) {
+                                                    listener.onError();
+                                                }
+                                            });
+                                }catch (Exception e){
+                                    listener.onParseError();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Response<String> response) {
+                                listener.onError();
                             }
                         });
 
@@ -191,7 +208,7 @@ public class NetHelperImpl implements NetHelper {
     }
 
     @Override
-    public Flowable<Document> getPlayUrl(final String hrefUrl, WebResponseListener listener) {
+    public Flowable<Document> getPlayUrl(final String hrefUrl, final WebResponseListener listener) {
         return Flowable.create(new FlowableOnSubscribe<Document>() {
             @Override
             public void subscribe(final FlowableEmitter<Document> e) throws Exception {
@@ -200,9 +217,18 @@ public class NetHelperImpl implements NetHelper {
                         .execute(new StringCallback() {
                             @Override
                             public void onSuccess(Response<String> response) {
-                                Document document = Jsoup.parse(response.body());
-                                e.onNext(document);
-                                e.onComplete();
+                                try {
+                                    Document document = Jsoup.parse(response.body());
+                                    e.onNext(document);
+                                    e.onComplete();
+                                }catch (Exception e){
+                                    listener.onParseError();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Response<String> response) {
+                                listener.onError();
                             }
                         });
             }
@@ -219,11 +245,11 @@ public class NetHelperImpl implements NetHelper {
                     String word = new String(gb2312.getBytes("gb2312"),"utf-8");
                     e.onNext(Jsoup.connect(Url.SEARCH + Constants.PAGE + page + Constants.AND
                             + Constants.SEARCH_WORD + word + Constants.AND + Constants.End).get());
+                    e.onComplete();
                 } catch (Exception e1) {
                     listener.onError();
-                    e1.printStackTrace();
                 }
-                e.onComplete();
+
             }
         }, BackpressureStrategy.BUFFER);
     }

@@ -20,7 +20,7 @@
         android:layout_toLeftOf="@+id/v_right"
         android:padding="@dimen/dp_8_x"
         android:gravity="center"
-        android:background="@drawable/list_statue">
+        android:background="@drawable/list_state">
         <TextView
             android:id="@+id/tv_name"
             style="@style/main_tv"

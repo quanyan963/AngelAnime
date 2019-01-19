@@ -20,7 +20,7 @@
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:paddingBottom="@dimen/dp_6_y"
-        android:background="@drawable/list_statue">
+        android:background="@drawable/list_state">
         <com.tsdm.angelanime.widget.RoundImageView
             android:id="@+id/riv_img"
             android:layout_width="match_parent"

@@ -3,8 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
 
     <View
         android:visibility="gone"
@@ -13,14 +14,19 @@
         android:layout_height="0dp"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="@dimen/dp_16_x"/>
+
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/rl_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/v_left">
+        android:layout_toRightOf="@+id/v_left"
+        android:layout_toLeftOf="@+id/v_right"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/tv_list_name"
             style="@style/main_tv"
+            android:layout_width="wrap_content"
             android:layout_marginTop="@dimen/dp_10_y"
             android:clickable="true"
             android:focusableInTouchMode="true"
@@ -32,7 +38,7 @@
             android:lines="1"
             android:ellipsize="end"
             android:textSize="@dimen/dp_12_x"
-            android:text="ssssss"/>
+            android:gravity="center"/>
         <ImageView
             android:visibility="gone"
             android:id="@+id/tv_list_new"
@@ -43,10 +49,18 @@
             android:focusableInTouchMode="true"
             android:focusable="true"
             android:layout_toRightOf="@+id/tv_list_name"
-            android:layout_marginLeft="-22dp"
-            android:layout_marginTop="@dimen/dp_4_y"
+            android:layout_marginLeft="-20dp"
+            android:layout_marginTop="@dimen/dp_6_y"
             />
 
     </RelativeLayout>
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/v_right"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_16_x"/>
 
 </RelativeLayout>

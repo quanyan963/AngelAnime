@@ -35,7 +35,7 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     @NonNull
     @Override
     public AnimViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_detail_list, null);
         return new AnimViewHolder(view);
     }
 
@@ -49,18 +49,23 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     @Override
     public void onBindViewHolder(@NonNull AnimViewHolder holder, final int position) {
         holder.tvListName.setText(data.get(position));
-        if (position % 3 == 0){
+        if (position % 3 == 0) {
             holder.vLeft.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.vLeft.setVisibility(View.GONE);
         }
-        if (this.position == position) {
-            holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
-            holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_selected);
-        } else {
-            holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.black));
-            holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_unselected);
+        if (position % 3 == 2){
+            holder.vRight.setVisibility(View.VISIBLE);
+        }else {
+            holder.vRight.setVisibility(View.GONE);
         }
+            if (this.position == position) {
+                holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+                holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_selected);
+            } else {
+                holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.black));
+                holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_unselected);
+            }
         holder.tvListName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -101,6 +106,9 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
         TextView tvListName;
         @BindView(R.id.v_left)
         View vLeft;
+        @BindView(R.id.v_right)
+        View vRight;
+
         public AnimViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

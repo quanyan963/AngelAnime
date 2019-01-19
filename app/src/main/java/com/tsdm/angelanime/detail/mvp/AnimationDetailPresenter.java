@@ -16,8 +16,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
+
+import static com.tsdm.angelanime.utils.Constants.ERROR;
+import static com.tsdm.angelanime.utils.Constants.OK;
 
 /**
  * Created by Mr.Quan on 2018/11/21.
@@ -35,16 +37,26 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
     }
 
     @Override
-    public void getDetail(String url, WebResponseListener listener) {
+    public void getDetail(String url, final WebResponseListener listener) {
         addSubscribe(mDataManagerModel.getDetail(url,listener)
                 .map(new Function<Document, AnimationDetail>() {
                     @Override
-                    public AnimationDetail apply(Document document) throws Exception {
-                        if (document != null){
-                            //列表
+                    public AnimationDetail apply(Document document) {
+                        //列表
+                        List<String> playList = new ArrayList<>();
+                        List<String> playListTitle = new ArrayList<>();
+                        //封面
+                        String imgUrl = "";
+                        //标题
+                        String title = "";
+                        //最新连载
+                        String statue = "";
+                        //最新更新时间
+                        String updateTime = "";
+                        //简介
+                        String introduction = "";
+                        try {
                             Elements els = document.getElementsByClass("bfdz");
-                            List<String> playList = new ArrayList<>();
-                            List<String> playListTitle = new ArrayList<>();
                             if (els.size() != 0){
                                 Elements elements = els.get(0).select("a[href]");
                                 for (Element element:elements){
@@ -53,20 +65,16 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                                 }
                             }
 
-                            //封面
                             els = document.getElementsByClass("mimg");
-                            String imgUrl = els.select("img").attr("src");
-                            //标题
-                            String title = els.select("img").attr("alt");
-                            //最新连载
+                            imgUrl = els.select("img").attr("src");
+
+                            title = els.select("img").attr("alt");
+
                             els = document.getElementsByClass("mtext");
-                            String statue = els.select("em").text();
-                            //最新更新时间
-                            String updateTime = els.select("li").get(2).text();
+                            statue = els.select("em").text();
+                            updateTime = els.select("li").get(2).text();
 
                             Element elt = document.getElementsByClass("ctext fix").first();
-                            //简介
-                            String introduction = "";
                             Elements e = elt.select("div");
                             if (e.size()<2){
                                 e = elt.select("span");
@@ -95,13 +103,13 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 
                                 }
                             }
-
                             return new AnimationDetail(title,imgUrl,updateTime,statue,introduction,
-                                    playList,playListTitle,0);
-                        }else {
-                            return new AnimationDetail(1);
-                        }
+                                    playList,playListTitle,OK);
 
+                        }catch (Exception e){
+                            listener.onParseError();
+                            return new AnimationDetail(ERROR);
+                        }
                     }
                 })
                 .compose(RxUtil.<AnimationDetail>rxSchedulerHelper())
@@ -115,16 +123,23 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
     }
 
     @Override
-    public void getPlayUrl(int position,WebResponseListener listener) {
+    public void getPlayUrl(int position, final WebResponseListener listener) {
         addSubscribe(mDataManagerModel.getPlayUrl(mListData.get(position),listener)
                 .map(new Function<Document, String>() {
                     @Override
-                    public String apply(Document document) throws Exception {
-                        Elements elt = document.select("script");
-                        String[] tempA = elt.get(elt.size()-1).toString().split("redirecturl = \\\"");
-                        String[] play = tempA[1].split("\\\"");
-                        String[] tempB = elt.get(elt.size()-1).toString().split("main = \\\"");
-                        String[] url = tempB[1].split("\\?");
+                    public String apply(Document document) {
+                        String[] play = null;
+                        String[] url = null;
+                        try {
+                            Elements elt = document.select("script");
+                            String[] tempA = elt.get(elt.size()-1).toString().split("redirecturl = \\\"");
+                            play = tempA[1].split("\\\"");
+                            String[] tempB = elt.get(elt.size()-1).toString().split("main = \\\"");
+                            url = tempB[1].split("\\?");
+                        }catch (Exception e){
+                            listener.onParseError();
+                        }
+
                         return play[0]+url[0];
                     }
                 })

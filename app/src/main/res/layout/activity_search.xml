@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -114,14 +115,26 @@
             android:background="@drawable/ripple_item_layout_effect_white"/>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout
+        android:id="@+id/rl_data"
         android:visibility="gone"
-        android:id="@+id/rlv_search_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/dp_16_x"
-        android:layout_below="@+id/toolbar"
-        android:background="@color/light_grey">
+        android:layout_below="@+id/toolbar">
+        <include
+            android:id="@+id/v_loading"
+            layout="@layout/view_loading" />
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:visibility="gone"
+            android:id="@+id/rlv_search_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/dp_16_x"
+            android:background="@color/light_grey">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+
+
 </RelativeLayout>

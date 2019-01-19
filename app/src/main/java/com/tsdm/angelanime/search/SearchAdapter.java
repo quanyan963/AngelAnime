@@ -95,9 +95,11 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 searchViewHolder.vRight.setVisibility(View.GONE);
             }
             if (mList.get(position).getImgUrl().contains("gif")) {
-                Utils.displayImage(mContext, mList.get(position).getImgUrl(), searchViewHolder.rivImg, Utils.getImageOptions());
+                Utils.displayImage(mContext, mList.get(position).getImgUrl(), searchViewHolder
+                        .rivImg, Utils.getImageOptions(R.mipmap.defult_img,0));
             } else {
-                Utils.displayImage(mContext, Url.URL + mList.get(position).getImgUrl(), searchViewHolder.rivImg, Utils.getImageOptions());
+                Utils.displayImage(mContext, Url.URL + mList.get(position).getImgUrl()
+                        , searchViewHolder.rivImg, Utils.getImageOptions(R.mipmap.defult_img,0));
             }
 
             searchViewHolder.tvTitle.setText(mList.get(position).getTitle());

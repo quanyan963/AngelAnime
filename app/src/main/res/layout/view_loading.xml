@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/colorAccent"
+        android:indeterminateTintMode="src_atop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rl_net_error"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/iv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/network_error"/>
+        <TextView
+            android:id="@+id/tv_error_hint"
+            style="@style/main_tv"
+            android:textSize="@dimen/dp_14_x"
+            android:layout_below="@+id/iv_error"
+            android:layout_centerInParent="true"
+            android:text="@string/network_error"/>
+
+        <TextView
+            android:id="@+id/tv_retry"
+            style="@style/main_tv"
+            android:textSize="@dimen/dp_14_x"
+            android:layout_below="@+id/tv_error_hint"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/dp_16_y"
+            android:textColor="@color/white"
+            android:background="@drawable/grey_rectangle_bg"
+            android:paddingTop="@dimen/dp_6_y"
+            android:paddingBottom="@dimen/dp_6_y"
+            android:paddingLeft="@dimen/dp_16_x"
+            android:paddingRight="@dimen/dp_16_x"
+            android:text="@string/retry"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_data_error"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/iv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/no_data"/>
+        <TextView
+            android:id="@+id/tv_error_msg"
+            style="@style/main_tv"
+            android:textSize="@dimen/dp_14_x"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/dp_8_y"
+            android:layout_below="@+id/iv_no_data" />
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

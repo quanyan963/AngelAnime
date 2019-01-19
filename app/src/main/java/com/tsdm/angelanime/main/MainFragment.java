@@ -34,6 +34,7 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
     private FRecycleAdapter adapter;
     private CallBackValue callBackValue;
     private RecentlyDetail detail;
+    private View vLoading;
     @Override
     protected void initInject() {
         getFragmentComponent().inject(this);
@@ -52,6 +53,9 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
 
     @Override
     public void init() {
+        vLoading = getActivity().findViewById(R.id.v_loading);
+        vLoading.setVisibility(View.GONE);
+        rlvAnimationList.setVisibility(View.VISIBLE);
         rlvAnimationList.setHasFixedSize(true);
         rlvAnimationList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rlvAnimationList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.BOTH_SET,

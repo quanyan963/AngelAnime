@@ -58,29 +58,34 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
     }
 
     @Override
-    public void search(@Nullable String word, WebResponseListener listener) {
+    public void search(@Nullable String word, final WebResponseListener listener) {
         if (word != null)
             searchWord = word;
         addSubscribe(mDataManagerModel.getSearch(page, searchWord, listener)
                 .map(new Function<Document, List<SearchList>>() {
                     @Override
-                    public List<SearchList> apply(Document document) throws Exception {
-                        Elements els = document.getElementsByClass("movie-chrList");
-                        Elements list = els.select("li");
+                    public List<SearchList> apply(Document document) {
                         List<SearchList> data = new ArrayList<>();
-                        if (list.size() != 0) {
+                        try{
+                            Elements els = document.getElementsByClass("movie-chrList");
+                            Elements list = els.select("li");
 
-                            allPage = Integer.parseInt(els.select("input[onclick]")
-                                    .attr("onclick").split("\\(")[1]
-                                    .split(",")[0]);
-                            for (int i = 0; i < list.size(); i++) {
-                                String hrefUrl = list.get(i).select("a[href]").attr("href");
-                                String imgUrl = list.get(i).select("img[alt]").attr("src");
-                                String title = list.get(i).select("img[alt]").attr("alt");
-                                String statue = list.get(i).select("em").get(0).text();
-                                String updateTime = list.get(i).select("em").get(3).text();
-                                data.add(new SearchList(imgUrl, title, statue, updateTime, hrefUrl));
+                            if (list.size() != 0) {
+
+                                allPage = Integer.parseInt(els.select("input[onclick]")
+                                        .attr("onclick").split("\\(")[1]
+                                        .split(",")[0]);
+                                for (int i = 0; i < list.size(); i++) {
+                                    String hrefUrl = list.get(i).select("a[href]").attr("href");
+                                    String imgUrl = list.get(i).select("img[alt]").attr("src");
+                                    String title = list.get(i).select("img[alt]").attr("alt");
+                                    String statue = list.get(i).select("em").get(0).text();
+                                    String updateTime = list.get(i).select("em").get(3).text();
+                                    data.add(new SearchList(imgUrl, title, statue, updateTime, hrefUrl));
+                                }
                             }
+                        }catch (Exception e){
+                            listener.onParseError();
                         }
                         return data;
                     }
@@ -170,6 +175,9 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
             case R.id.tv_delete_all:
                 mDataManagerModel.deleteAllHistory();
                 view.hideHistory();
+                break;
+            case R.id.tv_retry:
+                view.retry();
                 break;
         }
     }

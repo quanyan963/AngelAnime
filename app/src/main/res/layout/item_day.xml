@@ -17,7 +17,7 @@
         android:paddingLeft="@dimen/dp_12_x"
         android:paddingRight="@dimen/dp_12_x"
         android:textColor="@color/low_grey"
-        android:background="@drawable/list_statue"/>
+        android:background="@drawable/list_state"/>
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"

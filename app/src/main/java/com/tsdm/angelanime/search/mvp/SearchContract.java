@@ -32,6 +32,8 @@ public interface SearchContract {
         void updateHistory(String value);
 
         void showSearchView();
+
+        void retry();
     }
 
     interface Presenter extends BasePresenter<View> {

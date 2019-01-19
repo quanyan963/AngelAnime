@@ -48,30 +48,36 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
     }
 
     @Override
-    public void getClassifyDetail(String url, WebResponseListener listener) {
+    public void getClassifyDetail(String url, final WebResponseListener listener) {
         this.url = url;
         addSubscribe(mDataManagerModel.getClassifyDetail(Url.URL+url
                 + Constants.INDEX+(page == 1 ? "" : page)+Constants.HTML,listener)
                 .map(new Function<Document, List<SearchList>>() {
                     @Override
-                    public List<SearchList> apply(Document document) throws Exception {
-                        Elements els = document.getElementsByClass("movie-chrList");
-                        Elements list = els.select("li");
+                    public List<SearchList> apply(Document document) {
                         List<SearchList> data = new ArrayList<>();
-                        if (list.size() != 0) {
+                        try {
+                            Elements els = document.getElementsByClass("movie-chrList");
+                            Elements list = els.select("li");
 
-                            allPage = Integer.parseInt(els.select("input[onclick]")
-                                    .attr("onclick").split("\\(")[1]
-                                    .split(",")[0]);
-                            for (int i = 0; i < list.size(); i++) {
-                                String hrefUrl = list.get(i).select("a[href]").attr("href");
-                                String imgUrl = list.get(i).select("img[alt]").attr("src");
-                                String title = list.get(i).select("img[alt]").attr("alt");
-                                String statue = list.get(i).select("em").get(0).text();
-                                String updateTime = list.get(i).select("em").get(2).text();
-                                data.add(new SearchList(imgUrl, title, statue, updateTime, hrefUrl));
+                            if (list.size() != 0) {
+
+                                allPage = Integer.parseInt(els.select("input[onclick]")
+                                        .attr("onclick").split("\\(")[1]
+                                        .split(",")[0]);
+                                for (int i = 0; i < list.size(); i++) {
+                                    String hrefUrl = list.get(i).select("a[href]").attr("href");
+                                    String imgUrl = list.get(i).select("img[alt]").attr("src");
+                                    String title = list.get(i).select("img[alt]").attr("alt");
+                                    String statue = list.get(i).select("em").get(0).text();
+                                    String updateTime = list.get(i).select("em").get(2).text();
+                                    data.add(new SearchList(imgUrl, title, statue, updateTime, hrefUrl));
+                                }
                             }
+                        }catch (Exception e){
+                            listener.onParseError();
                         }
+
                         return data;
                     }
                 }).compose(RxUtil.<List<SearchList>>rxSchedulerHelper())

@@ -169,9 +169,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         snackbar.show();
     }
 
+    public void showSnackBar(View view, int str, int btnStr, View.OnClickListener listener) {
+        if (snackbar == null) {
+            snackbar = Snackbar.make(view, str, Snackbar.LENGTH_INDEFINITE).setAction(btnStr,listener);
+            snackbar.getView().setBackgroundColor(getResources().getColor(R.color.gray));
+        }
+        snackbar.show();
+    }
+
     public void hideSnackBar() {
         if (snackbar != null && snackbar.isShown()) {
             snackbar.dismiss();
+            snackbar = null;
         }
     }
 

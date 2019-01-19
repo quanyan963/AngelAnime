@@ -1,5 +1,8 @@
 package com.tsdm.angelanime.start.mvp;
 
+import android.view.View;
+
+import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
@@ -39,26 +42,32 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
         addSubscribe(mManagerModel.getHtml(listener)
                 .map(new Function<Document, String>() {
                     @Override
-                    public String apply(Document document) throws Exception {
-                        Elements els = document.getElementsByClass("box720 fl");
-                        Element elt = els.get(0).select("iframe").first();
-                        String imgUrl = elt.attr("src");
+                    public String apply(Document document) {
+                        try{
+                            Elements els = document.getElementsByClass("box720 fl");
+                            Element elt = els.get(0).select("iframe").first();
+                            String imgUrl = elt.attr("src");
 
-                        //小分类
-                        Elements data = document.getElementsByClass("serial");
-                        //时间表
-                        Elements schedule = document.getElementsByClass("contect_week");
+                            //小分类
+                            Elements data = document.getElementsByClass("serial");
+                            //时间表
+                            Elements schedule = document.getElementsByClass("contect_week");
 
-                        //大分类
-                        elt = document.getElementById("naviin");
-                        els = elt.select("ul[style]");
-                        Elements classify = els.get(0).select("a[href]");
+                            //大分类
+                            elt = document.getElementById("naviin");
+                            els = elt.select("ul[style]");
+                            Elements classify = els.get(0).select("a[href]");
 
-                        mManagerModel.insertRecently(new RecentlyData(data.toString(),
-                                schedule.toString(),classify.toString()));
-                        if (imgUrl != null){
-                            return imgUrl;
-                        }else {
+                            mManagerModel.insertRecently(new RecentlyData(data.toString(),
+                                    schedule.toString(),classify.toString()));
+
+                            if (imgUrl != null){
+                                return imgUrl;
+                            }else {
+                                return null;
+                            }
+                        }catch (Exception e){
+                            listener.onParseError();
                             return null;
                         }
                     }
@@ -68,9 +77,11 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
                 .subscribeWith(new CommonSubscriber<String>(view){
                         @Override
                         public void onNext(String url) {
-                            List<TopEight> data = mManagerModel.getTopEight(url,listener);
-                            if (data!= null){
-                                mManagerModel.insertTopEight(data);
+                            if(url != null){
+                                List<TopEight> data = mManagerModel.getTopEight(url,listener);
+                                if (data!= null){
+                                    mManagerModel.insertTopEight(data);
+                                }
                             }
                         }
 

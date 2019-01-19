@@ -13,12 +13,12 @@
             android:id="@+id/bn_top"
             android:layout_width="match_parent"
 
-            android:layout_height="@dimen/dp_160_y"
-            android:layout_marginTop="@dimen/dp_16_y"
-            android:layout_marginBottom="@dimen/dp_16_y"
+            android:layout_height="@dimen/dp_140_y"
+            android:layout_marginTop="@dimen/dp_8_y"
+            android:layout_marginBottom="@dimen/dp_8_y"
             android:layout_marginRight="@dimen/dp_16_x"
             android:layout_marginLeft="@dimen/dp_16_x"
-            app:image_scale_type="fit_xy"
+            app:image_scale_type="center_crop"
             app:layout_scrollFlags="scroll">
 
         </com.youth.banner.Banner>

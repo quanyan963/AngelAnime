@@ -19,13 +19,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_hint"
+    <io.supercharge.shimmerlayout.ShimmerLayout
+        android:id="@+id/sl_shimmer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/init"
+        app:shimmer_animation_duration="1200"
+        app:shimmer_color="@color/light_grey"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+        <TextView
+            android:id="@+id/tv_hint"
+            style="@style/main_tv"
+            android:textSize="@dimen/dp_14_x"
+            android:textColor="@color/gray"
+            android:text="@string/init"
+            android:textStyle="bold"
+            />
+    </io.supercharge.shimmerlayout.ShimmerLayout>
+
 </android.support.constraint.ConstraintLayout>
