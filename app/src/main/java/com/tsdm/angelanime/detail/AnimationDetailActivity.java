@@ -148,12 +148,6 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        GSYVideoManager.onPause();
-    }
-
-    @Override
     public void onComplete() {
         if (isFirst){
             EventBus.getDefault().post(detail);
@@ -191,6 +185,18 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GSYVideoManager.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
     }
 
     @Override

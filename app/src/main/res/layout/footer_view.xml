@@ -38,6 +38,7 @@
             style="@style/main_tv"
             android:layout_centerInParent="true"
             android:textColor="@color/low_grey"
+            android:textSize="@dimen/dp_14_x"
             android:text="@string/end"/>
         <View
             style="@style/main_line"

@@ -23,8 +23,6 @@ import com.tsdm.angelanime.widget.listener.WebResponseListener;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by Mr.Quan on 2019/1/12.
@@ -52,6 +50,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
     private SearchAdapter adapter;
     private List<SearchList> detail;
     private View loadingView;
+    private boolean isScrollLoading;
 
     @Override
     protected void initInject() {
@@ -64,7 +63,20 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (rlNetError != null && rlNetError.getVisibility() == View.VISIBLE){
+                rlNetError.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.VISIBLE);
+                presenter.getClassifyDetail(url, ClassifyDetailFragment.this);
+            }
+        }
+    }
+
+    @Override
     public void init() {
+        isScrollLoading = false;
         loadingView = getActivity().findViewById(R.id.v_loading);
         rlvAnimationList.setHasFixedSize(true);
         rlvAnimationList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
@@ -112,19 +124,32 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
 
     @Override
     public void onError() {
-        pbLoading.setVisibility(View.GONE);
-        rlNetError.setVisibility(View.VISIBLE);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isScrollLoading){
+                    adapter.setLoadState(adapter.LOADING_ERROR);
+                }else {
+                    pbLoading.setVisibility(View.GONE);
+                    rlNetError.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
     public void onParseError() {
-        pbLoading.setVisibility(View.GONE);
-        rlDataError.setVisibility(View.VISIBLE);
-        tvErrorMsg.setText(R.string.parse_error);
+        if (isScrollLoading){
+            adapter.setLoadState(adapter.PARSE_ERROR);
+        }else {
+            pbLoading.setVisibility(View.GONE);
+            rlDataError.setVisibility(View.VISIBLE);
+            tvErrorMsg.setText(R.string.parse_error);
+        }
     }
 
     @Override
-    public void getList(List<SearchList> searchList) {
+    public void getList(final List<SearchList> searchList) {
         if (searchList.size() != 0) {
             loadingView.setVisibility(View.GONE);
             detail = searchList;
@@ -135,6 +160,11 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
             rlDataError.setVisibility(View.VISIBLE);
             tvErrorMsg.setText(R.string.no_data);
         }
+    }
+
+    @Override
+    public void setScrollLoading() {
+        isScrollLoading = true;
     }
 
     public interface CallBackUrl {

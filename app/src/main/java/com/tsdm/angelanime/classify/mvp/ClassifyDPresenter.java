@@ -104,6 +104,7 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
                 adapter.setLoadState(adapter.LOADING);
                 if (page < allPage) {
                     page += 1;
+                    view.setScrollLoading();
                     getClassifyDetail(url,listener);
                 }else {
                     adapter.setLoadState(adapter.LOADING_END);

@@ -7,13 +7,17 @@ import com.tsdm.angelanime.model.DataManagerModel;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tsdm.angelanime.utils.Constants.AMERICA;
+import static com.tsdm.angelanime.utils.Constants.AMERICA_URL;
+import static com.tsdm.angelanime.utils.Constants.NEW_ANIM;
+import static com.tsdm.angelanime.utils.Constants.NEW_ANIM_URL;
 
 /**
  * Created by Mr.Quan on 2019/1/11.
@@ -35,9 +39,11 @@ public class ClassifyPresenter extends RxPresenter<ClassifyContract.View> implem
         mData = mDataManagerModel.getRecently();
         Document document = Jsoup.parse(mData.getClassify());
         Elements list = document.select("a[href]");
-        for (int i = 0; i < list.size(); i++) {
-            data.add(new ClassifyDetail(list.get(i).attr("href"),list.get(i).text()));
+        data.add(new ClassifyDetail(NEW_ANIM_URL,NEW_ANIM));
+        for (int i = 1; i <= list.size(); i++) {
+            data.add(new ClassifyDetail(list.get(i-1).attr("href"),list.get(i-1).text()));
         }
+        data.add(new ClassifyDetail(AMERICA_URL,AMERICA));
         return data;
     }
 }

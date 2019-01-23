@@ -36,6 +36,7 @@
             android:textSize="@dimen/dp_14_x"
             android:layout_below="@+id/iv_error"
             android:layout_centerInParent="true"
+            android:textColor="@color/low_grey"
             android:text="@string/network_error"/>
 
         <TextView

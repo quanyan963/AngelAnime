@@ -45,6 +45,10 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public final int LOADING_COMPLETE = 2;
     // 加载到底
     public final int LOADING_END = 3;
+    //网络异常
+    public final int LOADING_ERROR = 4;
+    //解析异常
+    public final int PARSE_ERROR = 5;
     private Context mContext;
     private List<SearchList> mList;
 
@@ -128,11 +132,22 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 case LOADING_END:
                     footerViewHolder.rlLoading.setVisibility(View.INVISIBLE);
                     footerViewHolder.rlEnd.setVisibility(View.VISIBLE);
+                    footerViewHolder.tvEnd.setText(R.string.end);
                     break;
 
                 case LOADING_COMPLETE:
                     footerViewHolder.rlLoading.setVisibility(View.INVISIBLE);
                     footerViewHolder.rlEnd.setVisibility(View.INVISIBLE);
+                    break;
+                case LOADING_ERROR:
+                    footerViewHolder.rlLoading.setVisibility(View.INVISIBLE);
+                    footerViewHolder.rlEnd.setVisibility(View.VISIBLE);
+                    footerViewHolder.tvEnd.setText(R.string.network_error);
+                    break;
+                case PARSE_ERROR:
+                    footerViewHolder.rlLoading.setVisibility(View.INVISIBLE);
+                    footerViewHolder.rlEnd.setVisibility(View.VISIBLE);
+                    footerViewHolder.tvEnd.setText(R.string.parse_error);
                     break;
             }
         }

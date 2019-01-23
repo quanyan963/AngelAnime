@@ -20,6 +20,8 @@ public interface ClassifyDContract {
     interface View extends BaseView {
 
         void getList(List<SearchList> searchList);
+
+        void setScrollLoading();
     }
 
     interface Presenter extends BasePresenter<View> {

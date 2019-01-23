@@ -18,4 +18,8 @@ public class Constants {
     public static final String End = "searchtype=-1";
     public static final String INDEX = "index";
     public static final String HTML = ".html";
+    public static final String NEW_ANIM = "新番";
+    public static final String NEW_ANIM_URL = "/xinfandongman/";
+    public static final String AMERICA = "美剧";
+    public static final String AMERICA_URL = "/meiju/";
 }
