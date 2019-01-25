@@ -68,19 +68,23 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View
+                .OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int i) {
                 switch (i){
                     case 0:
                         if (spPlayer.isIfCurrentIsFullscreen()){
-                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+                            getWindow().getDecorView().setSystemUiVisibility(View
+                                    .SYSTEM_UI_FLAG_FULLSCREEN);
                         }else {
-                            com.samluys.statusbar.StatusBarUtils.transparencyBar(AnimationDetailActivity.this,true);
+                            com.samluys.statusbar.StatusBarUtils.transparencyBar(
+                                    AnimationDetailActivity.this,true);
                             getWindow().getDecorView().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+                                    getWindow().getDecorView().setSystemUiVisibility(View
+                                            .SYSTEM_UI_FLAG_FULLSCREEN);
                                 }
                             },2000);
                         }

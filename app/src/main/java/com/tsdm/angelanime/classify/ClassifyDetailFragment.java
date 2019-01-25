@@ -68,6 +68,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        //界面可见并且预加载失败时  显示界面自动从新获取数据
         if (isVisibleToUser) {
             if (rlNetError != null && rlNetError.getVisibility() == View.VISIBLE){
                 rlNetError.setVisibility(View.GONE);
