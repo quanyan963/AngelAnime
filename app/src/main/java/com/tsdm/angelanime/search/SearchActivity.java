@@ -24,6 +24,7 @@ import com.tsdm.angelanime.bean.SearchList;
 import com.tsdm.angelanime.search.mvp.SearchContract;
 import com.tsdm.angelanime.search.mvp.SearchPresenter;
 import com.tsdm.angelanime.utils.HiddenAnimUtils;
+import com.tsdm.angelanime.utils.StatusBarUtils;
 import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.FlowLayoutManager;
@@ -89,6 +90,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
 
     @Override
     public void init() {
+        toolbar.setPadding(0, StatusBarUtils.getStatusBarHeight(this),0,0);
         vLoading = findViewById(R.id.v_loading);
         initHistory();
         initSearch();
@@ -150,7 +152,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                presenter.onStateChanged(recyclerView, newState, searchAdapter, SearchActivity.this);
+                presenter.onStateChanged(recyclerView, newState, searchAdapter,
+                        SearchActivity.this,SearchActivity.this);
 
             }
 
@@ -388,8 +391,8 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     }
 
     @Override
-    public void onDeleteClick(History data, boolean isNone) {
-        presenter.deleteHistory(data, isNone);
+    public void onDeleteClick(int position, boolean isNone) {
+        presenter.deleteHistory(position, isNone);
         if (isNone) {
             hideHistory();
         }

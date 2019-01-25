@@ -56,7 +56,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.ivRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDeleteClick(mList.get(position),mList.size() == 1 ? true : false);
+                //listener.onDeleteClick(mList.get(position),mList.size() == 1 ? true : false);
+                listener.onDeleteClick(position,mList.size() == 1 ? true : false);
                 mList.remove(position);
                 newPosition = -1;
                 notifyItemRemoved(position);
@@ -106,7 +107,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     public interface HistoryClickListener{
-        void onDeleteClick(History data, boolean isNone);
+        void onDeleteClick(int position, boolean isNone);
         void onHistoryItemClick(History data);
     }
 }

@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
@@ -63,15 +66,28 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        changeColor = false;
-        StatusBarUtils.setWindowStatusBarColor(this,R.color.black);
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);    //设置全屏
-//        //getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int i) {
+                switch (i){
+                    case 0:
+                        if (spPlayer.isIfCurrentIsFullscreen()){
+                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+                        }else {
+                            com.samluys.statusbar.StatusBarUtils.transparencyBar(AnimationDetailActivity.this,true);
+                            getWindow().getDecorView().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+                                }
+                            },2000);
+                        }
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -97,6 +113,25 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         tlCard.setupWithViewPager(vpDetail);
         tlCard.setTabsFromPagerAdapter(detAdapter);
         presenter.getDetail(url, this);
+        spPlayer.setRotateViewAuto(true);
+        spPlayer.setLockLand(true);
+        spPlayer.setNeedShowWifiTip(true);
+        spPlayer.setSeekRatio(5);
+        spPlayer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        if (view.getY() < 20){
+                            return false;
+                        }else {
+                            return true;
+                        }
+                    default:
+                        return true;
+                }
+            }
+        });
     }
 
     private void initGSYView() {

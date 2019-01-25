@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.search.mvp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.History;
@@ -102,10 +104,11 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
 
     @Override
     public void onStateChanged(RecyclerView recyclerView, int newState, SearchAdapter searchAdapter
-            ,WebResponseListener listener) {
+            ,WebResponseListener listener, Context context) {
         GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
         //当不滑动时
         if (newState == RecyclerView.SCROLL_STATE_IDLE){
+            MyApplication.getImageLoader(context).resume();
             int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
 
             // 判断是否滑动到了最后一个item，并且是向上滑动
@@ -120,6 +123,8 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
                 }
 
             }
+        }else {
+            MyApplication.getImageLoader(context).pause();
         }
     }
 
@@ -188,9 +193,9 @@ public class SearchPresenter extends RxPresenter<SearchContract.View> implements
     }
 
     @Override
-    public void deleteHistory(History data, boolean isNone) {
+    public void deleteHistory(int position, boolean isNone) {
         if (!isNone) {
-            mDataManagerModel.deleteHistory(data);
+            mDataManagerModel.deleteHistory(position);
         } else {
             mDataManagerModel.deleteAllHistory();
         }

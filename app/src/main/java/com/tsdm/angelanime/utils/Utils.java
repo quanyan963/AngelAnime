@@ -3,6 +3,7 @@ package com.tsdm.angelanime.utils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -41,6 +42,9 @@ import com.tsdm.angelanime.widget.listener.PopUpListener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+
+import static android.graphics.Bitmap.Config.RGB_565;
+import static com.nostra13.universalimageloader.core.assist.ImageScaleType.EXACTLY;
 
 /**
  * Created by KomoriWu
@@ -137,8 +141,10 @@ public class Utils {
                 .showImageOnLoading(defaultIconId)
                 .showImageOnFail(defaultIconId)
                 .showImageForEmptyUri(defaultIconId)
+                .bitmapConfig(RGB_565)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
+                .imageScaleType(EXACTLY)
                 .build();
     }
 

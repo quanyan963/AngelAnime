@@ -26,5 +26,5 @@ public interface DBHelper {
 
     void deleteAllHistory();
 
-    void deleteHistory(History history);
+    void deleteHistory(int position);
 }

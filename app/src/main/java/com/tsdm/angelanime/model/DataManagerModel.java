@@ -112,7 +112,7 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     }
 
     @Override
-    public void deleteHistory(History history) {
-        mDBDbHelper.deleteHistory(history);
+    public void deleteHistory(int position) {
+        mDBDbHelper.deleteHistory(position);
     }
 }

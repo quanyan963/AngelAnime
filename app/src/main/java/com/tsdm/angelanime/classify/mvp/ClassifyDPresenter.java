@@ -1,9 +1,11 @@
 package com.tsdm.angelanime.classify.mvp;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.ClassifyDetail;
@@ -92,10 +94,11 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
 
     @Override
     public void onStateChanged(RecyclerView recyclerView, int newState, SearchAdapter adapter
-            , WebResponseListener listener) {
+            , WebResponseListener listener, Context context) {
         GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
         //当不滑动时
         if (newState == RecyclerView.SCROLL_STATE_IDLE){
+            MyApplication.getImageLoader(context).resume();
             int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();
 
             // 判断是否滑动到了最后一个item，并且是向上滑动
@@ -111,6 +114,8 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
                 }
 
             }
+        }else {
+            MyApplication.getImageLoader(context).pause();
         }
     }
 

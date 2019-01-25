@@ -6,140 +6,150 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_grey">
-    <RelativeLayout
-        android:id="@+id/rl_top"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16_x"
-        android:background="@drawable/ripple_item_layout_effect"
-        app:layout_constraintTop_toTopOf="parent">
-        <io.supercharge.shimmerlayout.ShimmerLayout
-            android:id="@+id/sl_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            app:shimmer_color="@color/white"
-            app:shimmer_animation_duration="1200"
-            android:layout_alignParentLeft="true">
-            <com.tsdm.angelanime.widget.RoundImageView
-                android:id="@+id/iv_title"
-                android:layout_width="@dimen/dp_100_x"
-                android:layout_height="@dimen/dp_130_y"
-                android:scaleType="fitXY"
-                app:left_top_radius="@dimen/dp_10_x"
-                app:right_top_radius="@dimen/dp_10_x"
-                app:right_bottom_radius="@dimen/dp_10_x"
-                app:left_bottom_radius="@dimen/dp_10_x"
-                android:background="@color/grey_back"/>
-        </io.supercharge.shimmerlayout.ShimmerLayout>
-
-
-        <io.supercharge.shimmerlayout.ShimmerLayout
-            android:id="@+id/sl_name"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16_y"
-            android:layout_toRightOf="@+id/sl_img"
-            android:layout_alignParentTop="true"
-            app:shimmer_color="@color/white"
-            app:shimmer_animation_duration="1200">
-            <TextView
-                android:id="@+id/tv_name"
-                style="@style/main_tv"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/rl_top"
                 android:layout_width="match_parent"
-                android:background="@color/grey_back"
-                android:textSize="@dimen/dp_14_x"
-                />
-        </io.supercharge.shimmerlayout.ShimmerLayout>
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16_x"
+                android:background="@drawable/ripple_item_layout_effect"
+                android:layout_alignParentTop="true">
+                <io.supercharge.shimmerlayout.ShimmerLayout
+                    android:id="@+id/sl_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    app:shimmer_color="@color/white"
+                    app:shimmer_animation_duration="1200"
+                    android:layout_alignParentLeft="true">
+                    <com.tsdm.angelanime.widget.RoundImageView
+                        android:id="@+id/iv_title"
+                        android:layout_width="@dimen/dp_100_x"
+                        android:layout_height="@dimen/dp_130_y"
+                        android:scaleType="fitXY"
+                        app:left_top_radius="@dimen/dp_10_x"
+                        app:right_top_radius="@dimen/dp_10_x"
+                        app:right_bottom_radius="@dimen/dp_10_x"
+                        app:left_bottom_radius="@dimen/dp_10_x"
+                        android:background="@color/grey_back"/>
+                </io.supercharge.shimmerlayout.ShimmerLayout>
 
-        <io.supercharge.shimmerlayout.ShimmerLayout
-            android:id="@+id/sl_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16_y"
-            android:layout_toRightOf="@+id/sl_img"
-            android:layout_below="@+id/sl_name"
-            app:shimmer_color="@color/white"
-            app:shimmer_animation_duration="1200"
-            android:layout_marginTop="@dimen/dp_4_y">
-            <TextView
-                android:id="@+id/tv_update_time"
-                style="@style/main_tv"
+
+                <io.supercharge.shimmerlayout.ShimmerLayout
+                    android:id="@+id/sl_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16_y"
+                    android:layout_toRightOf="@+id/sl_img"
+                    android:layout_alignParentTop="true"
+                    app:shimmer_color="@color/white"
+                    app:shimmer_animation_duration="1200">
+                    <TextView
+                        android:id="@+id/tv_name"
+                        style="@style/main_tv"
+                        android:layout_width="match_parent"
+                        android:background="@color/grey_back"
+                        android:textSize="@dimen/dp_14_x"
+                        />
+                </io.supercharge.shimmerlayout.ShimmerLayout>
+
+                <io.supercharge.shimmerlayout.ShimmerLayout
+                    android:id="@+id/sl_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16_y"
+                    android:layout_toRightOf="@+id/sl_img"
+                    android:layout_below="@+id/sl_name"
+                    app:shimmer_color="@color/white"
+                    app:shimmer_animation_duration="1200"
+                    android:layout_marginTop="@dimen/dp_4_y">
+                    <TextView
+                        android:id="@+id/tv_update_time"
+                        style="@style/main_tv"
+                        android:layout_width="match_parent"
+                        android:textSize="@dimen/dp_12_x"
+                        android:background="@color/grey_back"
+                        android:textColor="@color/low_grey"
+                        />
+                </io.supercharge.shimmerlayout.ShimmerLayout>
+
+                <io.supercharge.shimmerlayout.ShimmerLayout
+                    android:id="@+id/sl_introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16_y"
+                    android:layout_toRightOf="@+id/sl_img"
+                    android:layout_below="@+id/sl_time"
+                    app:shimmer_color="@color/white"
+                    app:shimmer_animation_duration="1200"
+                    android:layout_marginTop="@dimen/dp_4_y">
+                    <TextView
+                        android:id="@+id/tv_introduction"
+                        style="@style/main_tv"
+                        android:layout_width="match_parent"
+                        android:maxLines="6"
+                        android:textSize="@dimen/dp_12_x"
+                        android:background="@color/grey_back"
+                        android:textColor="@color/low_grey"
+                        android:ellipsize="end"/>
+                </io.supercharge.shimmerlayout.ShimmerLayout>
+
+            </RelativeLayout>
+
+
+            <View
+                android:id="@+id/v_line"
+                style="@style/main_line"
+                android:layout_below="@+id/rl_top"/>
+            <RelativeLayout
+                android:id="@+id/rl_select"
                 android:layout_width="match_parent"
-                android:textSize="@dimen/dp_12_x"
-                android:background="@color/grey_back"
-                android:textColor="@color/low_grey"
-                />
-        </io.supercharge.shimmerlayout.ShimmerLayout>
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_16_x"
+                android:paddingRight="@dimen/dp_16_x"
+                android:paddingTop="@dimen/dp_8_y"
+                android:paddingBottom="@dimen/dp_8_y"
+                android:layout_below="@+id/v_line"
+                android:background="@drawable/ripple_item_layout_effect">
+                <TextView
+                    android:id="@+id/tv_list_name"
+                    style="@style/main_tv"
+                    android:text="选集"
+                    android:textSize="@dimen/dp_14_x"
+                    android:layout_alignParentLeft="true"/>
 
-        <io.supercharge.shimmerlayout.ShimmerLayout
-            android:id="@+id/sl_introduction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16_y"
-            android:layout_toRightOf="@+id/sl_img"
-            android:layout_below="@+id/sl_time"
-            app:shimmer_color="@color/white"
-            app:shimmer_animation_duration="1200"
-            android:layout_marginTop="@dimen/dp_4_y">
-            <TextView
-                android:id="@+id/tv_introduction"
-                style="@style/main_tv"
+                <TextView
+                    android:id="@+id/tv_list_statue"
+                    style="@style/main_tv"
+                    android:gravity="center"
+                    android:textSize="@dimen/dp_12_x"
+                    android:layout_alignParentRight="true"
+                    android:drawableRight="@mipmap/right_back"
+                    android:textColor="@color/low_grey"
+                    android:drawablePadding="@dimen/dp_6_y" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rlv_play_list"
                 android:layout_width="match_parent"
-                android:maxLines="6"
-                android:textSize="@dimen/dp_12_x"
-                android:background="@color/grey_back"
-                android:textColor="@color/low_grey"
-                android:ellipsize="end"/>
-        </io.supercharge.shimmerlayout.ShimmerLayout>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_select"
+                android:paddingBottom="@dimen/dp_8_y"
+                android:paddingTop="@dimen/dp_8_y">
 
-    </RelativeLayout>
+            </android.support.v7.widget.RecyclerView>
 
+            <View
+                style="@style/main_line"
+                android:layout_below="@+id/rlv_play_list"/>
+        </RelativeLayout>
+    </ScrollView>
 
-    <View
-        android:id="@+id/v_line"
-        style="@style/main_line"
-        app:layout_constraintTop_toBottomOf="@+id/rl_top"/>
-    <RelativeLayout
-        android:id="@+id/rl_select"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16_x"
-        android:paddingRight="@dimen/dp_16_x"
-        android:paddingTop="@dimen/dp_8_y"
-        android:paddingBottom="@dimen/dp_8_y"
-        app:layout_constraintTop_toBottomOf="@+id/v_line"
-        android:background="@drawable/ripple_item_layout_effect">
-        <TextView
-            android:id="@+id/tv_list_name"
-            style="@style/main_tv"
-            android:text="选集"
-            android:textSize="@dimen/dp_14_x"
-            android:layout_alignParentLeft="true"/>
-
-        <TextView
-            android:id="@+id/tv_list_statue"
-            style="@style/main_tv"
-            android:gravity="center"
-            android:textSize="@dimen/dp_12_x"
-            android:layout_alignParentRight="true"
-            android:drawableRight="@mipmap/right_back"
-            android:textColor="@color/low_grey"
-            android:drawablePadding="@dimen/dp_6_y" />
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rlv_play_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/rl_select"
-        android:paddingBottom="@dimen/dp_8_y"
-        android:paddingTop="@dimen/dp_8_y">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <View
-        style="@style/main_line"
-        app:layout_constraintTop_toBottomOf="@+id/rlv_play_list"/>
 
 </android.support.constraint.ConstraintLayout>

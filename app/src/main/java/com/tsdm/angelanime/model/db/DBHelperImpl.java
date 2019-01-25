@@ -72,7 +72,8 @@ public class DBHelperImpl implements DBHelper {
     }
 
     @Override
-    public void deleteHistory(History history) {
+    public void deleteHistory(int position) {
+        History history = mDaoSession.getHistoryDao().loadAll().get(position);
         mDaoSession.getHistoryDao().delete(history);
     }
 }

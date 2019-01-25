@@ -43,7 +43,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (changeColor)
-            StatusBarUtils.setWindowStatusBarColor(this,R.color.colorAccent);
+            com.samluys.statusbar.StatusBarUtils.transparencyBar(this,true);
+
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         ButterKnife.bind(this);
@@ -61,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setPadding(0,StatusBarUtils.getStatusBarHeight(this),0,0);
         if (toolbar != null) {
             tvTitle = (TextView) findViewById(R.id.tv_title);
             ivRight = (ImageView) findViewById(R.id.iv_right);

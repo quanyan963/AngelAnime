@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.search.mvp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -48,11 +49,12 @@ public interface SearchContract {
 
         List<History> getHistory();
 
-        void deleteHistory(History data, boolean isNone);
+        void deleteHistory(int position, boolean isNone);
+
         void search(@Nullable String word, WebResponseListener listener);
 
         void onStateChanged(RecyclerView recyclerView, int newState, SearchAdapter searchAdapter
-                , WebResponseListener listener);
+                , WebResponseListener listener, Context context);
 
         void onScrolled(boolean isSlidingUpward);
 

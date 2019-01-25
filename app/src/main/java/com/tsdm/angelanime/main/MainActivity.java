@@ -92,7 +92,7 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
 
     @Override
     public void onDestroy() {
-        MyApplication.getImageLoader(this).clearMemoryCache();
+        //MyApplication.getImageLoader(this).clearMemoryCache();
         super.onDestroy();
     }
 

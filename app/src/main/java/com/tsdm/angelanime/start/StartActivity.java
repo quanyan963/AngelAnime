@@ -158,8 +158,9 @@ public class StartActivity extends MvpBaseActivity<StartPresenter> implements St
 
     @Override
     public void onClick(View view) {
-        hideSnackBar();
         tvHint.setText(R.string.init);
+        hideSnackBar();
+        slShimmer.recomputeViewAttributes(tvHint);
         slShimmer.startShimmerAnimation();
         presenter.getHtml(this);
     }

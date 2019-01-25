@@ -8,7 +8,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         app:popupTheme="@style/ToolbarPopupTheme"
         app:titleTextAppearance="@style/Toolbar.TitleText"
@@ -17,24 +17,24 @@
         <RelativeLayout
             android:id="@+id/rl_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:layout_marginTop="@dimen/dp_12_y"
+            android:paddingLeft="@dimen/dp_2_x"
             android:layout_marginBottom="@dimen/dp_12_y">
             <ImageView
                 android:id="@+id/iv_right"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/search"
-                android:paddingTop="@dimen/dp_4_y"
-                android:paddingBottom="@dimen/dp_4_y"/>
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/search" />
             <EditText
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/et_search"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_16_x"
                 android:layout_toRightOf="@+id/iv_right"
                 style="@style/main_tv"
+                android:layout_centerVertical="true"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"
                 android:background="@null"
@@ -42,41 +42,6 @@
                 android:hint="@string/enter_hint"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/rl_history"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/toolbar"-->
-        <!--android:background="@color/white">-->
-        <!---->
-
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-        <!--android:visibility="gone"-->
-        <!--android:id="@+id/rl_top"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/toolbar"-->
-        <!--android:background="@color/white">-->
-        <!--<TextView-->
-            <!--style="@style/main_tv"-->
-            <!--android:textSize="@dimen/dp_12_x"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:paddingLeft="@dimen/dp_16_x"-->
-            <!--android:text="@string/search_history"/>-->
-        <!--<ImageView-->
-            <!--android:id="@+id/iv_more"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@mipmap/more"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:paddingRight="@dimen/dp_16_x"-->
-            <!--android:paddingBottom="@dimen/dp_8_y"-->
-            <!--android:paddingTop="@dimen/dp_8_y"/>-->
-    <!--</RelativeLayout>-->
     <RelativeLayout
         android:visibility="invisible"
         android:id="@+id/rl_history_list"

@@ -1,5 +1,6 @@
 package com.tsdm.angelanime.classify.mvp;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tsdm.angelanime.base.BasePresenter;
@@ -29,7 +30,7 @@ public interface ClassifyDContract {
         void getClassifyDetail(String url, WebResponseListener listener);
 
         void onStateChanged(RecyclerView recyclerView, int newState, SearchAdapter adapter
-                , WebResponseListener listener);
+                , WebResponseListener listener, Context context);
 
         void onScrolled(boolean b);
     }

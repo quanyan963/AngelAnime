@@ -11,12 +11,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.MvpBaseFragment;
 import com.tsdm.angelanime.bean.SearchList;
 import com.tsdm.angelanime.classify.mvp.ClassifyDContract;
 import com.tsdm.angelanime.classify.mvp.ClassifyDPresenter;
 import com.tsdm.angelanime.search.SearchAdapter;
+import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -97,7 +100,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                presenter.onStateChanged(recyclerView, newState, adapter, ClassifyDetailFragment.this);
+                presenter.onStateChanged(recyclerView, newState, adapter, ClassifyDetailFragment.this,getContext());
             }
 
             @Override
