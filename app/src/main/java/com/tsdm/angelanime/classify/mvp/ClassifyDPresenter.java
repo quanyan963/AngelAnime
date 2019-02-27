@@ -1,28 +1,20 @@
 package com.tsdm.angelanime.classify.mvp;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
-import com.tsdm.angelanime.bean.ClassifyDetail;
-import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.SearchList;
-import com.tsdm.angelanime.classify.ClassifyDetailFragment;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.search.SearchAdapter;
-import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.RxUtil;
 import com.tsdm.angelanime.utils.Url;
-import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -52,8 +44,8 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
     @Override
     public void getClassifyDetail(String url, final WebResponseListener listener) {
         this.url = url;
-        addSubscribe(mDataManagerModel.getClassifyDetail(Url.URL+url
-                + Constants.INDEX+(page == 1 ? "" : page)+Constants.HTML,listener)
+        addSubscribe(mDataManagerModel.getHtmlResponse(Url.URL+url
+                + Url.INDEX+(page == 1 ? "" : page)+Url.HTML,listener)
                 .map(new Function<Document, List<SearchList>>() {
                     @Override
                     public List<SearchList> apply(Document document) {

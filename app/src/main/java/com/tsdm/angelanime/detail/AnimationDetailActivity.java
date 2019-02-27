@@ -8,22 +8,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.cache.CacheFactory;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
+import com.shuyu.gsyvideoplayer.video.GSYADVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseActivity;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
+import com.tsdm.angelanime.bean.event.Comment;
+import com.tsdm.angelanime.comment.CommentFragment;
 import com.tsdm.angelanime.detail.mvp.AnimationDetailContract;
 import com.tsdm.angelanime.detail.mvp.AnimationDetailPresenter;
 import com.tsdm.angelanime.introduction.IntroductionActivity;
 import com.tsdm.angelanime.introduction.IntroductionFragment;
 import com.tsdm.angelanime.utils.StatusBarUtils;
+import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,7 +41,7 @@ import tv.danmaku.ijk.media.exo2.ExoPlayerCacheManager;
 import static com.tsdm.angelanime.utils.Constants.ERROR;
 import static com.tsdm.angelanime.utils.Constants.HREF_URL;
 import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
-import static com.tsdm.angelanime.utils.Constants.POSITION;
+import static com.tsdm.angelanime.utils.Constants.OK;
 import static com.tsdm.angelanime.utils.Constants.RETRY;
 
 /**
@@ -66,32 +69,35 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        changeColor = false;
+        StatusBarUtils.setWindowStatusBarColor(this,R.color.black);
+
         super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View
-                .OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int i) {
-                switch (i){
-                    case 0:
-                        if (spPlayer.isIfCurrentIsFullscreen()){
-                            getWindow().getDecorView().setSystemUiVisibility(View
-                                    .SYSTEM_UI_FLAG_FULLSCREEN);
-                        }else {
-                            com.samluys.statusbar.StatusBarUtils.transparencyBar(
-                                    AnimationDetailActivity.this,true);
-                            getWindow().getDecorView().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getWindow().getDecorView().setSystemUiVisibility(View
-                                            .SYSTEM_UI_FLAG_FULLSCREEN);
-                                }
-                            },2000);
-                        }
-                        break;
-                }
-            }
-        });
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+//        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View
+//                .OnSystemUiVisibilityChangeListener() {
+//            @Override
+//            public void onSystemUiVisibilityChange(int i) {
+//                switch (i){
+//                    case 0:
+//                        if (spPlayer.isIfCurrentIsFullscreen()){
+//                            getWindow().getDecorView().setSystemUiVisibility(View
+//                                    .SYSTEM_UI_FLAG_FULLSCREEN);
+//                        }else {
+//                            com.samluys.statusbar.StatusBarUtils.transparencyBar(
+//                                    AnimationDetailActivity.this,true);
+//                            getWindow().getDecorView().postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    getWindow().getDecorView().setSystemUiVisibility(View
+//                                            .SYSTEM_UI_FLAG_FULLSCREEN);
+//                                }
+//                            },2000);
+//                        }
+//                        break;
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -111,12 +117,12 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
         viewList = new ArrayList<>();
         viewList.add(new IntroductionFragment());
-        viewList.add(new IntroductionFragment());
+        viewList.add(new CommentFragment());
         detAdapter = new DetailPagerAdapter(getSupportFragmentManager(),titleList,viewList);
         vpDetail.setAdapter(detAdapter);
         tlCard.setupWithViewPager(vpDetail);
         tlCard.setTabsFromPagerAdapter(detAdapter);
-        presenter.getDetail(url, this);
+        presenter.getDetail(url, this,this,new MyJavaScriptInterface());
         spPlayer.setRotateViewAuto(true);
         spPlayer.setLockLand(true);
         spPlayer.setNeedShowWifiTip(true);
@@ -157,6 +163,15 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     }
 
+    class MyJavaScriptInterface {
+        @JavascriptInterface
+        @SuppressWarnings("unused")
+        public void processHTML(String html) {
+            // 在这里处理html源码
+            presenter.getData(html,AnimationDetailActivity.this);
+        }
+    }
+
     @Override
     public int getLayout() {
         return R.layout.activity_detail;
@@ -164,17 +179,22 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     public void getDetail(AnimationDetail animationDetail) {
-        detail = animationDetail;
-        if (isFirst){
-            if (detail.getPlayList().size() != 0){
-                position = detail.getPlayList().size()-1;
-                presenter.getListUrl(detail.getPlayList().get(position), this);
+        if (animationDetail.getRequestStatue() == OK){
+            hideSnackBar();
+            detail = animationDetail;
+            if (isFirst){
+                if (detail.getPlayList() != null){
+                    position = detail.getPlayList().size()-1;
+                    presenter.getListUrl(detail.getPlayList().get(position), this);
+                }else {
+                    EventBus.getDefault().post(detail);
+                    EventBus.getDefault().post(new Comment(detail.getVideoNum(),OK));
+                }
             }else {
-                EventBus.getDefault().post(detail);
+                presenter.getListUrl(detail.getPlayList().get(position), this);
             }
-        }else {
-            presenter.getListUrl(detail.getPlayList().get(position), this);
         }
+
         //spPlayer.setThumbImageView();
     }
 
@@ -190,6 +210,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void onComplete() {
         if (isFirst){
             EventBus.getDefault().post(detail);
+            EventBus.getDefault().post(new Comment(detail.getVideoNum(),OK));
             isFirst = false;
         }
         presenter.getPlayUrl(position,this);
@@ -201,6 +222,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             @Override
             public void run() {
                 EventBus.getDefault().post(new AnimationDetail(ERROR));
+                EventBus.getDefault().post(new Comment(ERROR));
                 showSnackBar(vpDetail,R.string.network_error,R.string.retry
                         ,AnimationDetailActivity.this);
             }
@@ -213,6 +235,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             @Override
             public void run() {
                 EventBus.getDefault().post(new AnimationDetail(ERROR));
+                EventBus.getDefault().post(new Comment(ERROR));
                 showSnackBar(vpDetail,R.string.parse_error);
             }
         });
@@ -262,7 +285,8 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     @Override
     public void onClick(View view) {
         EventBus.getDefault().post(new AnimationDetail(RETRY));
+        EventBus.getDefault().post(new Comment(RETRY));
         hideSnackBar();
-        presenter.getDetail(url, this);
+        presenter.getDetail(url, this,this,new MyJavaScriptInterface());
     }
 }

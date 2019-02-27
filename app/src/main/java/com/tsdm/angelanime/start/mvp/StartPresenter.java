@@ -9,6 +9,7 @@ import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.utils.RxUtil;
+import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.Jsoup;
@@ -39,7 +40,7 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
 
     @Override
     public void getHtml(final WebResponseListener listener) {
-        addSubscribe(mManagerModel.getHtml(listener)
+        addSubscribe(mManagerModel.getHtmlResponse(Url.URL + Url.HOME_PAGE,listener)
                 .map(new Function<Document, String>() {
                     @Override
                     public String apply(Document document) {

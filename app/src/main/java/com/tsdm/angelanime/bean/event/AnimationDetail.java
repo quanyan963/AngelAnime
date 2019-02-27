@@ -1,5 +1,7 @@
 package com.tsdm.angelanime.bean.event;
 
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,11 +18,12 @@ public class AnimationDetail implements Serializable {
     private String introduction;
     private List<String> playList;
     private List<String> playListTitle;
+    private String replyUrl;
     private int requestStatue;
 
     public AnimationDetail(String title, String titleImg, String updateTime, String statue,
-                           String introduction, List<String> playList, List<String> playListTitle,
-                           int requestStatue) {
+                           String introduction, @Nullable List<String> playList,@Nullable List<String> playListTitle,
+                           String replyUrl, int requestStatue) {
         this.title = title;
         this.titleImg = titleImg;
         this.updateTime = updateTime;
@@ -28,6 +31,18 @@ public class AnimationDetail implements Serializable {
         this.introduction = introduction;
         this.playList = playList;
         this.playListTitle = playListTitle;
+        this.replyUrl = replyUrl;
+        this.requestStatue = requestStatue;
+    }
+
+    public AnimationDetail(String title, String titleImg, String updateTime, String statue,
+                           String introduction, String replyUrl, int requestStatue) {
+        this.title = title;
+        this.titleImg = titleImg;
+        this.updateTime = updateTime;
+        this.statue = statue;
+        this.introduction = introduction;
+        this.replyUrl = replyUrl;
         this.requestStatue = requestStatue;
     }
 
@@ -97,5 +112,13 @@ public class AnimationDetail implements Serializable {
 
     public void setRequestStatue(int requestStatue) {
         this.requestStatue = requestStatue;
+    }
+
+    public String getVideoNum() {
+        return replyUrl;
+    }
+
+    public void setVideoNum(String replyUrl) {
+        this.replyUrl = replyUrl;
     }
 }

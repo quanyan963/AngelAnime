@@ -1,5 +1,7 @@
 package com.tsdm.angelanime.detail.mvp;
 
+import android.content.Context;
+
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
@@ -21,10 +23,14 @@ public interface AnimationDetailContract {
 
     interface Presenter extends BasePresenter<View> {
 
-        void getDetail(String url, WebResponseListener listener);
+        //void getDetail(String url, WebResponseListener listener);
+
+        void getDetail(String s, WebResponseListener listener, Context context, Object script);
 
         void getPlayUrl(int position, WebResponseListener listener);
 
         void getListUrl(String url, WebResponseListener listener);
+
+        void getData(String html, WebResponseListener listener);
     }
 }

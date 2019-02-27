@@ -127,12 +127,15 @@
                 <TextView
                     android:id="@+id/tv_list_statue"
                     style="@style/main_tv"
-                    android:gravity="center"
+                    android:gravity="center|right"
                     android:textSize="@dimen/dp_12_x"
+                    android:layout_toRightOf="@+id/tv_list_name"
                     android:layout_alignParentRight="true"
                     android:drawableRight="@mipmap/right_back"
                     android:textColor="@color/low_grey"
-                    android:drawablePadding="@dimen/dp_6_y" />
+                    android:drawablePadding="@dimen/dp_6_y"
+                    android:lines="1"
+                    android:ellipsize="end"/>
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView

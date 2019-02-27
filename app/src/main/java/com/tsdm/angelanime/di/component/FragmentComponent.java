@@ -5,6 +5,7 @@ import android.app.Activity;
 
 import com.tsdm.angelanime.classify.ClassifyDetailFragment;
 import com.tsdm.angelanime.classify.ClassifyFragment;
+import com.tsdm.angelanime.comment.CommentFragment;
 import com.tsdm.angelanime.di.module.FragmentModule;
 import com.tsdm.angelanime.di.scope.FragmentScope;
 import com.tsdm.angelanime.home.HomeFragment;
@@ -24,6 +25,7 @@ public interface FragmentComponent {
     Activity getActivity();
 
     void inject(IntroductionFragment introductionFragment);
+    void inject(CommentFragment commentFragment);
     void inject(MainFragment mainFragment);
     void inject(HomeFragment homeFragment);
     void inject(ClassifyFragment classifyFragment);

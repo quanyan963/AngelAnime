@@ -1,14 +1,21 @@
 package com.tsdm.angelanime.model.net;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.Log;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.tsdm.angelanime.bean.TopEight;
-import com.tsdm.angelanime.utils.Constants;
-import com.tsdm.angelanime.utils.FileEncodingDetect;
 import com.tsdm.angelanime.utils.Url;
-import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.Jsoup;
@@ -18,7 +25,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +35,8 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 
+import static android.support.constraint.Constraints.TAG;
+import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 import static com.tsdm.angelanime.utils.Constants.URL_HOME;
 
 /**
@@ -38,57 +46,62 @@ import static com.tsdm.angelanime.utils.Constants.URL_HOME;
 public class NetHelperImpl implements NetHelper {
 
     private List<TopEight> mData;
+    private WebView mWebView;
 
     @Inject
     public NetHelperImpl() {
     }
 
-    @Override
-    public Flowable<Document> getHtml(final WebResponseListener listener) {
+    @SuppressLint("JavascriptInterface")
+    private WebView initWebView(Context context, Object script, final WebResponseListener listener){
+        if (mWebView == null){
+            mWebView = new WebView(context);
+            WebSettings settings = mWebView.getSettings();
+            // 此方法需要启用JavaScript
+            settings.setJavaScriptEnabled(true);
 
-        return Flowable.create(new FlowableOnSubscribe<Document>() {
-            @Override
-            public void subscribe(final FlowableEmitter<Document> e) {
-                try {
-                    e.onNext(Jsoup.connect(Url.URL + Url.HOME_PAGE).get());
-                    e.onComplete();
-                } catch (IOException e1) {
+            // 把刚才的接口类注册到名为HTMLOUT的JavaScript接口
+            mWebView.addJavascriptInterface(script, "HTMLOUT");
+
+            // 必须在loadUrl之前设置WebViewClient
+            mWebView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                    super.onReceivedHttpError(view, request, errorResponse);
                     listener.onError();
                 }
-//                OkGo.<String>get(Url.URL + Url.HOME_PAGE)
-//                        .cacheKey(URL_HOME)
-//                        .cacheMode(CacheMode.REQUEST_FAILED_READ_CACHE)
-//                        .tag(this)
-//                        .execute(new StringCallback() {
-//
-//                            @Override
-//                            public void onSuccess(Response<String> response) {
-//                                try {
-//                                    String s = new String(response.body().getBytes("utf-8"),"");
-//                                    String data = new String(s.getBytes("iso-8859-1"),"gbk");
-//                                    e.onNext(Jsoup.parse(data));
-//                                    e.onComplete();
-//                                } catch (UnsupportedEncodingException e1) {
-//                                    e1.printStackTrace();
-//                                }
-//
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(Response<String> response) {
-//                                listener.onError();
-//                            }
-//
-//                            @Override
-//                            public void onCacheSuccess(Response<String> response) {
-//                                Document document = Jsoup.parse(response.body());
-//                                e.onNext(document);
-//                                e.onComplete();
-//                            }
-//                        });
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    // 这里可以过滤一下url
+                    super.onPageFinished(view, url);
+                    view.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
+                }
+            });
+        }
+        return mWebView;
+    }
+
+
+    @Override
+    public void getWebHtml(String s, WebResponseListener listener, Context context,Object script) {
+        initWebView(context,script,listener).loadUrl(s);
+    }
+
+    @Override
+    public void reLoad() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mWebView.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
             }
-        }, BackpressureStrategy.BUFFER);
+        });
+    }
+
+    @Override
+    public void release() {
+        mWebView = null;
     }
 
     @Override
@@ -116,52 +129,17 @@ public class NetHelperImpl implements NetHelper {
         return mData;
     }
 
-
-    @Override
-    public Flowable<Document> getDetail(final String hrefUrl, final WebResponseListener listener) {
-
-
-        return Flowable.create(new FlowableOnSubscribe<Document>() {
-            @Override
-            public void subscribe(final FlowableEmitter<Document> e) {
-                try {
-                    e.onNext(Jsoup.connect(hrefUrl).get());
-                    e.onComplete();
-                } catch (IOException e1) {
-                    listener.onError();
-                }
-
-//                OkGo.<String>get(hrefUrl)
-//                        .headers("Content-Type", "text/html; charset=utf-8")
-//                        .headers("Accept-Charset","gb2312")
-//                        .tag(this)
-//                        .execute(new StringCallback() {
-//                            @Override
-//                            public void onSuccess(Response<String> response) {
-//                                Document document = Jsoup.parse(response.body());
-//                                e.onNext(document);
-//                                e.onComplete();
-////                                try {
-////                                    String data = URLDecoder.decode(response.body(),"utf-8");
-////                                    Document document = Jsoup.parse(data);
-////                                    e.onNext(document);
-////                                    e.onComplete();
-////                                } catch (UnsupportedEncodingException e1) {
-////                                    e1.printStackTrace();
-////                                }
-//
-//                            }
-//                        });
-
-            }
-        }, BackpressureStrategy.BUFFER);
-    }
-
     @Override
     public Flowable<String[]> getListUrl(final String hrefUrl, final WebResponseListener listener) {
         return Flowable.create(new FlowableOnSubscribe<String[]>() {
             @Override
             public void subscribe(final FlowableEmitter<String[]> e) throws Exception {
+                try {
+                    Document document = Jsoup.connect(Url.URL + hrefUrl).get();
+
+                }catch (Exception e1){
+
+                }
                 OkGo.<String>get(Url.URL + hrefUrl)
                         .tag(this)
                         .execute(new StringCallback() {
@@ -243,8 +221,8 @@ public class NetHelperImpl implements NetHelper {
                 try {
                     String  gb2312 = new String(s.getBytes("iso-8859-1"),"gb2312");
                     String word = new String(gb2312.getBytes("gb2312"),"utf-8");
-                    e.onNext(Jsoup.connect(Url.SEARCH + Constants.PAGE + page + Constants.AND
-                            + Constants.SEARCH_WORD + word + Constants.AND + Constants.End).get());
+                    e.onNext(Jsoup.connect(Url.SEARCH + Url.PAGE + page + Url.AND
+                            + Url.SEARCH_WORD + word + Url.AND + Url.End).get());
                     e.onComplete();
                 } catch (Exception e1) {
                     listener.onError();
@@ -255,14 +233,14 @@ public class NetHelperImpl implements NetHelper {
     }
 
     @Override
-    public Flowable<Document> getClassifyDetail(final String s, final WebResponseListener listener) {
+    public Flowable<Document> getHtmlResponse(final String s, final WebResponseListener listener) {
         return Flowable.create(new FlowableOnSubscribe<Document>() {
             @Override
             public void subscribe(FlowableEmitter<Document> e) {
                 try {
                     e.onNext(Jsoup.connect(s).get());
                     e.onComplete();
-                } catch (IOException e1) {
+                }catch (IOException e1){
                     listener.onError();
                 }
             }

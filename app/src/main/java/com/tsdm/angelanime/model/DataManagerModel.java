@@ -1,6 +1,8 @@
 package com.tsdm.angelanime.model;
 
 
+import android.content.Context;
+
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
@@ -41,19 +43,29 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
 
     }
 
+//    @Override
+//    public Flowable<Document> getHtml(String s, WebResponseListener listener) {
+//        return mNetHelper.getHtml(s,listener);
+//    }
+
     @Override
-    public Flowable<Document> getHtml(WebResponseListener listener) {
-        return mNetHelper.getHtml(listener);
+    public void getWebHtml(String s, WebResponseListener listener, Context context, Object script) {
+        mNetHelper.getWebHtml(s, listener, context, script);
+    }
+
+    @Override
+    public void reLoad() {
+        mNetHelper.reLoad();
+    }
+
+    @Override
+    public void release() {
+        mNetHelper.release();
     }
 
     @Override
     public List<TopEight> getTopEight(String url, WebResponseListener listener) {
         return mNetHelper.getTopEight(url,listener);
-    }
-
-    @Override
-    public Flowable<Document> getDetail(String hrefUrl, WebResponseListener listener) {
-        return mNetHelper.getDetail(hrefUrl,listener);
     }
 
     @Override
@@ -72,8 +84,8 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     }
 
     @Override
-    public Flowable<Document> getClassifyDetail(String s, WebResponseListener listener) {
-        return mNetHelper.getClassifyDetail(s, listener);
+    public Flowable<Document> getHtmlResponse(String s, WebResponseListener listener) {
+        return mNetHelper.getHtmlResponse(s,listener);
     }
 
     @Override

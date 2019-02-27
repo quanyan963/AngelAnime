@@ -147,13 +147,15 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
                 Utils.displayImage(getContext(), Url.URL + detail.getTitleImg(), ivTitle, Utils
                         .getImageOptions(R.mipmap.defult_img, 0));
             }
-            if (detail.getPlayListTitle().size() == 0) {
-                position = 0;
-            } else {
-                position = detail.getPlayListTitle().size() - 1;
-                listAdapter.setPosition(position);
-                listAdapter.addList(detail.getPlayListTitle());
-                rlvPlayList.scrollToPosition(position);
+            if (detail.getPlayListTitle() != null){
+                if (detail.getPlayListTitle().size() == 0) {
+                    position = 0;
+                } else {
+                    position = detail.getPlayListTitle().size() - 1;
+                    listAdapter.setPosition(position);
+                    listAdapter.addList(detail.getPlayListTitle());
+                    rlvPlayList.scrollToPosition(position);
+                }
             }
             tvName.setText(detail.getTitle());
             tvUpdateTime.setText(detail.getUpdateTime());
@@ -163,7 +165,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             rlSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (detail.getPlayListTitle().size() != 0) {
+                    if (detail.getPlayListTitle() != null) {
                         Utils.showBottomPopUp(getActivity(), detail.getPlayListTitle(),
                                 IntroductionFragment.this, clFragment, position);
                     }
