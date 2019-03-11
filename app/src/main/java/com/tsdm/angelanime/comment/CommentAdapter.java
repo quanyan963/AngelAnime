@@ -79,12 +79,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         if (data.get(position).getReply().isEmpty()){
             holder.rlReply.setVisibility(View.GONE);
         }else {
-            holder.rlvTopReply.setHasFixedSize(true);
-            holder.rlvTopReply.setLayoutManager(new LinearLayoutManager(mContext));
-            holder.rlvTopReply.addItemDecoration(new DividerItemDecoration(mContext,
-                    DividerItemDecoration.HORIZONTAL_LIST, mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.dp_8_y),
-                    mContext.getResources().getColor(R.color.grey_back)));
+
             adapter = new ReplyAdapter(mContext,data.get(position).getReply());
             holder.rlvTopReply.setAdapter(adapter);
             holder.rlReply.setVisibility(View.VISIBLE);
@@ -173,6 +168,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         public CommentViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            rlvTopReply.setHasFixedSize(true);
+            rlvTopReply.setLayoutManager(new LinearLayoutManager(mContext));
+            rlvTopReply.addItemDecoration(new DividerItemDecoration(mContext,
+                    DividerItemDecoration.HORIZONTAL_LIST, mContext.getResources()
+                    .getDimensionPixelSize(R.dimen.dp_8_y),
+                    mContext.getResources().getColor(R.color.grey_back)));
         }
     }
 }
