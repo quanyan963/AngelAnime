@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.classify;
 
 import android.os.Bundle;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ import com.tsdm.angelanime.widget.listener.WebResponseListener;
 import java.util.List;
 
 import butterknife.BindView;
+
+import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 
 /**
  * Created by Mr.Quan on 2019/1/12.
@@ -62,7 +65,9 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
 
     @Override
     public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, null);
+        View view = inflater.inflate(R.layout.fragment_main, null);
+        loadingView = view.findViewById(R.id.fv_loading);
+        return view;
     }
 
     @Override
@@ -81,7 +86,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
     @Override
     public void init() {
         isScrollLoading = false;
-        loadingView = getActivity().findViewById(R.id.v_loading);
+
         rlvAnimationList.setHasFixedSize(true);
         rlvAnimationList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rlvAnimationList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.BOTH_SET,

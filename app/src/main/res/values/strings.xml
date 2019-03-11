@@ -18,7 +18,7 @@
     <string name="retry">重试</string>
     <string name="no_data">没有你想要的数据呢</string>
     <string name="parse_error">数据解析失败</string>
-    <string name="net_error">Net Error</string>
+    <string name="net_error">Network Error</string>
     <string name="reply">共%s条回复</string>
     <string name="no_reply">来抢个沙发吧！</string>
 </resources>

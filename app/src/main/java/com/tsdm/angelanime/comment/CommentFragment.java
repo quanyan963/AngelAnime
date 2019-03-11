@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
+import com.tsdm.angelanime.bean.ReplyItem;
 import com.tsdm.angelanime.bean.ReplyList;
 import com.tsdm.angelanime.bean.event.Comment;
 import com.tsdm.angelanime.comment.mvp.CommentContract;
@@ -25,11 +26,14 @@ import com.tsdm.angelanime.widget.listener.WebResponseListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
+import static com.tsdm.angelanime.utils.Constants.LIKE;
 import static com.tsdm.angelanime.utils.Constants.OK;
 import static com.tsdm.angelanime.utils.Constants.RETRY;
 
@@ -46,6 +50,7 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
     private CommentAdapter commentAdapter;
     private int position;
     private String action;
+    private List<ReplyItem> data;
 
     @Override
     protected void initInject() {
@@ -79,7 +84,8 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
                 }else {
                     tvHint.setVisibility(View.GONE);
                     rlvCommentList.setVisibility(View.VISIBLE);
-                    commentAdapter.setData(replyList.getData());
+                    data = replyList.getData();
+                    commentAdapter.setData(data);
                 }
             }
         });
@@ -87,6 +93,11 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void ok() {
+        if (action == LIKE){
+            data.get(position).setAgree();
+        }else {
+            data.get(position).setDisagree();
+        }
         commentAdapter.reFlush(position,action);
     }
 

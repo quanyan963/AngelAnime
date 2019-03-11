@@ -36,6 +36,7 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
     private CallBackValue callBackValue;
     private RecentlyDetail detail;
     private View vLoading;
+
     @Override
     protected void initInject() {
         getFragmentComponent().inject(this);
@@ -49,12 +50,14 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
 
     @Override
     public View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, null);
+        View view = inflater.inflate(R.layout.fragment_main, null);
+        vLoading = view.findViewById(R.id.fv_loading);
+        return view;
     }
 
     @Override
     public void init() {
-        vLoading = getActivity().findViewById(R.id.v_loading);
+
         vLoading.setVisibility(View.GONE);
         rlvAnimationList.setVisibility(View.VISIBLE);
         rlvAnimationList.setHasFixedSize(true);
@@ -64,23 +67,23 @@ public class MainFragment extends MvpBaseFragment<FragmentPresenter> implements 
                 getActivity().getResources().getColor(R.color.light_grey)));
         //rlvAnimationList.setLayoutManager(new LinearLayoutManager(getContext()));
         detail = callBackValue.SendMessageValue(this);
-        adapter = new FRecycleAdapter(detail,getContext());
+        adapter = new FRecycleAdapter(detail, getContext());
         rlvAnimationList.setAdapter(adapter);
         adapter.setOnItemClick(this);
     }
 
-    public void setListener(CallBackValue callBackValue){
+    public void setListener(CallBackValue callBackValue) {
         this.callBackValue = callBackValue;
     }
 
     @Override
     public void onItemClick(int position) {
         startActivity(new Intent(getActivity(), AnimationDetailActivity.class).
-                putExtra(HREF_URL, Url.URL+detail.getUrl().get(position)));
+                putExtra(HREF_URL, Url.URL + detail.getUrl().get(position)));
         //.putExtra(POSITION,(detail.getUrl().size()-1))
     }
 
-    public interface CallBackValue{
+    public interface CallBackValue {
         RecentlyDetail SendMessageValue(MainFragment fragment);
     }
 }
