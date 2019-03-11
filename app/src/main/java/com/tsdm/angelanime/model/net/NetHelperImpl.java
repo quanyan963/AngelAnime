@@ -2,6 +2,8 @@ package com.tsdm.angelanime.model.net;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
@@ -54,32 +56,38 @@ public class NetHelperImpl implements NetHelper {
 
     @SuppressLint("JavascriptInterface")
     private WebView initWebView(Context context, Object script, final WebResponseListener listener){
-        if (mWebView == null){
-            mWebView = new WebView(context);
-            WebSettings settings = mWebView.getSettings();
-            // 此方法需要启用JavaScript
-            settings.setJavaScriptEnabled(true);
+        mWebView = new WebView(context);
+        WebSettings settings = mWebView.getSettings();
+        // 此方法需要启用JavaScript
+        settings.setJavaScriptEnabled(true);
 
-            // 把刚才的接口类注册到名为HTMLOUT的JavaScript接口
-            mWebView.addJavascriptInterface(script, "HTMLOUT");
+        // 把刚才的接口类注册到名为HTMLOUT的JavaScript接口
+        mWebView.addJavascriptInterface(script, "HTMLOUT");
 
-            // 必须在loadUrl之前设置WebViewClient
-            mWebView.setWebViewClient(new WebViewClient() {
+        // 必须在loadUrl之前设置WebViewClient
+        mWebView.setWebViewClient(new WebViewClient() {
 
-                @Override
-                public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                    super.onReceivedHttpError(view, request, errorResponse);
-                    listener.onError();
-                }
+            //@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+//                if (!request.isForMainFrame() && request.getUrl().getPath().endsWith("/favicon.ico") ) {
+//                    //Log.e(TAG,"favicon.ico 请求错误"+errorResponse.getStatusCode()+errorResponse.getReasonPhrase());
+//                } else {
+//                    // TODO:  具体可根据返回状态码做相应处理
+//                    listener.onError();
+//                }
 
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    // 这里可以过滤一下url
-                    super.onPageFinished(view, url);
-                    view.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
-                }
-            });
-        }
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // 这里可以过滤一下url
+                super.onPageFinished(view, url);
+                view.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
+            }
+        });
+
         return mWebView;
     }
 
@@ -94,7 +102,8 @@ public class NetHelperImpl implements NetHelper {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mWebView.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
+                if (mWebView != null)
+                    mWebView.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
             }
         });
     }
@@ -134,12 +143,6 @@ public class NetHelperImpl implements NetHelper {
         return Flowable.create(new FlowableOnSubscribe<String[]>() {
             @Override
             public void subscribe(final FlowableEmitter<String[]> e) throws Exception {
-                try {
-                    Document document = Jsoup.connect(Url.URL + hrefUrl).get();
-
-                }catch (Exception e1){
-
-                }
                 OkGo.<String>get(Url.URL + hrefUrl)
                         .tag(this)
                         .execute(new StringCallback() {

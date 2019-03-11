@@ -9,6 +9,7 @@ import com.tsdm.angelanime.di.module.AppModule;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.model.db.DBHelper;
 import com.tsdm.angelanime.model.net.NetHelper;
+import com.tsdm.angelanime.model.operate.OperateHelper;
 import com.tsdm.angelanime.model.prefs.PreferencesHelper;
 
 import javax.inject.Singleton;
@@ -32,4 +33,6 @@ public interface AppComponent {
     PreferencesHelper getPreferencesHelper();
 
     NetHelper getNetHelper();
+
+    OperateHelper getOperateHelper();
 }

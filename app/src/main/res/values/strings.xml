@@ -20,5 +20,5 @@
     <string name="parse_error">数据解析失败</string>
     <string name="net_error">Net Error</string>
     <string name="reply">共%s条回复</string>
-    <string name="can_not_reply">此板块暂时无法评论</string>
+    <string name="no_reply">来抢个沙发吧！</string>
 </resources>

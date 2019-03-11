@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.detail.mvp;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
@@ -22,7 +23,6 @@ import javax.inject.Inject;
 
 import io.reactivex.functions.Function;
 
-import static com.tsdm.angelanime.utils.Constants.ERROR;
 import static com.tsdm.angelanime.utils.Constants.OK;
 
 /**
@@ -125,9 +125,14 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
             Element commentList = document.getElementById("comment_list");
             Elements url = commentList.select("iframe[src]");
             if (url.isEmpty()){
-                mDataManagerModel.reLoad();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDataManagerModel.reLoad();
+                    }
+                },500);
+
             }else {
-                mDataManagerModel.release();
                 //列表
                 List<String> playList = new ArrayList<>();
                 List<String> playListTitle = new ArrayList<>();
@@ -202,8 +207,5 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
         }catch (Exception e){
             listener.onParseError();
         }
-
-
-
     }
 }

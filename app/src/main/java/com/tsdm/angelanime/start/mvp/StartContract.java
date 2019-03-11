@@ -1,5 +1,6 @@
 package com.tsdm.angelanime.start.mvp;
 
+import android.app.Activity;
 import android.view.View;
 
 import com.tsdm.angelanime.base.BasePresenter;
@@ -15,6 +16,6 @@ public interface StartContract {
         void toMain();
     }
     interface Presenter extends BasePresenter<View>{
-        void getHtml(WebResponseListener listener);
+        void getHtml(Activity activity, WebResponseListener listener);
     }
 }

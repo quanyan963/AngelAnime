@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.model;
 
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tsdm.angelanime.bean.History;
@@ -8,6 +9,7 @@ import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.model.db.DBHelper;
 import com.tsdm.angelanime.model.net.NetHelper;
+import com.tsdm.angelanime.model.operate.OperateHelper;
 import com.tsdm.angelanime.model.prefs.PreferencesHelper;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -21,16 +23,18 @@ import io.reactivex.Flowable;
  * Created by Mr.Quan on 2018/4/17.
  */
 
-public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
+public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,OperateHelper {
     private DBHelper mDBDbHelper;
     private PreferencesHelper mPreferencesHelper;
     private NetHelper mNetHelper;
+    private OperateHelper mOperateHelper;
 
     public DataManagerModel(DBHelper mDBDbHelper, PreferencesHelper
-            mPreferencesHelper, NetHelper mNetHelper) {
+            mPreferencesHelper, NetHelper mNetHelper, OperateHelper mOperateHelper) {
         this.mDBDbHelper = mDBDbHelper;
         this.mPreferencesHelper = mPreferencesHelper;
         this.mNetHelper = mNetHelper;
+        this.mOperateHelper = mOperateHelper;
     }
 
     @Override
@@ -126,5 +130,10 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper {
     @Override
     public void deleteHistory(int position) {
         mDBDbHelper.deleteHistory(position);
+    }
+
+    @Override
+    public void requestPermissions(Activity activity, String[] permissions, OnPermissionsListener permissionsListener) {
+        mOperateHelper.requestPermissions(activity, permissions, permissionsListener);
     }
 }

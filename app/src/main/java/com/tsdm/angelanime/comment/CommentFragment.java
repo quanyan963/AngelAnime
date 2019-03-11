@@ -19,6 +19,7 @@ import com.tsdm.angelanime.bean.event.Comment;
 import com.tsdm.angelanime.comment.mvp.CommentContract;
 import com.tsdm.angelanime.comment.mvp.CommentPresenter;
 import com.tsdm.angelanime.utils.Url;
+import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -36,13 +37,15 @@ import static com.tsdm.angelanime.utils.Constants.RETRY;
  * Created by Mr.Quan on 2019/2/15.
  */
 
-public class CommentFragment extends MvpBaseFragment<CommentPresenter> implements CommentContract.View, WebResponseListener {
+public class CommentFragment extends MvpBaseFragment<CommentPresenter> implements
+        CommentContract.View, WebResponseListener, CommentAdapter.OnLikeClickListener {
     @BindView(R.id.rlv_comment_list)
     RecyclerView rlvCommentList;
     @BindView(R.id.tv_hint)
     TextView tvHint;
     private CommentAdapter commentAdapter;
-    //private WebView mWebView;
+    private int position;
+    private String action;
 
     @Override
     protected void initInject() {
@@ -56,22 +59,6 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void init() {
-//        mWebView = new WebView(getContext());
-//        WebSettings settings = mWebView.getSettings();
-//        // 此方法需要启用JavaScript
-//        settings.setJavaScriptEnabled(true);
-//
-//        // 把刚才的接口类注册到名为HTMLOUT的JavaScript接口
-//        mWebView.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
-//
-//        // 必须在loadUrl之前设置WebViewClient
-//        mWebView.setWebViewClient(new WebViewClient() {
-//            @Override
-//            public void onPageFinished(WebView view, String url) {
-//                // 这里可以过滤一下url
-//                view.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
-//            }
-//        });
         startShimmer();
         rlvCommentList.setHasFixedSize(true);
         rlvCommentList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -81,10 +68,38 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
     }
 
     @Override
-    public void getReply(ReplyList replyList) {
-        if (replyList != null){
+    public void getReply(final ReplyList replyList) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (replyList.getTotal() == 0){
+                    rlvCommentList.setVisibility(View.GONE);
+                    tvHint.setVisibility(View.VISIBLE);
+                    tvHint.setText(R.string.no_reply);
+                }else {
+                    tvHint.setVisibility(View.GONE);
+                    rlvCommentList.setVisibility(View.VISIBLE);
+                    commentAdapter.setData(replyList.getData());
+                }
+            }
+        });
+    }
 
-        }
+    @Override
+    public void ok() {
+        commentAdapter.reFlush(position,action);
+    }
+
+    @Override
+    public void onLikeClick(int position, String id, String action) {
+        this.position = position;
+        this.action = action;
+        presenter.getLike(id,action,this);
+    }
+
+    @Override
+    public void onReplyClick(int position) {
+
     }
 
     class MyJavaScriptInterface {
@@ -92,14 +107,12 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
         @SuppressWarnings("unused")
         public void processHTML(String html) {
             // 在这里处理html源码
-            presenter.getReply(html);
-
-
+            presenter.getReply(html, CommentFragment.this);
         }
     }
 
     private void initListener() {
-
+        commentAdapter.setLikeClickListener(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -112,8 +125,6 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
                 tvHint.setVisibility(View.GONE);
                 presenter.getWebHtml(comment.getUrl() + Url.COMMENT_END,CommentFragment
                         .this,getContext(),new MyJavaScriptInterface());
-//                mWebView.loadUrl(comment.getUrl() +
-//                        Url.COMMENT_END);
             }else {
                 rlvCommentList.setVisibility(View.GONE);
                 tvHint.setVisibility(View.VISIBLE);

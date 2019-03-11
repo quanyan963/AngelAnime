@@ -8,6 +8,8 @@ import com.tsdm.angelanime.model.db.DBHelper;
 import com.tsdm.angelanime.model.db.DBHelperImpl;
 import com.tsdm.angelanime.model.net.NetHelper;
 import com.tsdm.angelanime.model.net.NetHelperImpl;
+import com.tsdm.angelanime.model.operate.OperateHelper;
+import com.tsdm.angelanime.model.operate.OperateHelperImpl;
 import com.tsdm.angelanime.model.prefs.PreferencesHelper;
 import com.tsdm.angelanime.model.prefs.PreferencesHelperImpl;
 
@@ -54,9 +56,15 @@ public class AppModule {
 
     @Provides
     @Singleton
+    OperateHelper provideOperateHelper(OperateHelperImpl operateHelper) {
+        return operateHelper;
+    }
+
+    @Provides
+    @Singleton
     DataManagerModel provideDataManagerModel(DBHelperImpl dbHelper,
                                              PreferencesHelperImpl preferencesHelper,
-                                             NetHelperImpl netHelper) {
-        return new DataManagerModel(dbHelper, preferencesHelper,netHelper);
+                                             NetHelperImpl netHelper, OperateHelperImpl operateHelper) {
+        return new DataManagerModel(dbHelper, preferencesHelper,netHelper,operateHelper);
     }
 }

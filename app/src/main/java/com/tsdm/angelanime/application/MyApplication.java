@@ -3,7 +3,6 @@ package com.tsdm.angelanime.application;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Environment;
 
 import com.lzy.okgo.OkGo;
@@ -29,13 +28,14 @@ public class MyApplication extends Application {
     private static MyApplication sInstance;
     private List<Activity> mActivityList;
     private static AppComponent mAppComponent;
-    private static String path = Environment.getExternalStorageDirectory().getPath() + "/Tsdm";
-    private static File file = new File(path);
+    private static String path = Environment.getExternalStorageDirectory().getPath() + "/tsdm";
+    private static File file;
     private static ImageLoaderConfiguration config;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        file = new File(path);
         OkGo.getInstance().init(this);
         if (sInstance == null) {
             sInstance = this;

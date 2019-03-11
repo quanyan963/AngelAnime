@@ -16,12 +16,16 @@ public interface CommentContract {
     interface View extends BaseView{
 
         void getReply(ReplyList replyList);
+
+        void ok();
     }
 
     interface Presenter extends BasePresenter<View>{
 
-        void getReply(String html);
+        void getReply(String html, WebResponseListener listener);
 
         void getWebHtml(String s, WebResponseListener listener, Context context, Object script);
+
+        void getLike(String id, String action, WebResponseListener listener);
     }
 }

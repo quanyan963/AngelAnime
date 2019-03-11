@@ -30,28 +30,40 @@
         style="@style/main_tv"
         android:layout_width="match_parent"
         android:textSize="@dimen/dp_12_x"
+        android:layout_marginTop="@dimen/dp_8_y"
         android:paddingLeft="@dimen/dp_8_x"
         android:paddingRight="@dimen/dp_8_x"
         app:layout_constraintTop_toBottomOf="@+id/tv_name"
         />
-    <TextView
-        android:id="@+id/tv_unlike"
-        style="@style/main_tv"
-        android:textColor="@color/low_grey"
-        android:textSize="@dimen/dp_10_x"
-        app:layout_constraintTop_toBottomOf="@+id/tv_message"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="@dimen/dp_8_x"
-        android:drawableLeft="@drawable/dislike" />
-    <TextView
-        android:id="@+id/tv_like"
-        style="@style/main_tv"
-        android:textColor="@color/low_grey"
-        android:textSize="@dimen/dp_10_x"
-        app:layout_constraintTop_toBottomOf="@+id/tv_message"
-        app:layout_constraintRight_toLeftOf="@+id/tv_unlike"
-        android:layout_marginRight="@dimen/dp_16_x"
-        android:drawableLeft="@drawable/like"/>
+    <RelativeLayout
+        android:id="@+id/rl_like"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_message">
+        <TextView
+            android:id="@+id/tv_unlike"
+            style="@style/main_tv"
+            android:textColor="@color/low_grey"
+            android:textSize="@dimen/dp_12_x"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_8_x"
+            android:drawableLeft="@drawable/unlike"
+            android:layout_marginBottom="@dimen/dp_8_y"
+            android:gravity="center"
+            android:drawablePadding="@dimen/dp_6_y" />
+        <TextView
+            android:id="@+id/tv_like"
+            style="@style/main_tv"
+            android:textColor="@color/low_grey"
+            android:textSize="@dimen/dp_12_x"
+            android:layout_toLeftOf="@+id/tv_unlike"
+            android:layout_marginRight="@dimen/dp_16_x"
+            android:drawableLeft="@drawable/like"
+            android:layout_marginBottom="@dimen/dp_8_y"
+            android:gravity="center"
+            android:drawablePadding="@dimen/dp_6_y" />
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/rl_reply"
@@ -60,13 +72,15 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8_x"
         android:layout_marginRight="@dimen/dp_8_x"
-        app:layout_constraintTop_toBottomOf="@+id/tv_unlike">
+        app:layout_constraintTop_toBottomOf="@+id/rl_like"
+        app:layout_constraintBottom_toTopOf="@+id/v_line"
+        android:layout_marginBottom="@dimen/dp_8_y"
+        android:background="@drawable/grey_rectangle_bg">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rlv_top_reply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8_x"
-            android:layout_marginRight="@dimen/dp_8_x">
+            android:layout_margin="@dimen/dp_8_y">
 
         </android.support.v7.widget.RecyclerView>
         <TextView
@@ -76,7 +90,14 @@
             android:textSize="@dimen/dp_12_x"
             android:textColor="@color/colorAccent"
             android:layout_below="@+id/rlv_top_reply"
-            android:text="@string/reply"/>
+            android:text="@string/reply"
+            android:layout_marginLeft="@dimen/dp_8_y"
+            android:layout_marginBottom="@dimen/dp_8_y"/>
     </RelativeLayout>
+
+    <View
+        android:id="@+id/v_line"
+        style="@style/main_line"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

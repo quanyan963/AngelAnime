@@ -51,7 +51,7 @@ public class StartActivity extends MvpBaseActivity<StartPresenter> implements St
 
     @Override
     public void init() {
-        presenter.getHtml(this);
+        presenter.getHtml(this,this);
         Animation start = new AlphaAnimation(0.0f, 1.0f);
         start.setDuration(1000);
         //保持结束状态
@@ -162,6 +162,6 @@ public class StartActivity extends MvpBaseActivity<StartPresenter> implements St
         hideSnackBar();
         slShimmer.recomputeViewAttributes(tvHint);
         slShimmer.startShimmerAnimation();
-        presenter.getHtml(this);
+        presenter.getHtml(this,this);
     }
 }

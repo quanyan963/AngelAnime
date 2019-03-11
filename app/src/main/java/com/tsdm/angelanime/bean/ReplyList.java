@@ -9,14 +9,18 @@ import java.util.List;
 
 public class ReplyList implements Serializable {
     private int total;
-    private List<ReplyDetail> data;
+    private List<ReplyItem> data;
 
     public ReplyList() {
     }
 
-    public ReplyList(int total, List<ReplyDetail> data) {
+    public ReplyList(int total, List<ReplyItem> data) {
         this.total = total;
         this.data = data;
+    }
+
+    public ReplyList(int total) {
+        this.total = total;
     }
 
     public int getTotal() {
@@ -27,11 +31,11 @@ public class ReplyList implements Serializable {
         this.total = total;
     }
 
-    public List<ReplyDetail> getData() {
+    public List<ReplyItem> getData() {
         return data;
     }
 
-    public void setData(List<ReplyDetail> data) {
+    public void setData(List<ReplyItem> data) {
         this.data = data;
     }
 }
