@@ -18,9 +18,9 @@ import io.reactivex.disposables.Disposable;
 
 public interface NetHelper {
 
-    void getWebHtml(String s, WebResponseListener listener, Context context,Object script);
+    void getWebHtml(String s, WebResponseListener listener, Context context,Object script, String name);
 
-    void reLoad();
+    //void reLoad(String name);
 
     void release();
 

@@ -35,6 +35,7 @@ import butterknife.Unbinder;
 import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 import static com.tsdm.angelanime.utils.Constants.LIKE;
 import static com.tsdm.angelanime.utils.Constants.OK;
+import static com.tsdm.angelanime.utils.Constants.REPLY;
 import static com.tsdm.angelanime.utils.Constants.RETRY;
 
 /**
@@ -69,6 +70,7 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
         rlvCommentList.setLayoutManager(new LinearLayoutManager(getContext()));
         commentAdapter = new CommentAdapter(getContext());
         rlvCommentList.setAdapter(commentAdapter);
+        commentAdapter.setLoading(6);
         initListener();
     }
 
@@ -135,7 +137,7 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
                 rlvCommentList.setVisibility(View.VISIBLE);
                 tvHint.setVisibility(View.GONE);
                 presenter.getWebHtml(comment.getUrl() + Url.COMMENT_END,CommentFragment
-                        .this,getContext(),new MyJavaScriptInterface());
+                        .this,getContext(),new MyJavaScriptInterface(),REPLY);
             }else {
                 rlvCommentList.setVisibility(View.GONE);
                 tvHint.setVisibility(View.VISIBLE);

@@ -24,7 +24,7 @@ public interface CommentContract {
 
         void getReply(String html, WebResponseListener listener);
 
-        void getWebHtml(String s, WebResponseListener listener, Context context, Object script);
+        void getWebHtml(String s, WebResponseListener listener, Context context, Object script, String name);
 
         void getLike(String id, String action, WebResponseListener listener);
     }

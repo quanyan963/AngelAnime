@@ -25,7 +25,7 @@ public interface AnimationDetailContract {
 
         //void getDetail(String url, WebResponseListener listener);
 
-        void getDetail(String s, WebResponseListener listener, Context context, Object script);
+        void getDetail(String s, WebResponseListener listener, Context context, Object script, String name);
 
         void getPlayUrl(int position, WebResponseListener listener);
 

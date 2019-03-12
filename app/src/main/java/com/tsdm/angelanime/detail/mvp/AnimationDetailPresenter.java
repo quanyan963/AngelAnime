@@ -34,6 +34,9 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 
     private DataManagerModel mDataManagerModel;
     private List<String> mListData;
+//    private String mName;
+    private boolean hasFinish;
+
     @Inject
     public AnimationDetailPresenter(DataManagerModel mDataManagerModel) {
         this.mDataManagerModel = mDataManagerModel;
@@ -60,8 +63,9 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 //    }
 
     @Override
-    public void getDetail(String s, WebResponseListener listener, Context context, Object script) {
-        mDataManagerModel.getWebHtml(s, listener, context, script);
+    public void getDetail(String s, WebResponseListener listener, Context context, Object script, String name) {
+//        mName = name;
+        mDataManagerModel.getWebHtml(s, listener, context, script, name);
     }
 
     @Override
@@ -125,14 +129,14 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
             Element commentList = document.getElementById("comment_list");
             Elements url = commentList.select("iframe[src]");
             if (url.isEmpty()){
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDataManagerModel.reLoad();
-                    }
-                },500);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mDataManagerModel.reLoad(mName);
+//                    }
+//                },500);
 
-            }else {
+            }else if (!hasFinish){
                 //列表
                 List<String> playList = new ArrayList<>();
                 List<String> playListTitle = new ArrayList<>();
@@ -203,6 +207,8 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                     view.getDetail(new AnimationDetail(title,imgUrl,updateTime,statue,introduction,
                             Url.URL+url.get(0).attr("src"),OK));
                 }
+                mDataManagerModel.release();
+                hasFinish = true;
             }
         }catch (Exception e){
             listener.onParseError();

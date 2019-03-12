@@ -24,4 +24,6 @@ public class Constants {
     public static final String NEW_ANIM_URL = "/xinfandongman/";
     public static final String AMERICA = "美剧";
     public static final String AMERICA_URL = "/meiju/";
+    public static final String INTRO = "INTRO";
+    public static final String REPLY = "REPLY";
 }

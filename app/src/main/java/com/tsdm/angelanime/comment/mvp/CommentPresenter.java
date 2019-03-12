@@ -30,8 +30,9 @@ import javax.inject.Inject;
 public class CommentPresenter extends RxPresenter<CommentContract.View> implements
         CommentContract.Presenter {
     private DataManagerModel mDataManagerModel;
-    private long mCount;
+//    private long mCount;
     private int mTotal;
+//    private String mName;
 
     @Inject
     public CommentPresenter(DataManagerModel mDataManagerModel) {
@@ -48,20 +49,20 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
             Elements pager = element.getElementsByClass("pager");
             List<ReplyItem> items = new ArrayList<>();
             if (rows.isEmpty()){
-                mCount += 1;
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCount > 5){
-                            view.getReply(new ReplyList(0));
-                        }else {
-                            mDataManagerModel.reLoad();
-                        }
-
-                    }
-                },500);
+//                mCount += 1;
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mCount > 5){
+//                            view.getReply(new ReplyList(0));
+//                        }else {
+//                            mDataManagerModel.reLoad(mName);
+//                        }
+//
+//                    }
+//                },500);
             }else {
-                mCount = 0;
+//                mCount = 0;
                 pager = pager.select("a[href]");
                 //总页数
                 if (pager.select("a[href]").isEmpty()){
@@ -115,8 +116,9 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
     }
 
     @Override
-    public void getWebHtml(String s, WebResponseListener listener, Context context, Object script) {
-        mDataManagerModel.getWebHtml(s, listener, context, script);
+    public void getWebHtml(String s, WebResponseListener listener, Context context, Object script, String name) {
+//        mName = name;
+        mDataManagerModel.getWebHtml(s, listener, context, script, name);
     }
 
     @Override

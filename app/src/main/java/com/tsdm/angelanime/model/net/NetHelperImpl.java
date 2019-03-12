@@ -3,6 +3,7 @@ package com.tsdm.angelanime.model.net;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -55,14 +56,14 @@ public class NetHelperImpl implements NetHelper {
     }
 
     @SuppressLint("JavascriptInterface")
-    private WebView initWebView(Context context, Object script, final WebResponseListener listener){
+    private WebView initWebView(Context context, Object script, final String name, final WebResponseListener listener){
         mWebView = new WebView(context);
         WebSettings settings = mWebView.getSettings();
         // 此方法需要启用JavaScript
         settings.setJavaScriptEnabled(true);
 
         // 把刚才的接口类注册到名为HTMLOUT的JavaScript接口
-        mWebView.addJavascriptInterface(script, "HTMLOUT");
+        mWebView.addJavascriptInterface(script, name);
 
         // 必须在loadUrl之前设置WebViewClient
         mWebView.setWebViewClient(new WebViewClient() {
@@ -81,10 +82,17 @@ public class NetHelperImpl implements NetHelper {
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onPageFinished(final WebView view, String url) {
                 // 这里可以过滤一下url
                 super.onPageFinished(view, url);
-                view.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
+                Log.e("test", "onPageFinished: "+System.currentTimeMillis()+"+++"+name);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e("test", "run: "+System.currentTimeMillis()+"+++"+name);
+                        view.loadUrl("javascript:window."+name+".processHTML(document.documentElement.outerHTML);");
+                    }
+                },600);
             }
         });
 
@@ -93,20 +101,20 @@ public class NetHelperImpl implements NetHelper {
 
 
     @Override
-    public void getWebHtml(String s, WebResponseListener listener, Context context,Object script) {
-        initWebView(context,script,listener).loadUrl(s);
+    public void getWebHtml(String s, WebResponseListener listener, Context context,Object script, String name) {
+        initWebView(context,script,name,listener).loadUrl(s);
     }
 
-    @Override
-    public void reLoad() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mWebView != null)
-                    mWebView.loadUrl("javascript:window.HTMLOUT.processHTML(document.documentElement.outerHTML);");
-            }
-        });
-    }
+//    @Override
+//    public void reLoad(final String name) {
+////        runOnUiThread(new Runnable() {
+////            @Override
+////            public void run() {
+////                if (mWebView != null)
+////                    mWebView.loadUrl("javascript:window."+name+".processHTML(document.documentElement.outerHTML);");
+////            }
+////        });
+//    }
 
     @Override
     public void release() {

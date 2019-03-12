@@ -40,6 +40,7 @@ import tv.danmaku.ijk.media.exo2.ExoPlayerCacheManager;
 
 import static com.tsdm.angelanime.utils.Constants.ERROR;
 import static com.tsdm.angelanime.utils.Constants.HREF_URL;
+import static com.tsdm.angelanime.utils.Constants.INTRO;
 import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
 import static com.tsdm.angelanime.utils.Constants.OK;
 import static com.tsdm.angelanime.utils.Constants.RETRY;
@@ -122,7 +123,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         vpDetail.setAdapter(detAdapter);
         tlCard.setupWithViewPager(vpDetail);
         tlCard.setTabsFromPagerAdapter(detAdapter);
-        presenter.getDetail(url, this,this,new MyJavaScriptInterface());
+        presenter.getDetail(url, this,this,new MyJavaScriptInterface(),INTRO);
         spPlayer.setRotateViewAuto(true);
         spPlayer.setLockLand(true);
         spPlayer.setNeedShowWifiTip(true);
@@ -287,6 +288,6 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         EventBus.getDefault().post(new AnimationDetail(RETRY));
         EventBus.getDefault().post(new Comment(RETRY));
         hideSnackBar();
-        presenter.getDetail(url, this,this,new MyJavaScriptInterface());
+        presenter.getDetail(url, this,this,new MyJavaScriptInterface(),INTRO);
     }
 }
