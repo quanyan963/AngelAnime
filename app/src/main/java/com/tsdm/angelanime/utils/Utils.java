@@ -62,6 +62,7 @@ public class Utils {
                 , drawable, context.getTheme());
         vectorDrawableCompat.setTint(context.getResources().getColor(color));
         return vectorDrawableCompat;
+
     }
 
     /**
