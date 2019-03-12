@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.cache.CacheFactory;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
-import com.shuyu.gsyvideoplayer.video.GSYADVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseActivity;
@@ -26,7 +25,6 @@ import com.tsdm.angelanime.detail.mvp.AnimationDetailPresenter;
 import com.tsdm.angelanime.introduction.IntroductionActivity;
 import com.tsdm.angelanime.introduction.IntroductionFragment;
 import com.tsdm.angelanime.utils.StatusBarUtils;
-import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.EventBus;

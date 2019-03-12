@@ -4,16 +4,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Environment;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Properties;
 
 /**
  * Created by Mr.Quan on 2018/11/28.

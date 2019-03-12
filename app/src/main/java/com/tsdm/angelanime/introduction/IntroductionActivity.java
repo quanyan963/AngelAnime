@@ -1,7 +1,6 @@
 package com.tsdm.angelanime.introduction;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
@@ -10,7 +9,6 @@ import com.tsdm.angelanime.introduction.mvp.IntroductionAContract;
 import com.tsdm.angelanime.introduction.mvp.IntroductionAPresenter;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
 

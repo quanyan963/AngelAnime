@@ -3,7 +3,6 @@ package com.tsdm.angelanime.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,18 +10,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.tsdm.angelanime.R;
-import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.main.ScheduleAdapter;
 import com.tsdm.angelanime.widget.DividerItemDecoration;

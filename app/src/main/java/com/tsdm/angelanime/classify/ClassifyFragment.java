@@ -13,15 +13,12 @@ import com.tsdm.angelanime.base.MvpBaseFragment;
 import com.tsdm.angelanime.bean.ClassifyDetail;
 import com.tsdm.angelanime.classify.mvp.ClassifyContract;
 import com.tsdm.angelanime.classify.mvp.ClassifyPresenter;
-import com.tsdm.angelanime.main.MainFragment;
 import com.tsdm.angelanime.main.MainFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by Mr.Quan on 2019/1/11.

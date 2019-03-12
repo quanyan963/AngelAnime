@@ -1,9 +1,6 @@
 package com.tsdm.angelanime.di.component;
 
 
-
-import android.content.Context;
-
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.di.module.AppModule;
 import com.tsdm.angelanime.model.DataManagerModel;

@@ -15,13 +15,13 @@ import com.tsdm.angelanime.bean.ReplyItem;
 import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.supercharge.shimmerlayout.ShimmerLayout;
 
-import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 import static com.tsdm.angelanime.utils.Constants.LIKE;
 import static com.tsdm.angelanime.utils.Constants.UNLIKE;
 
@@ -37,7 +37,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     //加载中动画
     private final int TYPE_LOADING = 3;
     // 当前加载状态，默认为加载完成
-    private int loadState = 2;
+    private int loadState = 1;
     // 正在加载
     public final int LOADING = 1;
     // 加载完成
@@ -58,6 +58,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public CommentAdapter(Context mContext) {
         this.mContext = mContext;
+        data = new ArrayList<>();
     }
 
     @Override
@@ -94,14 +95,12 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setData(List<ReplyItem> data) {
-        this.data = data;
+        this.data.addAll(data);
         loading = 0;
         notifyDataSetChanged();
     }
 
-    public void reFlush(int position, String action) {
-        this.action = action;
-        this.position = position;
+    public void reFlush() {
         if (action == LIKE) {
             data.get(position).setAgree();
         } else {
@@ -175,12 +174,16 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             searchViewHolder.tvLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CommentAdapter.this.position = position;
+                    CommentAdapter.this.action = LIKE;
                     listener.onLikeClick(position, data.get(position).getId(), LIKE);
                 }
             });
             searchViewHolder.tvUnlike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CommentAdapter.this.position = position;
+                    CommentAdapter.this.action = UNLIKE;
                     listener.onLikeClick(position, data.get(position).getId(), UNLIKE);
                 }
             });
@@ -215,9 +218,19 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         } else {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
-            loadingViewHolder.slMessage.startShimmerAnimation();
-            loadingViewHolder.slName.startShimmerAnimation();
-            loadingViewHolder.slTime.startShimmerAnimation();
+            switch (loadState){
+                case LOADING:
+                    loadingViewHolder.slMessage.startShimmerAnimation();
+                    loadingViewHolder.slName.startShimmerAnimation();
+                    loadingViewHolder.slTime.startShimmerAnimation();
+                    break;
+                case LOADING_END:
+                    loadingViewHolder.slMessage.stopShimmerAnimation();
+                    loadingViewHolder.slName.stopShimmerAnimation();
+                    loadingViewHolder.slTime.stopShimmerAnimation();
+                    break;
+            }
+
         }
 
     }
@@ -240,6 +253,11 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return data == null ? 1 : data.size() + 1;
         }
 
+    }
+
+    public void changeShimmer(int loadState){
+        this.loadState = loadState;
+        notifyDataSetChanged();
     }
 
     public void setLoadState(int loadState) {

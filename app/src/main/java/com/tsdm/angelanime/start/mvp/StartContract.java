@@ -1,7 +1,6 @@
 package com.tsdm.angelanime.start.mvp;
 
 import android.app.Activity;
-import android.view.View;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;

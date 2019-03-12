@@ -1,7 +1,5 @@
 package com.tsdm.angelanime.main.mvp;
 
-import android.view.View;
-
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.RecentlyDetail;

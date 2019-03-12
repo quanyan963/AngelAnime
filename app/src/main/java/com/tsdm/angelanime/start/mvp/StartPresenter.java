@@ -1,9 +1,7 @@
 package com.tsdm.angelanime.start.mvp;
 
 import android.app.Activity;
-import android.view.View;
 
-import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
@@ -15,17 +13,14 @@ import com.tsdm.angelanime.utils.RxUtil;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.reactivestreams.Publisher;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Scheduler;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 

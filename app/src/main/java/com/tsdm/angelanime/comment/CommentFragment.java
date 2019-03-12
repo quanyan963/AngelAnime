@@ -7,9 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
@@ -19,21 +16,18 @@ import com.tsdm.angelanime.bean.ReplyList;
 import com.tsdm.angelanime.bean.event.Comment;
 import com.tsdm.angelanime.comment.mvp.CommentContract;
 import com.tsdm.angelanime.comment.mvp.CommentPresenter;
-import com.tsdm.angelanime.utils.Url;
-import com.tsdm.angelanime.widget.DividerItemDecoration;
+import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
-import static com.tsdm.angelanime.utils.Constants.LIKE;
 import static com.tsdm.angelanime.utils.Constants.OK;
 import static com.tsdm.angelanime.utils.Constants.REPLY;
 import static com.tsdm.angelanime.utils.Constants.RETRY;
@@ -49,9 +43,8 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
     @BindView(R.id.tv_hint)
     TextView tvHint;
     private CommentAdapter commentAdapter;
-    private int position;
-    private String action;
     private List<ReplyItem> data;
+    private boolean isScrollLoading;
 
     @Override
     protected void initInject() {
@@ -65,7 +58,8 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void init() {
-        startShimmer();
+        isScrollLoading = false;
+        data = new ArrayList<>();
         rlvCommentList.setHasFixedSize(true);
         rlvCommentList.setLayoutManager(new LinearLayoutManager(getContext()));
         commentAdapter = new CommentAdapter(getContext());
@@ -86,8 +80,8 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
                 }else {
                     tvHint.setVisibility(View.GONE);
                     rlvCommentList.setVisibility(View.VISIBLE);
-                    data = replyList.getData();
-                    commentAdapter.setData(data);
+                    data.addAll(replyList.getData());
+                    commentAdapter.setData(replyList.getData());
                 }
             }
         });
@@ -95,18 +89,16 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void ok() {
-        if (action == LIKE){
-            data.get(position).setAgree();
-        }else {
-            data.get(position).setDisagree();
-        }
-        commentAdapter.reFlush(position,action);
+        commentAdapter.reFlush();
+    }
+
+    @Override
+    public void setScrollLoading() {
+        isScrollLoading = true;
     }
 
     @Override
     public void onLikeClick(int position, String id, String action) {
-        this.position = position;
-        this.action = action;
         presenter.getLike(id,action,this);
     }
 
@@ -126,45 +118,63 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     private void initListener() {
         commentAdapter.setLikeClickListener(this);
+        rlvCommentList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                presenter.onStateChanged(recyclerView, newState, commentAdapter,
+                        CommentFragment.this,getContext(), new MyJavaScriptInterface());
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                presenter.onScrolled(dy > 0);
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventFragmentThread(final Comment comment) {
 
         if (comment.getState() == OK) {
-            stopShimmer();
             if (!comment.getUrl().isEmpty()) {
                 rlvCommentList.setVisibility(View.VISIBLE);
                 tvHint.setVisibility(View.GONE);
-                presenter.getWebHtml(comment.getUrl() + Url.COMMENT_END,CommentFragment
+                presenter.getWebHtml(comment.getUrl(),CommentFragment
                         .this,getContext(),new MyJavaScriptInterface(),REPLY);
             }else {
                 rlvCommentList.setVisibility(View.GONE);
                 tvHint.setVisibility(View.VISIBLE);
             }
         } else if (comment.getState() == RETRY) {
-            startShimmer();
+            commentAdapter.changeShimmer(commentAdapter.LOADING);
         } else {
-            stopShimmer();
+            commentAdapter.changeShimmer(commentAdapter.LOADING_END);
         }
-
-    }
-
-    private void startShimmer() {
-
-    }
-
-    private void stopShimmer() {
 
     }
 
     @Override
     public void onError() {
-
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isScrollLoading){
+                    commentAdapter.setLoadState(commentAdapter.LOADING_ERROR);
+                }else {
+                    ((AnimationDetailActivity)getActivity()).onError();
+                }
+            }
+        });
     }
 
     @Override
     public void onParseError() {
-
+        if (isScrollLoading){
+            commentAdapter.setLoadState(commentAdapter.PARSE_ERROR);
+        }else {
+            ((AnimationDetailActivity)getActivity()).onParseError();
+        }
     }
 }

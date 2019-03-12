@@ -2,11 +2,7 @@ package com.tsdm.angelanime.model.net;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -14,7 +10,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.tsdm.angelanime.bean.TopEight;
@@ -27,7 +22,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +31,6 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-
-import static android.support.constraint.Constraints.TAG;
-import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
-import static com.tsdm.angelanime.utils.Constants.URL_HOME;
 
 /**
  * Created by Mr.Quan on 2018/11/12.
@@ -85,11 +75,10 @@ public class NetHelperImpl implements NetHelper {
             public void onPageFinished(final WebView view, String url) {
                 // 这里可以过滤一下url
                 super.onPageFinished(view, url);
-                Log.e("test", "onPageFinished: "+System.currentTimeMillis()+"+++"+name);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e("test", "run: "+System.currentTimeMillis()+"+++"+name);
                         view.loadUrl("javascript:window."+name+".processHTML(document.documentElement.outerHTML);");
                     }
                 },600);

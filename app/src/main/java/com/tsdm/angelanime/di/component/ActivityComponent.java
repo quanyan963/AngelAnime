@@ -2,7 +2,6 @@ package com.tsdm.angelanime.di.component;
 
 import android.app.Activity;
 
-
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.di.module.ActivityModule;
 import com.tsdm.angelanime.di.scope.ActivityScope;

@@ -1,7 +1,6 @@
 package com.tsdm.angelanime.classify;
 
 import android.os.Bundle;
-import android.support.annotation.UiThread;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,23 +11,18 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.tsdm.angelanime.R;
-import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.MvpBaseFragment;
 import com.tsdm.angelanime.bean.SearchList;
 import com.tsdm.angelanime.classify.mvp.ClassifyDContract;
 import com.tsdm.angelanime.classify.mvp.ClassifyDPresenter;
 import com.tsdm.angelanime.search.SearchAdapter;
-import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import java.util.List;
 
 import butterknife.BindView;
-
-import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 
 /**
  * Created by Mr.Quan on 2019/1/12.
@@ -106,7 +100,8 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                presenter.onStateChanged(recyclerView, newState, adapter, ClassifyDetailFragment.this,getContext());
+                presenter.onStateChanged(recyclerView, newState, adapter,
+                        ClassifyDetailFragment.this,getContext());
             }
 
             @Override

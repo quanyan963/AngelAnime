@@ -2,11 +2,7 @@ package com.tsdm.angelanime.main;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
@@ -16,7 +12,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tsdm.angelanime.R;
-import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.MvpBaseActivity;
 import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.classify.ClassifyFragment;

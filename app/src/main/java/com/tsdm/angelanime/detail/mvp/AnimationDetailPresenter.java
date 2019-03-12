@@ -1,12 +1,12 @@
 package com.tsdm.angelanime.detail.mvp;
 
 import android.content.Context;
-import android.os.Handler;
 
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.model.DataManagerModel;
+import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.RxUtil;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
@@ -123,8 +123,8 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 
     @Override
     public void getData(String html, WebResponseListener listener) {
+        Document document = Jsoup.parse(html);
         try {
-            Document document = Jsoup.parse(html);
             //拼接评论地址用
             Element commentList = document.getElementById("comment_list");
             Elements url = commentList.select("iframe[src]");
@@ -211,7 +211,11 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                 hasFinish = true;
             }
         }catch (Exception e){
-            listener.onParseError();
+            if (document.body().toString().contains(Constants.NOT_FOUND)){
+                listener.onError();
+            }else {
+                listener.onParseError();
+            }
         }
     }
 }

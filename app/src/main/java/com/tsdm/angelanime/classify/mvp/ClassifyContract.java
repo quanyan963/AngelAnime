@@ -3,7 +3,6 @@ package com.tsdm.angelanime.classify.mvp;
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.ClassifyDetail;
-import com.tsdm.angelanime.bean.SearchList;
 
 import java.util.List;
 

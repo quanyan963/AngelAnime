@@ -2,7 +2,6 @@ package com.tsdm.angelanime.di.component;
 
 import android.app.Activity;
 
-
 import com.tsdm.angelanime.classify.ClassifyDetailFragment;
 import com.tsdm.angelanime.classify.ClassifyFragment;
 import com.tsdm.angelanime.comment.CommentFragment;

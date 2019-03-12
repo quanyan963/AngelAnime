@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
-import com.tsdm.angelanime.widget.DividerItemDecoration;
 
 import java.util.List;
 

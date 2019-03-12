@@ -3,7 +3,6 @@ package com.tsdm.angelanime.bean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.jsoup.select.Elements;
 
 import java.io.Serializable;
 
