@@ -3,9 +3,11 @@ package com.tsdm.angelanime.detail;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -106,6 +108,9 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
 
     @Override
     public void init() {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int width = dm.widthPixels;
+        spPlayer.setLayoutParams(new ConstraintLayout.LayoutParams(width, (int) (width/16f*9)+2));
         Intent intent = getIntent();
         url = intent.getStringExtra(HREF_URL);
         //position = intent.getIntExtra(POSITION,0);

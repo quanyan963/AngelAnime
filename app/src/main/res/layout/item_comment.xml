@@ -48,6 +48,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_8_x"
             android:drawableLeft="@drawable/unlike"
+            android:layout_marginTop="@dimen/dp_4_y"
             android:layout_marginBottom="@dimen/dp_8_y"
             android:gravity="center"
             android:drawablePadding="@dimen/dp_6_y" />
@@ -59,6 +60,7 @@
             android:layout_toLeftOf="@+id/tv_unlike"
             android:layout_marginRight="@dimen/dp_16_x"
             android:drawableLeft="@drawable/like"
+            android:layout_marginTop="@dimen/dp_4_y"
             android:layout_marginBottom="@dimen/dp_8_y"
             android:gravity="center"
             android:drawablePadding="@dimen/dp_6_y" />

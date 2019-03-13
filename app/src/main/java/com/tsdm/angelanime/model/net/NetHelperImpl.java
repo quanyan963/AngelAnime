@@ -22,6 +22,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -219,8 +220,10 @@ public class NetHelperImpl implements NetHelper {
             @Override
             public void subscribe(FlowableEmitter<Document> e) {
                 try {
-                    String  gb2312 = new String(s.getBytes("iso-8859-1"),"gb2312");
-                    String word = new String(gb2312.getBytes("gb2312"),"utf-8");
+                    //String  gb2312 = new String(s.getBytes(),"gb2312");
+
+                    //String word = new String(gb2312.getBytes("gb2312"),"utf-8");
+                    String word = URLEncoder.encode(s,"gb2312");
                     e.onNext(Jsoup.connect(Url.SEARCH + Url.PAGE + page + Url.AND
                             + Url.SEARCH_WORD + word + Url.AND + Url.End).get());
                     e.onComplete();

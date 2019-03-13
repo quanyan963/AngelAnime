@@ -340,11 +340,13 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
         pbLoading.setVisibility(View.VISIBLE);
         rlNetError.setVisibility(View.GONE);
         rlvSearchList.setVisibility(View.GONE);
+        rlDataError.setVisibility(View.GONE);
     }
 
     @Override
     public void retry() {
         rlNetError.setVisibility(View.GONE);
+        rlDataError.setVisibility(View.GONE);
         pbLoading.setVisibility(View.VISIBLE);
         presenter.search(null, this);
     }

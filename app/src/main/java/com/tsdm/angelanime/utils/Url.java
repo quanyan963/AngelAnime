@@ -7,7 +7,7 @@ package com.tsdm.angelanime.utils;
 public class Url {
     public static final String URL = "http://fodm.net";
     public static final String HOME_PAGE = "/index.html";
-    public static final String SEARCH = "http://s-dm.com/search.asp?";//searchword
+    public static final String SEARCH = "http://fodm.net/search.asp?";//searchword
     public static final String SEARCH_WORD = "searchword=";
     public static final String PAGE = "page=";
     public static final String AND = "&";
