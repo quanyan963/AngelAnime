@@ -182,4 +182,9 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
     public void onScrolled(boolean b) {
         isSlidingUpward = b;
     }
+
+    @Override
+    public void submit(String text, WebResponseListener listener) {
+
+    }
 }

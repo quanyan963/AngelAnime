@@ -6,17 +6,26 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.main.ScheduleAdapter;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
+import com.tsdm.angelanime.widget.listener.CaptchaListener;
 
 import java.util.List;
 
@@ -99,6 +108,30 @@ public class AlertUtils {
         }
     }
 
+    public static void showCaptChaDialog(Context context, final CaptchaListener listener){
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View view = layoutInflater.inflate(R.layout.dialog_captcha, null);
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(view)
+                .create();
+        dialog.setCanceledOnTouchOutside(true);
+        ImageView ivCaptcha = (ImageView) view.findViewById(R.id.iv_captcha);
+        EditText etCaptcha = (EditText) view.findViewById(R.id.et_captcha);
+        MyApplication.getImageLoader(context).displayImage(Url.COMMENT+Url.CAPTCHA+Math.random(),ivCaptcha);
+        //ivCaptcha.setImageURI(Uri.parse());
+        etCaptcha.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE){
+                    listener.submit();
+                    return true;
+                }
+                return false;
+            }
+        });
+        dialog.setCancelable(true);
+        dialog.show();
+    }
     public static void showAlertDialog(Context context, int viewId,
                                        DialogInterface.OnClickListener listener0,
                                        DialogInterface.OnClickListener listener1) {

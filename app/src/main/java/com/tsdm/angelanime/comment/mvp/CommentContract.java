@@ -2,11 +2,13 @@ package com.tsdm.angelanime.comment.mvp;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.ReplyList;
 import com.tsdm.angelanime.comment.CommentAdapter;
+import com.tsdm.angelanime.comment.CommentFragment;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 /**
@@ -35,5 +37,7 @@ public interface CommentContract {
                             WebResponseListener listener, Context context, Object script);
 
         void onScrolled(boolean b);
+
+        void submit(String text, WebResponseListener listener);
     }
 }

@@ -3,10 +3,12 @@ package com.tsdm.angelanime.comment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
@@ -17,6 +19,9 @@ import com.tsdm.angelanime.bean.event.Comment;
 import com.tsdm.angelanime.comment.mvp.CommentContract;
 import com.tsdm.angelanime.comment.mvp.CommentPresenter;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
+import com.tsdm.angelanime.utils.AlertUtils;
+import com.tsdm.angelanime.utils.HiddenAnimUtils;
+import com.tsdm.angelanime.widget.listener.CaptchaListener;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -26,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 import static com.tsdm.angelanime.utils.Constants.OK;
@@ -37,12 +44,19 @@ import static com.tsdm.angelanime.utils.Constants.RETRY;
  */
 
 public class CommentFragment extends MvpBaseFragment<CommentPresenter> implements
-        CommentContract.View, WebResponseListener, CommentAdapter.OnLikeClickListener {
+        CommentContract.View, WebResponseListener, CommentAdapter.OnLikeClickListener, CaptchaListener {
     @BindView(R.id.rlv_comment_list)
     RecyclerView rlvCommentList;
     @BindView(R.id.tv_hint)
     TextView tvHint;
+    @BindView(R.id.rlv_reply_list)
+    RecyclerView rlvReplyList;
+    @BindView(R.id.et_con)
+    EditText etCon;
+    @BindView(R.id.tv_submit)
+    TextView tvSubmit;
     private CommentAdapter commentAdapter;
+    private ReplyListAdapter replyAdapter;
     private List<ReplyItem> data;
     private boolean isScrollLoading;
 
@@ -65,6 +79,13 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
         commentAdapter = new CommentAdapter(getContext());
         rlvCommentList.setAdapter(commentAdapter);
         commentAdapter.setLoading(6);
+
+        rlvReplyList.setHasFixedSize(true);
+        rlvReplyList.setLayoutManager(new LinearLayoutManager(getContext()));
+        replyAdapter = new ReplyListAdapter(getContext());
+        rlvReplyList.setAdapter(replyAdapter);
+
+
         initListener();
     }
 
@@ -73,11 +94,11 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (replyList.getTotal() == 0){
+                if (replyList.getTotal() == 0) {
                     rlvCommentList.setVisibility(View.GONE);
                     tvHint.setVisibility(View.VISIBLE);
                     tvHint.setText(R.string.no_reply);
-                }else {
+                } else {
                     tvHint.setVisibility(View.GONE);
                     rlvCommentList.setVisibility(View.VISIBLE);
                     data.addAll(replyList.getData());
@@ -99,12 +120,29 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void onLikeClick(int position, String id, String action) {
-        presenter.getLike(id,action,this);
+        presenter.getLike(id, action, this);
     }
 
     @Override
     public void onReplyClick(int position) {
+        replyAdapter.setData(data.get(position));
+        rlvCommentList.setVisibility(View.GONE);
+        HiddenAnimUtils.newInstance(getContext(),rlvReplyList,rlvCommentList.getHeight()).hidOrShow();
+    }
 
+    public boolean hidReply(){
+        if (rlvReplyList.getVisibility() == View.VISIBLE){
+            rlvCommentList.setVisibility(View.VISIBLE);
+            HiddenAnimUtils.newInstance(getContext(),rlvReplyList,rlvCommentList.getHeight()).hidOrShow();
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
+    public void submit() {
+        presenter.submit(tvSubmit.getText().toString(),this);
     }
 
     class MyJavaScriptInterface {
@@ -123,13 +161,22 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 presenter.onStateChanged(recyclerView, newState, commentAdapter,
-                        CommentFragment.this,getContext(), new MyJavaScriptInterface());
+                        CommentFragment.this, getContext(), new MyJavaScriptInterface());
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 presenter.onScrolled(dy > 0);
+            }
+        });
+
+        tvSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String key = tvSubmit.getText().toString().trim();
+                if (!TextUtils.isEmpty(key))
+                    AlertUtils.showCaptChaDialog(getContext(), CommentFragment.this);
             }
         });
     }
@@ -141,9 +188,9 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
             if (!comment.getUrl().isEmpty()) {
                 rlvCommentList.setVisibility(View.VISIBLE);
                 tvHint.setVisibility(View.GONE);
-                presenter.getWebHtml(comment.getUrl(),CommentFragment
-                        .this,getContext(),new MyJavaScriptInterface(),REPLY);
-            }else {
+                presenter.getWebHtml(comment.getUrl(), CommentFragment
+                        .this, getContext(), new MyJavaScriptInterface(), REPLY);
+            } else {
                 rlvCommentList.setVisibility(View.GONE);
                 tvHint.setVisibility(View.VISIBLE);
             }
@@ -160,10 +207,10 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (isScrollLoading){
+                if (isScrollLoading) {
                     commentAdapter.setLoadState(commentAdapter.LOADING_ERROR);
-                }else {
-                    ((AnimationDetailActivity)getActivity()).onError();
+                } else {
+                    ((AnimationDetailActivity) getActivity()).onError();
                 }
             }
         });
@@ -171,10 +218,10 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void onParseError() {
-        if (isScrollLoading){
+        if (isScrollLoading) {
             commentAdapter.setLoadState(commentAdapter.PARSE_ERROR);
-        }else {
-            ((AnimationDetailActivity)getActivity()).onParseError();
+        } else {
+            ((AnimationDetailActivity) getActivity()).onParseError();
         }
     }
 }

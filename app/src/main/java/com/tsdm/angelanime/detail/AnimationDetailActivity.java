@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -249,6 +250,10 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void onBackPressed() {
         if (GSYVideoManager.backFromWindowFull(this)) {
             return;
+        }else if (tlCard.getSelectedTabPosition() == 1){
+            if (!((CommentFragment)detAdapter.getItem(tlCard.getSelectedTabPosition())).hidReply()){
+                return;
+            }
         }
         super.onBackPressed();
     }
