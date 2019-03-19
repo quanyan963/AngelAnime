@@ -4,9 +4,11 @@ package com.tsdm.angelanime.model;
 import android.app.Activity;
 import android.content.Context;
 
+import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.model.db.DBHelper;
 import com.tsdm.angelanime.model.net.NetHelper;
 import com.tsdm.angelanime.model.operate.OperateHelper;
@@ -45,6 +47,16 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
     @Override
     public void setPlayPosition(int position) {
 
+    }
+
+    @Override
+    public boolean isFirstIn() {
+        return mPreferencesHelper.isFirstIn();
+    }
+
+    @Override
+    public void setFirstIn(boolean first) {
+        mPreferencesHelper.setFirstIn(first);
     }
 
 //    @Override
@@ -93,6 +105,11 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
     }
 
     @Override
+    public Flowable<String> submit(CommentInput data, WebResponseListener listener) {
+        return mNetHelper.submit(data, listener);
+    }
+
+    @Override
     public void insertTopEight(List<TopEight> value) {
         mDBDbHelper.insertTopEight(value);
     }
@@ -130,6 +147,16 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
     @Override
     public void deleteHistory(int position) {
         mDBDbHelper.deleteHistory(position);
+    }
+
+    @Override
+    public void insertVideoState(VideoState value) {
+        mDBDbHelper.insertVideoState(value);
+    }
+
+    @Override
+    public VideoState getVideoState() {
+        return mDBDbHelper.getVideoState();
     }
 
     @Override

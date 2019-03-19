@@ -10,13 +10,15 @@ import java.util.List;
 public class ReplyList implements Serializable {
     private int total;
     private List<ReplyItem> data;
+    private CommentInput input;
 
     public ReplyList() {
     }
 
-    public ReplyList(int total, List<ReplyItem> data) {
+    public ReplyList(int total, List<ReplyItem> data, CommentInput input) {
         this.total = total;
         this.data = data;
+        this.input = input;
     }
 
     public ReplyList(int total) {
@@ -37,5 +39,13 @@ public class ReplyList implements Serializable {
 
     public void setData(List<ReplyItem> data) {
         this.data = data;
+    }
+
+    public CommentInput getInput() {
+        return input;
+    }
+
+    public void setInput(CommentInput input) {
+        this.input = input;
     }
 }

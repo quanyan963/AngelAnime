@@ -8,11 +8,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.widget.ImageView;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.cache.CacheFactory;
@@ -20,6 +17,7 @@ import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseActivity;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.bean.event.Comment;
 import com.tsdm.angelanime.comment.CommentFragment;
@@ -60,14 +58,14 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     @BindView(R.id.vp_detail)
     ViewPager vpDetail;
     private String url;
-    private String playUrl;
-    private ImageView img;//封面
     private AnimationDetail detail;
     private int position = 0;
     private DetailPagerAdapter detAdapter;
     private List<String> titleList;
     private List<Fragment> viewList;
     private boolean isFirst = true;
+    private long playPosition;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,31 +73,6 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         StatusBarUtils.setWindowStatusBarColor(this,R.color.black);
 
         super.onCreate(savedInstanceState);
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-//        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View
-//                .OnSystemUiVisibilityChangeListener() {
-//            @Override
-//            public void onSystemUiVisibilityChange(int i) {
-//                switch (i){
-//                    case 0:
-//                        if (spPlayer.isIfCurrentIsFullscreen()){
-//                            getWindow().getDecorView().setSystemUiVisibility(View
-//                                    .SYSTEM_UI_FLAG_FULLSCREEN);
-//                        }else {
-//                            com.samluys.statusbar.StatusBarUtils.transparencyBar(
-//                                    AnimationDetailActivity.this,true);
-//                            getWindow().getDecorView().postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    getWindow().getDecorView().setSystemUiVisibility(View
-//                                            .SYSTEM_UI_FLAG_FULLSCREEN);
-//                                }
-//                            },2000);
-//                        }
-//                        break;
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -132,21 +105,8 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         spPlayer.setLockLand(true);
         spPlayer.setNeedShowWifiTip(true);
         spPlayer.setSeekRatio(5);
-        spPlayer.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        if (view.getY() < 20){
-                            return false;
-                        }else {
-                            return true;
-                        }
-                    default:
-                        return true;
-                }
-            }
-        });
+        spPlayer.setNeedShowWifiTip(true);
+
     }
 
     private void initGSYView() {
@@ -207,7 +167,11 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void getPlayUrl(String s) {
         spPlayer.setUp(s, true, detail.getTitle()
                 + detail.getPlayListTitle().get(position));
+
         spPlayer.startPlayLogic();
+        if (playPosition != 0){
+            GSYVideoManager.instance().seekTo(playPosition);
+        }
 
     }
 
@@ -267,6 +231,9 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     @Override
     protected void onPause() {
         super.onPause();
+        presenter.insertVideoState(new VideoState(detail.getTitle(),position,
+                GSYVideoManager.instance().getCurrentPosition()));
+        GSYVideoManager.instance().getCurrentPosition();
         GSYVideoManager.onPause();
     }
 
@@ -276,12 +243,13 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         super.onDestroy();
     }
 
-    public void onResultFromFragment(int position){
+    public void onResultFromFragment(int position, Long playPosition){
         if (position == -1){
             GSYVideoManager.onPause();
             startActivity(new Intent(this, IntroductionActivity.class).
                     putExtra(INTRODUCTION,detail.getIntroduction()));
         }else {
+            this.playPosition = playPosition;
             if (this.position != position){
                 this.position = position;
                 GSYVideoManager.releaseAllVideos();

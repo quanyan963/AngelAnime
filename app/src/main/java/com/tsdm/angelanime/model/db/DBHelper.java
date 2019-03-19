@@ -4,6 +4,7 @@ package com.tsdm.angelanime.model.db;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.bean.VideoState;
 
 import java.util.List;
 
@@ -27,4 +28,8 @@ public interface DBHelper {
     void deleteAllHistory();
 
     void deleteHistory(int position);
+
+    void insertVideoState(VideoState value);
+
+    VideoState getVideoState();
 }

@@ -35,7 +35,8 @@
         <activity android:name=".detail.AnimationDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:hardwareAccelerated="true"/>
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="stateUnchanged"/>
         <activity android:name=".introduction.IntroductionActivity"
             android:configChanges="layoutDirection|locale"
             android:screenOrientation="portrait"/>

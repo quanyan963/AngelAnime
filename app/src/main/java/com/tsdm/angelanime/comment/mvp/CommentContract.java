@@ -6,6 +6,7 @@ import android.text.Editable;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
+import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.ReplyList;
 import com.tsdm.angelanime.comment.CommentAdapter;
 import com.tsdm.angelanime.comment.CommentFragment;
@@ -38,6 +39,6 @@ public interface CommentContract {
 
         void onScrolled(boolean b);
 
-        void submit(String text, WebResponseListener listener);
+        void submit(CommentInput input, WebResponseListener listener, Context context);
     }
 }

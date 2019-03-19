@@ -6,6 +6,7 @@ import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.model.operate.OperateHelper;
 import com.tsdm.angelanime.utils.Constants;
@@ -38,6 +39,11 @@ public class StartPresenter extends RxPresenter<StartContract.View> implements S
 
     @Override
     public void getHtml(Activity activity, final WebResponseListener listener) {
+        if (mManagerModel.isFirstIn()){
+            //initSql
+            mManagerModel.insertVideoState(new VideoState("",-1,-1l));
+            mManagerModel.setFirstIn(false);
+        }
         final String[] permissions = new String[]{Constants.permissions[2]};
         mManagerModel.requestPermissions(activity, permissions, new OperateHelper.OnPermissionsListener() {
             @Override

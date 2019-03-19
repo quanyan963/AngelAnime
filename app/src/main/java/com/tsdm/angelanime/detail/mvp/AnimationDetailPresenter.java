@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.utils.Constants;
@@ -217,5 +218,10 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                 listener.onParseError();
             }
         }
+    }
+
+    @Override
+    public void insertVideoState(VideoState value) {
+        mDataManagerModel.insertVideoState(value);
     }
 }

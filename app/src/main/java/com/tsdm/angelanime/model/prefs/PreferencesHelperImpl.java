@@ -16,16 +16,7 @@ public class PreferencesHelperImpl implements PreferencesHelper {
     private static final String SP_NAME = "my_sp";
     private SharedPreferences mSharedPreferences;
     public static final String PLAY_POSITION = "play_position";
-    public static final String IS_CYCLE = "is_cycle";
-    public static final String IS_RANDOM = "is_random";
-    public static final String RADIO_VALUE = "radio_value";
-    public static final String RADIO_PLAY_STATE = "radio_play_state";
     public static final String IS_FIRST_APP = "is_first_app";
-    public static final String FIRST_ALARM = "first_alarm";
-    public static final String SECOND_ALARM = "second_alarm";
-    public static final String MAIN_VOLUME = "main_volume";
-    public static final String ALARM_POSITION = "alarm_position";
-    public static final String INIT_DIALOG = "init_dialog";
 
     @Inject
     public PreferencesHelperImpl() {
@@ -41,6 +32,16 @@ public class PreferencesHelperImpl implements PreferencesHelper {
     @Override
     public void setPlayPosition(int position) {
         mSharedPreferences.edit().putInt(PLAY_POSITION, position).apply();
+    }
+
+    @Override
+    public boolean isFirstIn() {
+        return mSharedPreferences.getBoolean(IS_FIRST_APP,true);
+    }
+
+    @Override
+    public void setFirstIn(boolean first) {
+        mSharedPreferences.edit().putBoolean(IS_FIRST_APP,first).apply();
     }
 
 //    @Override

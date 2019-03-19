@@ -6,6 +6,7 @@ import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.dao.DaoMaster;
 import com.tsdm.angelanime.bean.dao.DaoSession;
 
@@ -75,5 +76,16 @@ public class DBHelperImpl implements DBHelper {
     public void deleteHistory(int position) {
         History history = mDaoSession.getHistoryDao().loadAll().get(position);
         mDaoSession.getHistoryDao().delete(history);
+    }
+
+    @Override
+    public void insertVideoState(VideoState value) {
+        mDaoSession.getVideoStateDao().deleteAll();
+        mDaoSession.getVideoStateDao().insert(value);
+    }
+
+    @Override
+    public VideoState getVideoState() {
+        return mDaoSession.getVideoStateDao().loadAll().get(0);
     }
 }

@@ -3,6 +3,7 @@ package com.tsdm.angelanime.model.net;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -12,6 +13,7 @@ import android.webkit.WebViewClient;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
@@ -47,7 +49,7 @@ public class NetHelperImpl implements NetHelper {
     }
 
     @SuppressLint("JavascriptInterface")
-    private WebView initWebView(Context context, Object script, final String name, final WebResponseListener listener){
+    private WebView initWebView(Context context, Object script, final String name, final WebResponseListener listener) {
         mWebView = new WebView(context);
         WebSettings settings = mWebView.getSettings();
         // 此方法需要启用JavaScript
@@ -80,9 +82,9 @@ public class NetHelperImpl implements NetHelper {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        view.loadUrl("javascript:window."+name+".processHTML(document.documentElement.outerHTML);");
+                        view.loadUrl("javascript:window." + name + ".processHTML(document.documentElement.outerHTML);");
                     }
-                },600);
+                }, 600);
             }
         });
 
@@ -91,8 +93,8 @@ public class NetHelperImpl implements NetHelper {
 
 
     @Override
-    public void getWebHtml(String s, WebResponseListener listener, Context context,Object script, String name) {
-        initWebView(context,script,name,listener).loadUrl(s);
+    public void getWebHtml(String s, WebResponseListener listener, Context context, Object script, String name) {
+        initWebView(context, script, name, listener).loadUrl(s);
     }
 
 //    @Override
@@ -130,7 +132,7 @@ public class NetHelperImpl implements NetHelper {
                             img.get(i).attr("src")));
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             listener.onParseError();
         }
         return mData;
@@ -160,7 +162,7 @@ public class NetHelperImpl implements NetHelper {
                                                         String[] body = response.body().split("\\$");
                                                         e.onNext(body);
                                                         e.onComplete();
-                                                    }catch (Exception e){
+                                                    } catch (Exception e) {
                                                         listener.onParseError();
                                                     }
 
@@ -171,7 +173,7 @@ public class NetHelperImpl implements NetHelper {
                                                     listener.onError();
                                                 }
                                             });
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     listener.onParseError();
                                 }
                             }
@@ -200,7 +202,7 @@ public class NetHelperImpl implements NetHelper {
                                     Document document = Jsoup.parse(response.body());
                                     e.onNext(document);
                                     e.onComplete();
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     listener.onParseError();
                                 }
                             }
@@ -223,7 +225,7 @@ public class NetHelperImpl implements NetHelper {
                     //String  gb2312 = new String(s.getBytes(),"gb2312");
 
                     //String word = new String(gb2312.getBytes("gb2312"),"utf-8");
-                    String word = URLEncoder.encode(s,"gb2312");
+                    String word = URLEncoder.encode(s, "gb2312");
                     e.onNext(Jsoup.connect(Url.SEARCH + Url.PAGE + page + Url.AND
                             + Url.SEARCH_WORD + word + Url.AND + Url.End).get());
                     e.onComplete();
@@ -243,10 +245,65 @@ public class NetHelperImpl implements NetHelper {
                 try {
                     e.onNext(Jsoup.connect(s).get());
                     e.onComplete();
-                }catch (IOException e1){
+                } catch (IOException e1) {
                     listener.onError();
                 }
             }
-        },BackpressureStrategy.BUFFER);
+        }, BackpressureStrategy.BUFFER);
+    }
+
+    @Override
+    public Flowable<String> submit(final CommentInput data, final WebResponseListener listener) {
+        return Flowable.create(new FlowableOnSubscribe<String>() {
+            @Override
+            public void subscribe(final FlowableEmitter<String> e) {
+//                try {
+//                    Document document = Jsoup.connect(Url.COMMENT+Url.REPLY)
+//                            .data("ctype",data.getcType())
+//                            .data("cparent", data.getcParent())
+//                            .data("gid", data.getGid())
+//                            .data("uid", data.getUid())
+//                            .data("uname", data.getuName())
+//                            .data("unick", data.getuNick())
+//                            .data("utmpname", data.getuTmpName())
+//                            .data("ppath", data.getpPath())
+//                            .data("pvote", data.getpVote())
+//                            .data("anony", data.getaNony())
+//                            .data("captcha", data.getCaptcha())
+//                            .data("talkwhat", data.getTalkWhat()).post();
+//
+//                    Log.e("document", document.toString());
+//
+//                } catch (IOException e1) {
+//                    e1.printStackTrace();
+//                }
+                OkGo.<String>post(Url.COMMENT+Url.REPLY)
+                        .tag(this)
+                        .params("ctype", data.getcType())
+                        .params("cparent", data.getcParent())
+                        .params("gid", data.getGid())
+                        .params("uid", data.getUid())
+                        .params("uname", data.getuName())
+                        .params("unick", data.getuNick())
+                        .params("utmpname", data.getuTmpName())
+                        .params("ppath", data.getpPath())
+                        .params("pvote", data.getpVote())
+                        .params("anony", data.getaNony())
+                        .params("captcha", data.getCaptcha())
+                        .params("talkwhat", data.getTalkWhat())
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onSuccess(Response<String> response) {
+                                e.onNext(response.body());
+                                e.onComplete();
+                            }
+
+                            @Override
+                            public void onError(Response<String> response) {
+                                listener.onError();
+                            }
+                        });
+            }
+        }, BackpressureStrategy.BUFFER);
     }
 }

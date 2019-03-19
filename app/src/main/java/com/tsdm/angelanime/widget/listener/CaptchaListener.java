@@ -5,5 +5,5 @@ package com.tsdm.angelanime.widget.listener;
  */
 
 public interface CaptchaListener {
-    void submit();
+    void submit(String captcha);
 }

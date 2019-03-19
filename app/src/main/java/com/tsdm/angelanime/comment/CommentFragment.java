@@ -1,5 +1,7 @@
 package com.tsdm.angelanime.comment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,12 +9,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
+import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.ReplyItem;
 import com.tsdm.angelanime.bean.ReplyList;
 import com.tsdm.angelanime.bean.event.Comment;
@@ -21,12 +25,15 @@ import com.tsdm.angelanime.comment.mvp.CommentPresenter;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.utils.AlertUtils;
 import com.tsdm.angelanime.utils.HiddenAnimUtils;
+import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.listener.CaptchaListener;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +66,7 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
     private ReplyListAdapter replyAdapter;
     private List<ReplyItem> data;
     private boolean isScrollLoading;
+    private CommentInput input;
 
     @Override
     protected void initInject() {
@@ -91,6 +99,7 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
 
     @Override
     public void getReply(final ReplyList replyList) {
+        input = replyList.getInput();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -141,8 +150,16 @@ public class CommentFragment extends MvpBaseFragment<CommentPresenter> implement
     }
 
     @Override
-    public void submit() {
-        presenter.submit(tvSubmit.getText().toString(),this);
+    public void submit(String captcha) {
+
+        try {
+            input.setCaptcha(captcha);
+            input.setTalkWhat(URLEncoder.encode(etCon.getText().toString(),"gb2312"));
+        } catch (UnsupportedEncodingException e) {
+            onParseError();
+        }
+        etCon.setText("");
+        //presenter.submit(input,this, getContext());
     }
 
     class MyJavaScriptInterface {

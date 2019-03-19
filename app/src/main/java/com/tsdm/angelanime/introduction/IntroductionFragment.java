@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.introduction.mvp.IntroductionContract;
@@ -67,6 +68,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
     private AnimationDetail detail;
     private IntroductionAdapter listAdapter;
     private int position;
+    private VideoState mVideoState;
 
     @Override
     protected void initInject() {
@@ -80,6 +82,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
 
     @Override
     public void init() {
+        mVideoState = presenter.geVideoState();
         startShimmer();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -91,7 +94,6 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
         listAdapter = new IntroductionAdapter(getContext());
         rlvPlayList.setAdapter(listAdapter);
         initListener();
-
     }
 
     private void initListener() {
@@ -99,14 +101,14 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             @Override
             public void onItemClick(int position) {
                 IntroductionFragment.this.position = position;
-                ((AnimationDetailActivity) getActivity()).onResultFromFragment(position);
+                ((AnimationDetailActivity) getActivity()).onResultFromFragment(position,0l);
                 listAdapter.setPosition(position);
             }
         });
         rlTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((AnimationDetailActivity) getActivity()).onResultFromFragment(-1);
+                ((AnimationDetailActivity) getActivity()).onResultFromFragment(-1,0l);
             }
         });
     }
@@ -130,7 +132,6 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
 
         if (detail.getRequestStatue() == OK) {
             stopShimmer();
-
             ivTitle.setBackgroundResource(0);
             tvName.setBackgroundResource(0);
             tvUpdateTime.setBackgroundResource(0);
@@ -148,12 +149,22 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
                 if (detail.getPlayListTitle().size() == 0) {
                     position = 0;
                 } else {
-                    position = detail.getPlayListTitle().size() - 1;
-                    listAdapter.setPosition(position);
                     listAdapter.addList(detail.getPlayListTitle());
-                    rlvPlayList.scrollToPosition(position);
+                    if (!mVideoState.getTitle().equals("")){
+                        if (detail.getTitle().equals(mVideoState.getTitle())){
+                            position = mVideoState.getListPosition();
+                            listAdapter.setPosition(position);
+                            ((AnimationDetailActivity) getActivity()).
+                                    onResultFromFragment(position,mVideoState.getVideoPosition());
+                        }else {
+                            position = detail.getPlayListTitle().size() - 1;
+                            listAdapter.setPosition(position);
+                        }
+                        rlvPlayList.scrollToPosition(position);
+                    }
                 }
             }
+
             tvName.setText(detail.getTitle());
             tvUpdateTime.setText(detail.getUpdateTime());
             tvIntroduction.setText(detail.getIntroduction());
@@ -180,6 +191,6 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
     public void onPopUpClick(int position) {
         this.position = position;
         listAdapter.setPosition(position);
-        ((AnimationDetailActivity) getActivity()).onResultFromFragment(position);
+        ((AnimationDetailActivity) getActivity()).onResultFromFragment(position,0l);
     }
 }

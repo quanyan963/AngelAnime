@@ -8,4 +8,8 @@ public interface PreferencesHelper {
     int getPlayPosition();
 
     void setPlayPosition(int position);
+
+    boolean isFirstIn();
+
+    void setFirstIn(boolean first);
 }

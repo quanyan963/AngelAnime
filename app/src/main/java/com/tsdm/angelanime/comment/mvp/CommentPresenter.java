@@ -3,10 +3,14 @@ package com.tsdm.angelanime.comment.mvp;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.ReplyDetail;
 import com.tsdm.angelanime.bean.ReplyItem;
 import com.tsdm.angelanime.bean.ReplyList;
@@ -56,7 +60,9 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
             Elements rows = element.getElementsByClass("row");
             Elements menus = element.getElementsByClass("menu");
             Elements pager = element.getElementsByClass("pager");
+            Element input = document.getElementById("form2");
             List<ReplyItem> items = new ArrayList<>();
+            CommentInput commentInput = null;
             if (rows.isEmpty()) {
                 view.getReply(new ReplyList(0));
 //                mCount += 1;
@@ -72,6 +78,20 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
 //                    }
 //                },500);
             } else {
+
+                //评论数据
+                Elements data = input.select("input");
+                commentInput = new CommentInput(data.get(0).attr("value"),
+                        data.get(1).attr("value"),
+                        data.get(2).attr("value"),
+                        data.get(3).attr("value"),
+                        data.get(4).attr("value"),
+                        data.get(5).attr("value"),
+                        data.get(6).attr("value"),
+                        data.get(7).attr("value"),
+                        data.get(8).attr("value"),
+                        data.get(9).attr("value"),
+                        data.get(10).attr("value"), "");
 //                mCount = 0;
                 pager = pager.select("a[href]");
                 //总页数
@@ -117,13 +137,13 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
                     items.add(new ReplyItem(name, time, con, agree[1], Integer.parseInt(agree[2])
                             , Integer.parseInt(disagree[2]), details));
                 }
-                view.getReply(new ReplyList(mTotal, items));
+                view.getReply(new ReplyList(mTotal, items, commentInput));
                 mDataManagerModel.release();
             }
         } catch (Exception e) {
-            if (document.body().toString().contains(Constants.NOT_FOUND)){
+            if (document.body().toString().contains(Constants.NOT_FOUND)) {
                 listener.onError();
-            }else {
+            } else {
                 listener.onParseError();
             }
         }
@@ -184,7 +204,19 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
     }
 
     @Override
-    public void submit(String text, WebResponseListener listener) {
+    public void submit(CommentInput input, WebResponseListener listener, final Context context) {
+        addSubscribe(mDataManagerModel.submit(input,listener)
+            .compose(RxUtil.<String>rxSchedulerHelper())
+            .subscribeWith(new CommonSubscriber<String>(view){
 
+                @Override
+                public void onNext(String s) {
+                    Document document = Jsoup.parse(s);
+                    WebView webView = new WebView(context);
+                    webView.getSettings().setJavaScriptEnabled(true);
+                    webView.loadDataWithBaseURL(null, document.toString()
+                            , "text/html", "gb2312", null);
+                }
+            }));
     }
 }

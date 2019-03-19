@@ -108,22 +108,24 @@ public class AlertUtils {
         }
     }
 
-    public static void showCaptChaDialog(Context context, final CaptchaListener listener){
+    public static void showCaptChaDialog(final Context context, final CaptchaListener listener){
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.dialog_captcha, null);
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        final AlertDialog dialog = new AlertDialog.Builder(context)
                 .setView(view)
                 .create();
         dialog.setCanceledOnTouchOutside(true);
         ImageView ivCaptcha = (ImageView) view.findViewById(R.id.iv_captcha);
-        EditText etCaptcha = (EditText) view.findViewById(R.id.et_captcha);
+        final EditText etCaptcha = (EditText) view.findViewById(R.id.et_captcha);
         MyApplication.getImageLoader(context).displayImage(Url.COMMENT+Url.CAPTCHA+Math.random(),ivCaptcha);
         //ivCaptcha.setImageURI(Uri.parse());
         etCaptcha.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE){
-                    listener.submit();
+                if (i == EditorInfo.IME_ACTION_SEND){
+                    Utils.hideSoftKeyboard(context,etCaptcha);
+                    listener.submit(etCaptcha.getText().toString());
+                    dialog.dismiss();
                     return true;
                 }
                 return false;

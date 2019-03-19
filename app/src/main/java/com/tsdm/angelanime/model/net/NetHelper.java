@@ -2,6 +2,7 @@ package com.tsdm.angelanime.model.net;
 
 import android.content.Context;
 
+import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -32,5 +33,7 @@ public interface NetHelper {
     Flowable<Document> getSearch(int page, String s, WebResponseListener listener);
 
     Flowable<Document> getHtmlResponse(String s, WebResponseListener listener);
+
+    Flowable<String> submit(CommentInput data,  WebResponseListener listener);
 
 }

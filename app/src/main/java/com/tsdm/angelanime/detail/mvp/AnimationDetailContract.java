@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
+import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -32,5 +33,7 @@ public interface AnimationDetailContract {
         void getListUrl(String url, WebResponseListener listener);
 
         void getData(String html, WebResponseListener listener);
+
+        void insertVideoState(VideoState value);
     }
 }
