@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.classify;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
@@ -44,6 +46,8 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
     TextView tvErrorMsg;
     @BindView(R.id.rl_data_error)
     RelativeLayout rlDataError;
+    @BindView(R.id.srl_fresh)
+    SwipeRefreshLayout srlFresh;
 
     private CallBackUrl listener;
     private String url;
@@ -69,7 +73,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
         super.setUserVisibleHint(isVisibleToUser);
         //界面可见并且预加载失败时  显示界面自动从新获取数据
         if (isVisibleToUser) {
-            if (rlNetError != null && rlNetError.getVisibility() == View.VISIBLE){
+            if (rlNetError != null && rlNetError.getVisibility() == View.VISIBLE) {
                 rlNetError.setVisibility(View.GONE);
                 pbLoading.setVisibility(View.VISIBLE);
                 presenter.getClassifyDetail(url, ClassifyDetailFragment.this);
@@ -80,7 +84,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
     @Override
     public void init() {
         isScrollLoading = false;
-
+        srlFresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         rlvAnimationList.setHasFixedSize(true);
         rlvAnimationList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rlvAnimationList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.BOTH_SET,
@@ -101,7 +105,7 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 presenter.onStateChanged(recyclerView, newState, adapter,
-                        ClassifyDetailFragment.this,getContext());
+                        ClassifyDetailFragment.this, getContext());
             }
 
             @Override
@@ -120,6 +124,16 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
                 presenter.getClassifyDetail(url, ClassifyDetailFragment.this);
             }
         });
+
+        srlFresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.reSetPage();
+                presenter.getClassifyDetail(listener
+                        .SendMessageValue(ClassifyDetailFragment.this)
+                        ,ClassifyDetailFragment.this);
+            }
+        });
     }
 
     public void setListener(CallBackUrl listener) {
@@ -131,9 +145,12 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (isScrollLoading){
+                if (isScrollLoading) {
                     adapter.setLoadState(adapter.LOADING_ERROR);
-                }else {
+                } else if (srlFresh.isRefreshing()){
+                    srlFresh.setRefreshing(false);
+                    Toast.makeText(getContext(), R.string.network_error, Toast.LENGTH_SHORT).show();
+                } else {
                     pbLoading.setVisibility(View.GONE);
                     rlNetError.setVisibility(View.VISIBLE);
                 }
@@ -143,9 +160,12 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
 
     @Override
     public void onParseError() {
-        if (isScrollLoading){
+        if (isScrollLoading) {
             adapter.setLoadState(adapter.PARSE_ERROR);
-        }else {
+        } else if (srlFresh.isRefreshing()){
+            srlFresh.setRefreshing(false);
+            Toast.makeText(getContext(), R.string.parse_error, Toast.LENGTH_SHORT).show();
+        } else {
             pbLoading.setVisibility(View.GONE);
             rlDataError.setVisibility(View.VISIBLE);
             tvErrorMsg.setText(R.string.parse_error);
@@ -154,15 +174,21 @@ public class ClassifyDetailFragment extends MvpBaseFragment<ClassifyDPresenter> 
 
     @Override
     public void getList(final List<SearchList> searchList) {
-        if (searchList.size() != 0) {
-            loadingView.setVisibility(View.GONE);
+        if (srlFresh.isRefreshing()){
+            srlFresh.setRefreshing(false);
             detail = searchList;
-            adapter.setList(searchList);
-            rlvAnimationList.setVisibility(View.VISIBLE);
-        } else {
-            pbLoading.setVisibility(View.GONE);
-            rlDataError.setVisibility(View.VISIBLE);
-            tvErrorMsg.setText(R.string.no_data);
+            adapter.reSetList(searchList);
+        }else {
+            if (searchList.size() != 0) {
+                loadingView.setVisibility(View.GONE);
+                detail = searchList;
+                adapter.setList(searchList);
+                rlvAnimationList.setVisibility(View.VISIBLE);
+            } else {
+                pbLoading.setVisibility(View.GONE);
+                rlDataError.setVisibility(View.VISIBLE);
+                tvErrorMsg.setText(R.string.no_data);
+            }
         }
     }
 

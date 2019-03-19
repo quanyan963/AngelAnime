@@ -63,6 +63,11 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
+    public void reSetList(List<SearchList> mList) {
+        this.mList = mList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (position + 1 == getItemCount()) {

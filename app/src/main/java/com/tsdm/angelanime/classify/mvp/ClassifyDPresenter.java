@@ -41,6 +41,10 @@ public class ClassifyDPresenter extends RxPresenter<ClassifyDContract.View> impl
         this.mDataManagerModel = mDataManagerModel;
     }
 
+    public void reSetPage(){
+        page = 1;
+    }
+
     @Override
     public void getClassifyDetail(String url, final WebResponseListener listener) {
         this.url = url;

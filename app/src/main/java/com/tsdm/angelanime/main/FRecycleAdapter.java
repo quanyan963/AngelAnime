@@ -31,6 +31,11 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
         this.mContext = mContext;
     }
 
+    public void setData(RecentlyDetail data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public FRecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

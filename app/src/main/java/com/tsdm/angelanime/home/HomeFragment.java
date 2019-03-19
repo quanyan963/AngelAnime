@@ -108,4 +108,9 @@ public class HomeFragment extends MvpBaseFragment<HomePresenter> implements Home
         int position = pagerAdapter.getItemPosition(fragment);
         return detailList.get(position);
     }
+
+    @Override
+    public int sendPosition(MainFragment fragment) {
+        return pagerAdapter.getItemPosition(fragment);
+    }
 }
