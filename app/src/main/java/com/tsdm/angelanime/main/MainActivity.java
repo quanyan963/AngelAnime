@@ -3,13 +3,18 @@ package com.tsdm.angelanime.main;
 
 import android.content.Intent;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseActivity;
@@ -37,31 +42,36 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     RadioButton rbClassify;
     @BindView(R.id.rg_navigation)
     RadioGroup rgNavigation;
+    @BindView(R.id.nav_view)
+    NavigationView navView;
+    @BindView(R.id.dl_main)
+    DrawerLayout dlMain;
 
     private List<List<ScheduleDetail>> mScheduleList;
 
     private Fragment mCurrentFragment;
     private HomeFragment mHomeFragment;
     private ClassifyFragment mClassifyFragment;
+
     @Override
     public void init() {
         initToolbar();
         setNavigationIcon(false);
-
-        setRightImg(true, Utils.changeSVGColor(R.drawable.search,R.color.white
-                ,this), this);
         mScheduleList = presenter.getSchedule();
         initListener();
         mCurrentFragment = new ClassifyFragment();
         rgNavigation.check(R.id.rb_home);
-
     }
-
-
 
 
     private void initListener() {
         rgNavigation.setOnCheckedChangeListener(this);
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return presenter.onNavigationSelected(item,MainActivity.this);
+            }
+        });
     }
 
     //ToolbarLeft
@@ -93,7 +103,8 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
 
     @Override
     public void onClick(View view) {
-        presenter.onClick(view);
+        presenter.onClick(mCurrentFragment, view);
+
 
     }
 
@@ -109,12 +120,12 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
             mHomeFragment = new HomeFragment();
         }
         switchContent(mCurrentFragment, mHomeFragment);
-        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(R.drawable.home
-                ,R.color.colorAccent,this),
-                null,null);
-        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(
-                R.drawable.classify,R.color.low_grey,this),
-                null,null);
+        rbHome.setCompoundDrawablesWithIntrinsicBounds(null, Utils.changeSVGColor(R.drawable.home
+                , R.color.colorAccent, this),
+                null, null);
+        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null, Utils.changeSVGColor(
+                R.drawable.classify, R.color.low_grey, this),
+                null, null);
     }
 
     @Override
@@ -123,18 +134,35 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
             mClassifyFragment = new ClassifyFragment();
         }
         switchContent(mCurrentFragment, mClassifyFragment);
-        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(
-                R.drawable.classify,R.color.colorAccent,this),
-                null,null);
-        rbHome.setCompoundDrawablesWithIntrinsicBounds(null,Utils.changeSVGColor(
-                R.drawable.home,R.color.low_grey,this),
-                null,null);
+        rbClassify.setCompoundDrawablesWithIntrinsicBounds(null, Utils.changeSVGColor(
+                R.drawable.classify, R.color.colorAccent, this),
+                null, null);
+        rbHome.setCompoundDrawablesWithIntrinsicBounds(null, Utils.changeSVGColor(
+                R.drawable.home, R.color.low_grey, this),
+                null, null);
 
+    }
+
+    @Override
+    public void toSettingView() {
+        dlMain.openDrawer(navView);
+    }
+
+    @Override
+    public void showView() {
+        Toast.makeText(this, R.string.delete_complete, Toast.LENGTH_SHORT).show();
     }
 
     private void switchContent(Fragment from, Fragment to) {
         if (mCurrentFragment != to) {
             mCurrentFragment = to;
+            if (mCurrentFragment instanceof ClassifyFragment) {
+                setRightImg(true, Utils.changeSVGColor(R.drawable.setting, R.color.white
+                        , this), this);
+            } else {
+                setRightImg(true, Utils.changeSVGColor(R.drawable.search, R.color.white
+                        , this), this);
+            }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             if (!to.isAdded()) {
@@ -149,7 +177,7 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
 
     //RadioGroup
     @Override
-    public void onCheckedChanged(RadioGroup radioGroup,@IdRes int i) {
+    public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
         presenter.switchNavView(i);
     }
 }

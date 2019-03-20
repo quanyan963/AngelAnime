@@ -103,10 +103,8 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         presenter.getDetail(url, this,this,new MyJavaScriptInterface(),INTRO);
         spPlayer.setRotateViewAuto(true);
         spPlayer.setLockLand(true);
-        spPlayer.setNeedShowWifiTip(true);
         spPlayer.setSeekRatio(5);
         spPlayer.setNeedShowWifiTip(true);
-
     }
 
     private void initGSYView() {
@@ -167,7 +165,6 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     public void getPlayUrl(String s) {
         spPlayer.setUp(s, true, detail.getTitle()
                 + detail.getPlayListTitle().get(position));
-
         spPlayer.startPlayLogic();
         if (playPosition != 0){
             GSYVideoManager.instance().seekTo(playPosition);

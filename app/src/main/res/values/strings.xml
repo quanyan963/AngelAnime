@@ -22,4 +22,6 @@
     <string name="reply">共%s条回复</string>
     <string name="no_reply">来抢个沙发吧！</string>
     <string name="no_name">匿名发表</string>
+    <string name="delete_cache">清除缓存</string>
+    <string name="delete_complete">缓存数据已清除</string>
 </resources>

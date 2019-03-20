@@ -1,17 +1,10 @@
 package com.tsdm.angelanime.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Path;
-import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.tsdm.angelanime.R;
-import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.utils.Utils;
-import com.youth.banner.loader.ImageLoader;
 import com.youth.banner.loader.ImageLoaderInterface;
 
 /**
@@ -50,12 +43,4 @@ public class GlideImageLoader implements ImageLoaderInterface<RoundImageView> {
     public RoundImageView createImageView(Context context) {
         return new RoundImageView(context);
     }
-
-    //    //清除缓存按钮
-//    public void clearCache(View view){
-//        //清除缓存的方法
-//        ImageLoader.getInstance().clearDiskCache();//清除磁盘缓存
-//        ImageLoader.getInstance().clearMemoryCache();//清除内存缓存
-//        Toast.makeText(this, "清除缓存成功", Toast.LENGTH_SHORT).show();
-//    }
 }

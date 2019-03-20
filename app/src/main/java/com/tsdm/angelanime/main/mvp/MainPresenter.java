@@ -1,13 +1,19 @@
 package com.tsdm.angelanime.main.mvp;
 
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.RxPresenter;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.RecentlyDetail;
 import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.home.HomeFragment;
 import com.tsdm.angelanime.model.DataManagerModel;
 
 import org.jsoup.Jsoup;
@@ -66,11 +72,11 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.iv_right:
-                view.toSearchActivity(v);
-                break;
+    public void onClick(Fragment fragment, View v) {
+        if (fragment instanceof HomeFragment){
+            view.toSearchActivity(v);
+        }else {
+            view.toSettingView();
         }
     }
 
@@ -105,5 +111,18 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
                 view.switchClassify();
                 break;
         }
+    }
+
+    @Override
+    public boolean onNavigationSelected(MenuItem item, Context context) {
+        switch (item.getItemId()){
+            case R.id.cache:
+                MyApplication.getImageLoader(context).clearDiskCache();//清除磁盘缓存
+                MyApplication.getImageLoader(context).clearMemoryCache();//清除内存缓存
+                GSYVideoManager.instance().clearAllDefaultCache(context);//清除video缓存
+                view.showView();
+                break;
+        }
+        return false;
     }
 }

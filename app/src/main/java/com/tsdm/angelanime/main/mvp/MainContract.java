@@ -1,5 +1,9 @@
 package com.tsdm.angelanime.main.mvp;
 
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.view.MenuItem;
+
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
 import com.tsdm.angelanime.bean.RecentlyDetail;
@@ -20,6 +24,10 @@ public interface MainContract {
         void switchHome();
 
         void switchClassify();
+
+        void toSettingView();
+
+        void showView();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -28,10 +36,12 @@ public interface MainContract {
 
         List<RecentlyDetail> getRecently();
 
-        void onClick(android.view.View view);
+        void onClick(Fragment fragment, android.view.View view);
 
         List<List<ScheduleDetail>> getSchedule();
 
         void switchNavView(int id);
+
+        boolean onNavigationSelected(MenuItem item, Context context);
     }
 }
