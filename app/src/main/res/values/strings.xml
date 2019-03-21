@@ -24,4 +24,6 @@
     <string name="no_name">匿名发表</string>
     <string name="delete_cache">清除缓存</string>
     <string name="delete_complete">缓存数据已清除</string>
+    <string name="baidu_download">百度云盘</string>
+    <string name="torrent_download">种子下载</string>
 </resources>

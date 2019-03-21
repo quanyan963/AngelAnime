@@ -1,6 +1,6 @@
 package com.tsdm.angelanime.bean.event;
 
-import android.support.annotation.Nullable;
+import com.tsdm.angelanime.bean.DownloadUrl;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,11 +18,14 @@ public class AnimationDetail implements Serializable {
     private String introduction;
     private List<String> playList;
     private List<String> playListTitle;
+    private List<DownloadUrl> baiduUrls;
+    private List<DownloadUrl> TorrentUrls;
     private String replyUrl;
     private int requestStatue;
 
     public AnimationDetail(String title, String titleImg, String updateTime, String statue,
-                           String introduction, @Nullable List<String> playList,@Nullable List<String> playListTitle,
+                           String introduction, List<String> playList, List<String> playListTitle,
+                           List<DownloadUrl> baiduUrls, List<DownloadUrl> torrentUrls,
                            String replyUrl, int requestStatue) {
         this.title = title;
         this.titleImg = titleImg;
@@ -31,6 +34,8 @@ public class AnimationDetail implements Serializable {
         this.introduction = introduction;
         this.playList = playList;
         this.playListTitle = playListTitle;
+        this.baiduUrls = baiduUrls;
+        TorrentUrls = torrentUrls;
         this.replyUrl = replyUrl;
         this.requestStatue = requestStatue;
     }
@@ -44,6 +49,30 @@ public class AnimationDetail implements Serializable {
         this.introduction = introduction;
         this.replyUrl = replyUrl;
         this.requestStatue = requestStatue;
+    }
+
+    public List<DownloadUrl> getBaiduUrls() {
+        return baiduUrls;
+    }
+
+    public void setBaiduUrls(List<DownloadUrl> baiduUrls) {
+        this.baiduUrls = baiduUrls;
+    }
+
+    public List<DownloadUrl> getTorrentUrls() {
+        return TorrentUrls;
+    }
+
+    public void setTorrentUrls(List<DownloadUrl> torrentUrls) {
+        TorrentUrls = torrentUrls;
+    }
+
+    public String getReplyUrl() {
+        return replyUrl;
+    }
+
+    public void setReplyUrl(String replyUrl) {
+        this.replyUrl = replyUrl;
     }
 
     public AnimationDetail(int requestStatue) {

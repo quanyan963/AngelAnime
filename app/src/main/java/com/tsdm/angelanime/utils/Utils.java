@@ -178,7 +178,7 @@ public class Utils {
         animList.setHasFixedSize(true);
         animList.setLayoutManager(new GridLayoutManager(activity, 3));
         animList.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.BOTH_SET,
-                activity.getResources().getDimensionPixelSize(R.dimen.dp_16_x),
+                activity.getResources().getDimensionPixelSize(R.dimen.dp_8_x),
                 activity.getResources().getColor(R.color.white)));
         final PopAnimAdapter popAnimAdapter = new PopAnimAdapter(animationList, activity);
         popAnimAdapter.setOnPopItemClickListener((new PopAnimAdapter.PopItemClick() {

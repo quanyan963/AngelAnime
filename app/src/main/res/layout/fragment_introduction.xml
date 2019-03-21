@@ -143,14 +143,61 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rl_select"
-                android:paddingBottom="@dimen/dp_8_y"
-                android:paddingTop="@dimen/dp_8_y">
+                android:paddingBottom="@dimen/dp_8_y">
 
             </android.support.v7.widget.RecyclerView>
 
             <View
+                android:id="@+id/v_line_b"
                 style="@style/main_line"
                 android:layout_below="@+id/rlv_play_list"/>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/rl_baidu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/v_line_b">
+                <TextView
+                    android:id="@+id/tv_download"
+                    style="@style/main_tv"
+                    android:textSize="@dimen/dp_14_x"
+                    android:layout_marginLeft="@dimen/dp_16_x"
+                    android:layout_marginTop="@dimen/dp_8_y"
+                    android:layout_marginBottom="@dimen/dp_8_y"
+                    android:text="@string/baidu_download"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rlv_baidu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_download">
+
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/rl_torrent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_baidu">
+                <TextView
+                    android:id="@+id/tv_t_download"
+                    style="@style/main_tv"
+                    android:textSize="@dimen/dp_14_x"
+                    android:layout_marginLeft="@dimen/dp_16_x"
+                    android:layout_marginTop="@dimen/dp_8_y"
+                    android:layout_marginBottom="@dimen/dp_8_y"
+                    android:text="@string/torrent_download"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rlv_torrent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_t_download">
+
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 

@@ -27,5 +27,7 @@
         android:id="@+id/rlv_anim_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_top"/>
+        android:layout_below="@+id/layout_top"
+        android:paddingLeft="@dimen/dp_8_x"
+        android:paddingRight="@dimen/dp_8_x"/>
 </RelativeLayout>

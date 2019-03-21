@@ -1,7 +1,10 @@
 package com.tsdm.angelanime.introduction;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +40,7 @@ import static com.tsdm.angelanime.utils.Constants.RETRY;
  */
 
 public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter> implements
-        IntroductionContract.View, PopUpListener {
+        IntroductionContract.View, PopUpListener, DownloadAdapter.DownloadClickListener {
     @BindView(R.id.iv_title)
     RoundImageView ivTitle;
     @BindView(R.id.tv_name)
@@ -64,9 +67,19 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
     ShimmerLayout slTime;
     @BindView(R.id.sl_introduction)
     ShimmerLayout slIntroduction;
+    @BindView(R.id.rlv_baidu)
+    RecyclerView rlvBaidu;
+    @BindView(R.id.rlv_torrent)
+    RecyclerView rlvTorrent;
+    @BindView(R.id.rl_baidu)
+    RelativeLayout rlBaidu;
+    @BindView(R.id.rl_torrent)
+    RelativeLayout rlTorrent;
 
     private AnimationDetail detail;
     private IntroductionAdapter listAdapter;
+    private DownloadAdapter baiduAdapter;
+    private DownloadAdapter torrentAdapter;
     private int position;
     private VideoState mVideoState;
 
@@ -86,13 +99,34 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
         startShimmer();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        //播放列表
         rlvPlayList.setHasFixedSize(true);
         rlvPlayList.setLayoutManager(manager);
-        rlvPlayList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST,
-                getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x),
-                getActivity().getResources().getColor(R.color.light_grey)));
+        rlvPlayList.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration
+                .VERTICAL_LIST, getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x)
+                , getActivity().getResources().getColor(R.color.light_grey)));
         listAdapter = new IntroductionAdapter(getContext());
         rlvPlayList.setAdapter(listAdapter);
+        //百度云
+        LinearLayoutManager baiduManager = new LinearLayoutManager(getContext());
+        baiduManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rlvBaidu.setHasFixedSize(true);
+        rlvBaidu.setLayoutManager(baiduManager);
+        rlvBaidu.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration
+                .VERTICAL_LIST, getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x)
+                , getActivity().getResources().getColor(R.color.light_grey)));
+        baiduAdapter = new DownloadAdapter(getContext());
+        rlvBaidu.setAdapter(baiduAdapter);
+        //种子下载
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        gridLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rlvTorrent.setHasFixedSize(true);
+        rlvTorrent.setLayoutManager(gridLayoutManager);
+        rlvTorrent.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration
+                .BOTH_SET, getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x)
+                , getActivity().getResources().getColor(R.color.light_grey)));
+        torrentAdapter = new DownloadAdapter(getContext());
+        rlvTorrent.setAdapter(torrentAdapter);
         initListener();
     }
 
@@ -101,26 +135,30 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             @Override
             public void onItemClick(int position) {
                 IntroductionFragment.this.position = position;
-                ((AnimationDetailActivity) getActivity()).onResultFromFragment(position,0l);
+                ((AnimationDetailActivity) getActivity()).onResultFromFragment(position, 0l);
                 listAdapter.setPosition(position);
             }
         });
         rlTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((AnimationDetailActivity) getActivity()).onResultFromFragment(-1,0l);
+                if (detail != null)
+                    ((AnimationDetailActivity) getActivity()).onResultFromFragment(-1, 0l);
             }
         });
+
+        baiduAdapter.setOnClickListener(this);
+        torrentAdapter.setOnClickListener(this);
     }
 
-    private void startShimmer(){
+    private void startShimmer() {
         slImg.startShimmerAnimation();
         slName.startShimmerAnimation();
         slTime.startShimmerAnimation();
         slIntroduction.startShimmerAnimation();
     }
 
-    private void stopShimmer(){
+    private void stopShimmer() {
         slImg.stopShimmerAnimation();
         slName.stopShimmerAnimation();
         slTime.stopShimmerAnimation();
@@ -137,6 +175,18 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             tvUpdateTime.setBackgroundResource(0);
             tvIntroduction.setBackgroundResource(0);
             this.detail = detail;
+            if (detail.getBaiduUrls().size() != 0) {
+                rlBaidu.setVisibility(View.VISIBLE);
+                baiduAdapter.addList(detail.getBaiduUrls());
+            } else {
+                rlBaidu.setVisibility(View.GONE);
+            }
+            if (detail.getTorrentUrls().size() != 0) {
+                rlTorrent.setVisibility(View.VISIBLE);
+                torrentAdapter.addList(detail.getTorrentUrls());
+            } else {
+                rlTorrent.setVisibility(View.GONE);
+            }
             if (detail.getTitleImg().contains(".gif")) {
                 Utils.displayImage(getContext(), detail.getTitleImg(), ivTitle, Utils
                         .getImageOptions(R.mipmap.defult_img, 0));
@@ -145,18 +195,18 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
                 Utils.displayImage(getContext(), Url.URL + detail.getTitleImg(), ivTitle, Utils
                         .getImageOptions(R.mipmap.defult_img, 0));
             }
-            if (detail.getPlayListTitle() != null){
+            if (detail.getPlayListTitle() != null) {
                 if (detail.getPlayListTitle().size() == 0) {
                     position = 0;
                 } else {
                     listAdapter.addList(detail.getPlayListTitle());
-                    if (!mVideoState.getTitle().equals("")){
-                        if (detail.getTitle().equals(mVideoState.getTitle())){
+                    if (!mVideoState.getTitle().equals("")) {
+                        if (detail.getTitle().equals(mVideoState.getTitle())) {
                             position = mVideoState.getListPosition();
                             listAdapter.setPosition(position);
                             ((AnimationDetailActivity) getActivity()).
-                                    onResultFromFragment(position,mVideoState.getVideoPosition());
-                        }else {
+                                    onResultFromFragment(position, mVideoState.getVideoPosition());
+                        } else {
                             position = detail.getPlayListTitle().size() - 1;
                             listAdapter.setPosition(position);
                         }
@@ -170,6 +220,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             tvIntroduction.setText(detail.getIntroduction());
             tvListStatue.setText(detail.getStatue());
 
+
             rlSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -179,9 +230,9 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
                     }
                 }
             });
-        }else if (detail.getRequestStatue() == RETRY){
+        } else if (detail.getRequestStatue() == RETRY) {
             startShimmer();
-        }else {
+        } else {
             stopShimmer();
         }
 
@@ -191,6 +242,18 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
     public void onPopUpClick(int position) {
         this.position = position;
         listAdapter.setPosition(position);
-        ((AnimationDetailActivity) getActivity()).onResultFromFragment(position,0l);
+        ((AnimationDetailActivity) getActivity()).onResultFromFragment(position, 0l);
+    }
+
+    @Override
+    public void onItemClick(String url) {
+        if (url.contains("baidu")){
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        }else {
+
+        }
+
     }
 }

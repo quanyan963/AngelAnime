@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tsdm.angelanime.base.CommonSubscriber;
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.DownloadUrl;
 import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.model.DataManagerModel;
@@ -31,11 +32,11 @@ import static com.tsdm.angelanime.utils.Constants.OK;
  */
 
 public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContract.View>
-        implements AnimationDetailContract.Presenter{
+        implements AnimationDetailContract.Presenter {
 
     private DataManagerModel mDataManagerModel;
     private List<String> mListData;
-//    private String mName;
+    //    private String mName;
     private boolean hasFinish;
 
     @Inject
@@ -71,7 +72,7 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 
     @Override
     public void getPlayUrl(int position, final WebResponseListener listener) {
-        addSubscribe(mDataManagerModel.getPlayUrl(mListData.get(position),listener)
+        addSubscribe(mDataManagerModel.getPlayUrl(mListData.get(position), listener)
                 .map(new Function<Document, String>() {
                     @Override
                     public String apply(Document document) {
@@ -79,19 +80,19 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                         String[] url = null;
                         try {
                             Elements elt = document.select("script");
-                            String[] tempA = elt.get(elt.size()-1).toString().split("redirecturl = \\\"");
+                            String[] tempA = elt.get(elt.size() - 1).toString().split("redirecturl = \\\"");
                             play = tempA[1].split("\\\"");
-                            String[] tempB = elt.get(elt.size()-1).toString().split("main = \\\"");
+                            String[] tempB = elt.get(elt.size() - 1).toString().split("main = \\\"");
                             url = tempB[1].split("\\\"");
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             listener.onParseError();
                         }
 
-                        return play[0]+url[0];
+                        return play[0] + url[0];
                     }
                 })
                 .compose(RxUtil.<String>rxSchedulerHelper())
-                .subscribeWith(new CommonSubscriber<String>(view){
+                .subscribeWith(new CommonSubscriber<String>(view) {
 
                     @Override
                     public void onNext(String s) {
@@ -102,14 +103,14 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 
     @Override
     public void getListUrl(String url, WebResponseListener listener) {
-        addSubscribe(mDataManagerModel.getListUrl(url,listener)
+        addSubscribe(mDataManagerModel.getListUrl(url, listener)
                 .compose(RxUtil.<String[]>rxSchedulerHelper())
-                .subscribeWith(new CommonSubscriber<String[]>(view){
+                .subscribeWith(new CommonSubscriber<String[]>(view) {
 
                     @Override
                     public void onNext(String[] s) {
-                        for (int i = 1; i<s.length; i++){
-                            if (i % 2 == 1){
+                        for (int i = 1; i < s.length; i++) {
+                            if (i % 2 == 1) {
                                 mListData.add(s[i]);
                             }
                         }
@@ -129,7 +130,8 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
             //拼接评论地址用
             Element commentList = document.getElementById("comment_list");
             Elements url = commentList.select("iframe[src]");
-            if (url.isEmpty()){
+            Elements download = document.getElementsByClass("playurl");
+            if (url.isEmpty()) {
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -137,7 +139,27 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 //                    }
 //                },500);
 
-            }else if (!hasFinish){
+            } else if (!hasFinish) {
+                List<DownloadUrl> baiduUrl = new ArrayList<>();
+                List<DownloadUrl> torrentUrl = new ArrayList<>();
+                if (!download.isEmpty()) {
+                    for (int i = 1; i < download.size(); i++) {
+                        if (download.get(i).select("a[href]").get(0)
+                                .attr("href").contains("baidu")) {
+                            Elements data = download.get(i).select("a[href]");
+                            for (int j = 0; j < data.size(); j++) {
+                                baiduUrl.add(new DownloadUrl(data.get(j).text(),
+                                        data.get(j).attr("href")));
+                            }
+                        } else {
+                            Elements data = download.get(i).select("a[href]");
+                            for (int j = 0; j < data.size(); j++) {
+                                torrentUrl.add(new DownloadUrl(data.get(j).text(),
+                                        data.get(j).attr("href")));
+                            }
+                        }
+                    }
+                }
                 //列表
                 List<String> playList = new ArrayList<>();
                 List<String> playListTitle = new ArrayList<>();
@@ -154,9 +176,9 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                 //评论标识号
                 String[] videoNum = new String[]{};
                 Elements els = document.getElementsByClass("bfdz");
-                if (els.size() != 0){
+                if (els.size() != 0) {
                     Elements elements = els.get(0).select("a[href]");
-                    for (Element element:elements){
+                    for (Element element : elements) {
                         playList.add(element.attr("href"));
                         playListTitle.add(element.text());
                     }
@@ -173,48 +195,49 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
 
                 Element elt = document.getElementsByClass("ctext fix").first();
                 Elements e = elt.select("div");
-                if (e.size()<2){
+                if (e.size() < 2) {
                     e = elt.select("span");
-                    if (e.size() != 0){
-                        for (int i = 0; i < e.size(); i++){
-                            if (!e.get(i).text().isEmpty()){
-                                introduction+=e.get(i).text()+"\n";
-                            }else {
-                                introduction+="\n";
+                    if (e.size() != 0) {
+                        for (int i = 0; i < e.size(); i++) {
+                            if (!e.get(i).text().isEmpty()) {
+                                introduction += e.get(i).text() + "\n";
+                            } else {
+                                introduction += "\n";
                             }
                         }
-                    }else {
+                    } else {
                         introduction = elt.text();
                     }
-                }else {
-                    for (int i = 1; i < e.size(); i++){
-                        if (i == 1 && e.get(i).text().length() > 50){
+                } else {
+                    for (int i = 1; i < e.size(); i++) {
+                        if (i == 1 && e.get(i).text().length() > 50) {
                             continue;
-                        }else {
-                            if (!e.get(i).text().isEmpty()){
-                                introduction+=e.get(i).text()+"\n";
-                            }else {
-                                introduction+="\n";
+                        } else {
+                            if (!e.get(i).text().isEmpty()) {
+                                introduction += e.get(i).text() + "\n";
+                            } else {
+                                introduction += "\n";
                             }
                         }
 
                     }
                 }
 
-                if (playList.size() != 0){
-                    view.getDetail(new AnimationDetail(title,imgUrl,updateTime,statue,introduction,
-                            playList,playListTitle, Url.URL+url.get(0).attr("src"),OK));
-                }else {
-                    view.getDetail(new AnimationDetail(title,imgUrl,updateTime,statue,introduction,
-                            Url.URL+url.get(0).attr("src"),OK));
+                if (playList.size() != 0) {
+                    view.getDetail(new AnimationDetail(title, imgUrl, updateTime, statue, introduction,
+                            playList, playListTitle, baiduUrl, torrentUrl,
+                            Url.URL + url.get(0).attr("src"), OK));
+                } else {
+                    view.getDetail(new AnimationDetail(title, imgUrl, updateTime, statue, introduction,
+                            Url.URL + url.get(0).attr("src"), OK));
                 }
                 mDataManagerModel.release();
                 hasFinish = true;
             }
-        }catch (Exception e){
-            if (document.body().toString().contains(Constants.NOT_FOUND)){
+        } catch (Exception e) {
+            if (document.body().toString().contains(Constants.NOT_FOUND)) {
                 listener.onError();
-            }else {
+            } else {
                 listener.onParseError();
             }
         }

@@ -49,23 +49,23 @@ public class PopAnimAdapter extends RecyclerView.Adapter<PopAnimAdapter.AnimView
     @Override
     public void onBindViewHolder(@NonNull AnimViewHolder holder, final int position) {
         holder.tvListName.setText(data.get(position));
-        if (position % 3 == 0) {
-            holder.vLeft.setVisibility(View.VISIBLE);
+//        if (position % 3 == 0) {
+//            holder.vLeft.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.vLeft.setVisibility(View.GONE);
+//        }
+//        if (position % 3 == 2) {
+//            holder.vRight.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.vRight.setVisibility(View.GONE);
+//        }
+        if (this.position == position) {
+            holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+            holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_selected);
         } else {
-            holder.vLeft.setVisibility(View.GONE);
+            holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.black));
+            holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_unselected);
         }
-        if (position % 3 == 2){
-            holder.vRight.setVisibility(View.VISIBLE);
-        }else {
-            holder.vRight.setVisibility(View.GONE);
-        }
-            if (this.position == position) {
-                holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
-                holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_selected);
-            } else {
-                holder.tvListName.setTextColor(mContext.getResources().getColor(R.color.black));
-                holder.tvListName.setBackgroundResource(R.drawable.blue_rectangle_unselected);
-            }
         holder.tvListName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

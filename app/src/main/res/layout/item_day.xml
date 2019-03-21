@@ -3,7 +3,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <View
+        android:id="@+id/v_left"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/dp_8_x"/>
     <TextView
         android:id="@+id/tv_day_title"
         style="@style/main_tv"
@@ -17,8 +23,10 @@
         android:paddingLeft="@dimen/dp_12_x"
         android:paddingRight="@dimen/dp_12_x"
         android:textColor="@color/low_grey"
-        android:background="@drawable/list_state"/>
+        android:background="@drawable/list_state"
+        app:layout_constraintLeft_toRightOf="@+id/v_left"/>
     <View
+        android:id="@+id/v_right"
         android:layout_width="0dp"
         android:layout_height="1dp"
         app:layout_constraintLeft_toRightOf="@+id/tv_day_title"

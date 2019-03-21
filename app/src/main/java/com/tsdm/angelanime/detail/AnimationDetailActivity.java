@@ -13,6 +13,7 @@ import android.webkit.JavascriptInterface;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.cache.CacheFactory;
+import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.tsdm.angelanime.R;
@@ -65,6 +66,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     private List<Fragment> viewList;
     private boolean isFirst = true;
     private long playPosition;
+    private boolean seekTo;
 
 
     @Override
@@ -166,9 +168,23 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         spPlayer.setUp(s, true, detail.getTitle()
                 + detail.getPlayListTitle().get(position));
         spPlayer.startPlayLogic();
-        if (playPosition != 0){
-            GSYVideoManager.instance().seekTo(playPosition);
-        }
+        seekTo = true;
+        spPlayer.setGSYVideoProgressListener(new GSYVideoProgressListener() {
+            @Override
+            public void onProgress(int progress, int secProgress, int currentPosition, int duration) {
+                if (playPosition != 0){
+                    if (seekTo){
+                        GSYVideoManager.instance().seekTo(playPosition);
+                        spPlayer.setGSYVideoProgressListener(null);
+                    }
+                    seekTo = false;
+                } else {
+                    spPlayer.setGSYVideoProgressListener(null);
+                }
+
+            }
+        });
+
 
     }
 
@@ -228,10 +244,12 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
     @Override
     protected void onPause() {
         super.onPause();
-        presenter.insertVideoState(new VideoState(detail.getTitle(),position,
-                GSYVideoManager.instance().getCurrentPosition()));
-        GSYVideoManager.instance().getCurrentPosition();
-        GSYVideoManager.onPause();
+        if (detail != null){
+            presenter.insertVideoState(new VideoState(detail.getTitle(),position,
+                    GSYVideoManager.instance().getCurrentPosition()));
+            GSYVideoManager.instance().getCurrentPosition();
+            GSYVideoManager.onPause();
+        }
     }
 
     @Override
