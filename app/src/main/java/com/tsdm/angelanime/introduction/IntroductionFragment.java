@@ -25,6 +25,7 @@ import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.RoundImageView;
 import com.tsdm.angelanime.widget.listener.PopUpListener;
+import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -40,7 +41,7 @@ import static com.tsdm.angelanime.utils.Constants.RETRY;
  */
 
 public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter> implements
-        IntroductionContract.View, PopUpListener, DownloadAdapter.DownloadClickListener {
+        IntroductionContract.View, PopUpListener, DownloadAdapter.DownloadClickListener, WebResponseListener {
     @BindView(R.id.iv_title)
     RoundImageView ivTitle;
     @BindView(R.id.tv_name)
@@ -252,8 +253,18 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }else {
-
+            presenter.download(getContext(), url,this);
         }
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onParseError() {
 
     }
 }

@@ -11,10 +11,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
+import com.lzy.okgo.request.GetRequest;
+import com.lzy.okserver.OkDownload;
+import com.lzy.okserver.download.DownloadListener;
+import com.lzy.okserver.download.DownloadTask;
 import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -23,6 +30,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -277,7 +285,7 @@ public class NetHelperImpl implements NetHelper {
 //                } catch (IOException e1) {
 //                    e1.printStackTrace();
 //                }
-                OkGo.<String>post(Url.COMMENT+Url.REPLY)
+                OkGo.<String>post(Url.COMMENT + Url.REPLY)
                         .tag(this)
                         .params("ctype", data.getcType())
                         .params("cparent", data.getcParent())
@@ -303,6 +311,36 @@ public class NetHelperImpl implements NetHelper {
                                 listener.onError();
                             }
                         });
+            }
+        }, BackpressureStrategy.BUFFER);
+    }
+
+    @Override
+    public Flowable<Integer> download(final String url, final WebResponseListener listener) {
+        return Flowable.create(new FlowableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(final FlowableEmitter<Integer> e) throws Exception {
+
+//                OkGo.<File>get(url)
+//                        .tag(this)
+//                        .execute(new FileCallback() {
+//                            @Override
+//                            public void onSuccess(Response<File> response) {
+//                                e.onComplete();
+//                            }
+//
+//                            @Override
+//                            public void onError(Response<File> response) {
+//
+//                            }
+//
+//                            @Override
+//                            public void downloadProgress(Progress progress) {
+//                                super.downloadProgress(progress);
+//
+//                                e.onNext((int) (progress.fraction * 100));
+//                            }
+//                        });
             }
         }, BackpressureStrategy.BUFFER);
     }

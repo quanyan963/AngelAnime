@@ -36,4 +36,5 @@ public interface NetHelper {
 
     Flowable<String> submit(CommentInput data,  WebResponseListener listener);
 
+    Flowable<Integer> download(String url, WebResponseListener listener);
 }

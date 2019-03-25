@@ -110,6 +110,11 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
     }
 
     @Override
+    public Flowable<Integer> download(String url, WebResponseListener listener) {
+        return mNetHelper.download(url, listener);
+    }
+
+    @Override
     public void insertTopEight(List<TopEight> value) {
         mDBDbHelper.insertTopEight(value);
     }

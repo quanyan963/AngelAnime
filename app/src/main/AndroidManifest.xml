@@ -43,6 +43,8 @@
         <activity android:name=".search.SearchActivity"
             android:configChanges="layoutDirection|locale"
             android:screenOrientation="portrait"/>
+
+        <service android:name=".service.DownloadService"/>
     </application>
 
 </manifest>

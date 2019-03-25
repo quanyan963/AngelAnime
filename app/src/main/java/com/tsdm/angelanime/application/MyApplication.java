@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.lzy.okgo.OkGo;
+import com.lzy.okserver.OkDownload;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,8 +30,10 @@ public class MyApplication extends Application {
     private List<Activity> mActivityList;
     private static AppComponent mAppComponent;
     private static String path = Environment.getExternalStorageDirectory().getPath() + "/tsdm";
+    private static String downloadPath = path + "/download";
     private static File file;
     private static ImageLoaderConfiguration config;
+    private OkDownload okDownload;
 
     @Override
     public void onCreate() {
@@ -41,6 +44,9 @@ public class MyApplication extends Application {
             sInstance = this;
         }
         mActivityList = new ArrayList<>();
+        okDownload = OkDownload.getInstance();
+        okDownload.setFolder(downloadPath);
+        okDownload.getThreadPool().setCorePoolSize(3);
     }
 
     public static ImageLoader getImageLoader(Context context) {

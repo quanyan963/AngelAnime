@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_remote_title"
+        style="@style/main_tv"
+        android:layout_marginLeft="@dimen/dp_16_x"
+        android:layout_marginTop="@dimen/dp_8_y"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_remote_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_remote_title">
+        <ImageView
+            android:id="@+id/iv_remote_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16_x"
+            android:layout_centerVertical="true" />
+        <ProgressBar
+            android:id="@+id/pb_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16_x"
+            android:layout_toRightOf="@+id/iv_remote_start"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_centerVertical="true"
+            android:max="100"/>
+    </RelativeLayout>
+
+</RelativeLayout>
