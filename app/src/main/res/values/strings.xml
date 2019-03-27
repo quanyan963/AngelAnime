@@ -31,4 +31,5 @@
     <string name="_continue">继续</string>
     <string name="pause">暂停</string>
     <string name="com">完成</string>
+    <string name="initing">正在解析url&#8230;</string>
 </resources>

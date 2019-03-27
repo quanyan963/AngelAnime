@@ -16,4 +16,5 @@ public interface DownloadInterface {
 //    void onStart();
     void onRemove();
     void onError();
+    void removeNotify();
 }

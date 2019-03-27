@@ -8,9 +8,12 @@
         android:id="@+id/tv_remote_title"
         style="@style/main_tv"
         android:layout_marginLeft="@dimen/dp_16_x"
+        android:layout_marginRight="@dimen/dp_16_x"
         android:layout_marginBottom="@dimen/dp_6_y"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:ellipsize="start"
+        android:singleLine="true" />
     <ProgressBar
         android:id="@+id/pb_download"
         android:layout_width="match_parent"
@@ -31,7 +34,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/dp_16_x"
         android:layout_marginBottom="@dimen/dp_4_y"
-        android:text="@string/_continue"
+        android:text="@string/pause"
         />
     <TextView
         android:id="@+id/tv_cancel"

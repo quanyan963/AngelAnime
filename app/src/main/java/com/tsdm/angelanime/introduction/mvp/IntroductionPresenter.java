@@ -48,7 +48,7 @@ public class IntroductionPresenter extends RxPresenter<IntroductionContract.View
         final MyServiceConn service = new MyServiceConn();
         Intent intent = new Intent(context, DownloadService.class);
         context.startService(intent);
-        GetRequest<File> request = OkGo.<File>get("http://services.gradle.org/distributions/gradle-5.3-src.zip");//
+        GetRequest<File> request = OkGo.<File>get(url);//"http://services.gradle.org/distributions/gradle-5.3-src.zip"
         final DownloadTask task = OkDownload.request(Constants.DOWNLOADTASK, request)
                 .save()
                 .register(new DownloadListener(Constants.DOWNLOADTASK) {

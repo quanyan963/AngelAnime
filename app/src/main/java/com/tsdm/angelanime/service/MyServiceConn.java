@@ -9,10 +9,12 @@ import android.os.IBinder;
 
 import com.lzy.okserver.download.DownloadTask;
 
+import static com.lzy.okgo.model.Progress.ERROR;
 import static com.lzy.okgo.model.Progress.LOADING;
 import static com.lzy.okgo.model.Progress.PAUSE;
 import static com.tsdm.angelanime.utils.Constants.ON_CANCEL;
 import static com.tsdm.angelanime.utils.Constants.ON_CLICK;
+import static com.tsdm.angelanime.utils.Constants.ON_PAUSE;
 
 /**
  * Created by Mr.Quan on 2019/3/26.
@@ -48,16 +50,21 @@ public class MyServiceConn implements ServiceConnection {
         public void onReceive(Context context, Intent intent) {
             long temp = System.currentTimeMillis();
             if (temp - time > 300){
-                if (intent.getAction().contains(ON_CLICK)){
+                if (intent.getAction().contains(ON_PAUSE)){
                     if (task.progress.status == LOADING){
                         task.pause();
                         time = System.currentTimeMillis();
                     }else if (task.progress.status == PAUSE){
                         task.start();
                         time = System.currentTimeMillis();
+                    }else if (task.progress.status == ERROR){
+                        task.restart();
+                        time = System.currentTimeMillis();
                     }
                 }else if (intent.getAction().contains(ON_CANCEL)){
                     task.remove(true);
+                }else if (intent.getAction().contains(ON_CLICK)){
+                    downloadInterface.removeNotify();
                 }
             }
         }

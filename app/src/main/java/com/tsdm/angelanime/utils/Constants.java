@@ -29,5 +29,6 @@ public class Constants {
     public static final String DOWNLOADTASK = "download_task";
     public static final String NOT_FOUND = "找不到网页";
     public static final String ON_CLICK = "on_click";
+    public static final String ON_PAUSE = "on_pause";
     public static final String ON_CANCEL = "on_cancel";
 }
