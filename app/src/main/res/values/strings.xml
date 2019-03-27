@@ -28,4 +28,7 @@
     <string name="torrent_download">种子下载</string>
     <string name="start">开始下载</string>
     <string name="complete">下载完成！</string>
+    <string name="_continue">继续</string>
+    <string name="pause">暂停</string>
+    <string name="com">完成</string>
 </resources>

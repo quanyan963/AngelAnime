@@ -2,15 +2,23 @@ package com.tsdm.angelanime.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
+import com.lzy.okgo.model.Progress;
 import com.tsdm.angelanime.R;
+
+import static com.lzy.okgo.model.Progress.LOADING;
+import static com.lzy.okgo.model.Progress.PAUSE;
+import static com.tsdm.angelanime.utils.Constants.ON_CANCEL;
+import static com.tsdm.angelanime.utils.Constants.ON_CLICK;
 
 /**
  * Created by Mr.Quan on 2019/3/22.
@@ -21,7 +29,9 @@ public class DownloadService extends Service {
 
     private NotificationManager manager;
     private Notification notification;
+    private Notification.Builder nb;
     private RemoteViews remoteView;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,21 +45,20 @@ public class DownloadService extends Service {
 
     private class NotificationControl extends Binder implements DownloadInterface {
 
+        private MyServiceConn.MyBroadcastReceiver receiver;
+        private int id;
+
         @Override
-        public void createNotification(Context context, String title) {
+        public void createNotification(Context context, int id) {
+            this.id = id;
+            receiver = new MyServiceConn.MyBroadcastReceiver();
             manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notification = new Notification();
             // 这个参数是通知提示闪出来的值.
             notification.tickerText = getString(R.string.start);
-            // 这里面的参数是通知栏view显示的内容
-//            PendingIntent pi = PendingIntent.getActivity(context, 0x001,
-//                    new Intent(context, TargetActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView = new RemoteViews(getPackageName(), R.layout.remoteview_main);
-            remoteView.setTextViewText(R.id.tv_remote_title, title);
-            remoteView.setImageViewResource(R.id.iv_remote_start, R.drawable.download);
-            remoteView.setProgressBar(R.id.pb_download,100,0,false);
-            //remoteView.setOnClickPendingIntent(R.id.remoteview_main_view, pi);
-            Notification.Builder nb = new Notification.Builder(context)
+            remoteView.setProgressBar(R.id.pb_download, 100, 0, false);
+            nb = new Notification.Builder(context)
                     .setSmallIcon(R.drawable.download) // 小图标
                     //.setCustomContentView(remoteView) // 设置自定义的RemoteView，需要API最低为24
                     .setAutoCancel(true) // 点击通知后通知在通知栏上消失
@@ -57,21 +66,77 @@ public class DownloadService extends Service {
             notification = nb.build();
             notification.contentView = remoteView;
 
-            manager.notify(1, notification);
+            IntentFilter pauseFilter = new IntentFilter();
+            pauseFilter.addAction(ON_CLICK);
+            registerReceiver(receiver, pauseFilter);
+            Intent pauseIntent = new Intent(ON_CLICK);
+            //给view添加点击事件
+            notification.contentView.setOnClickPendingIntent(R.id.tv_start, PendingIntent
+                    .getBroadcast(context, 0, pauseIntent, 0));
+
+            IntentFilter cancelFilter = new IntentFilter();
+            cancelFilter.addAction(ON_CANCEL);
+            registerReceiver(receiver, cancelFilter);
+            Intent cancelIntent = new Intent(ON_CANCEL);
+            //给view添加点击事件
+            notification.contentView.setOnClickPendingIntent(R.id.tv_cancel, PendingIntent
+                    .getBroadcast(context, 0, cancelIntent, 0));
+            manager.notify(id, notification);
 
         }
 
         @Override
-        public void progressChange(int progress) {
-            remoteView.setProgressBar(R.id.pb_download,100,progress,false);
-            notification.contentView = remoteView;
-            manager.notify(1,notification);
+        public void progressChange(Progress progress) {
+            notification.contentView.setTextViewText(R.id.tv_remote_title, progress.fileName);
+            if (progress.status == LOADING){
+                notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
+            }else if (progress.status == PAUSE){
+                notification.contentView.setTextViewText(R.id.tv_start, getString(R.string._continue));
+            }
+            notification.contentView.setProgressBar(R.id.pb_download, 100, (int) (progress.fraction * 100), false);
+            //notification.contentView = remoteView;
+            manager.notify(id, notification);
         }
 
         @Override
         public void complete() {
             notification.tickerText = getString(R.string.complete);
-            manager.cancel(1);
+            notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.com));
+            if (receiver != null) {
+                unregisterReceiver(receiver);
+                receiver = null;
+            }
+            manager.notify(id, notification);
+            //manager.cancel(1);
         }
+
+        @Override
+        public void onRemove() {
+            if (receiver != null) {
+                unregisterReceiver(receiver);
+                receiver = null;
+            }
+            manager.cancel(id);
+        }
+
+        @Override
+        public void onError() {
+            remoteView.setTextViewText(R.id.tv_remote_title, getString(R.string.network_error));
+            remoteView.setTextViewText(R.id.tv_start, getString(R.string.retry));
+        }
+
+//        @Override
+//        public void onPause() {
+//            remoteView.setImageViewResource(R.id.iv_remote_start, R.mipmap.play);
+//            notification.contentView = remoteView;
+//            manager.notify(id, notification);
+//        }
+//
+//        @Override
+//        public void onStart() {
+//            remoteView.setImageViewResource(R.id.iv_remote_start, R.mipmap.pause);
+//            notification.contentView = remoteView;
+//            manager.notify(id, notification);
+//        }
     }
 }
