@@ -21,12 +21,12 @@ import butterknife.ButterKnife;
  * Created by Mr.Quan on 2018/12/12.
  */
 
-public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ListItemHolder> {
+public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.ListItemHolder> {
     private List<DownloadUrl> mData;
     private Context mContext;
     private DownloadClickListener listener;
 
-    public DownloadAdapter(Context mContext) {
+    public LinkAdapter(Context mContext) {
         this.mContext = mContext;
     }
 

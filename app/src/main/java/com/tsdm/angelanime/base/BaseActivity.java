@@ -46,6 +46,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         ButterKnife.bind(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         mApplication = MyApplication.getInstance();
         addActivity();
@@ -79,10 +82,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
                 }
             });
-        }
-
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
         }
     }
 

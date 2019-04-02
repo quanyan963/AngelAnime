@@ -20,6 +20,7 @@ import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseActivity;
 import com.tsdm.angelanime.bean.ScheduleDetail;
 import com.tsdm.angelanime.classify.ClassifyFragment;
+import com.tsdm.angelanime.download.DownloadActivity;
 import com.tsdm.angelanime.home.HomeFragment;
 import com.tsdm.angelanime.main.mvp.MainContract;
 import com.tsdm.angelanime.main.mvp.MainPresenter;
@@ -151,6 +152,12 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     @Override
     public void showView() {
         Toast.makeText(this, R.string.delete_complete, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void toDownloadView() {
+        dlMain.closeDrawer(navView);
+        startActivity(new Intent(this, DownloadActivity.class));
     }
 
     private void switchContent(Fragment from, Fragment to) {

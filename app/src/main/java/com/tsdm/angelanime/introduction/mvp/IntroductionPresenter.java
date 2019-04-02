@@ -10,6 +10,7 @@ import com.lzy.okserver.OkDownload;
 import com.lzy.okserver.download.DownloadListener;
 import com.lzy.okserver.download.DownloadTask;
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.FileInformation;
 import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.model.DataManagerModel;
 import com.tsdm.angelanime.service.DownloadInterface;
@@ -18,7 +19,11 @@ import com.tsdm.angelanime.service.MyServiceConn;
 import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,7 +48,7 @@ public class IntroductionPresenter extends RxPresenter<IntroductionContract.View
     }
 
     @Override
-    public void download(final Context context, String url, final WebResponseListener listener) {
+    public void download(final Context context, String url) {
         id += 1;
         final MyServiceConn service = new MyServiceConn();
         Intent intent = new Intent(context, DownloadService.class);
@@ -55,31 +60,34 @@ public class IntroductionPresenter extends RxPresenter<IntroductionContract.View
                     DownloadInterface downloadInterface;
                     @Override
                     public void onStart(Progress progress) {
-                        downloadInterface = service.getInterface();
+                        downloadInterface = service.getInterface(id);
                         downloadInterface.createNotification(context,id);
                     }
 
                     @Override
                     public void onProgress(Progress progress) {
                         downloadInterface.progressChange(progress);
+                        view.postDownloading(progress,id);
                     }
 
                     @Override
                     public void onError(Progress progress) {
                         downloadInterface.onError();
-                        listener.onError();
+                        view.postDownloading(progress,id);
                     }
 
                     @Override
                     public void onFinish(File file, Progress progress) {
                         downloadInterface.complete();
                         context.unbindService(service);
+                        view.postDownloading(progress,id);
                     }
 
                     @Override
                     public void onRemove(Progress progress) {
                         downloadInterface.onRemove();
                         context.unbindService(service);
+                        view.postDownloading(progress,id);
                     }
                 });
         service.setTask(task);

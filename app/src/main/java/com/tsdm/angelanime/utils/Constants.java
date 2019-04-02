@@ -31,4 +31,7 @@ public class Constants {
     public static final String ON_CLICK = "on_click";
     public static final String ON_PAUSE = "on_pause";
     public static final String ON_CANCEL = "on_cancel";
+    public static final String NOTIFICATION_ID = "notification_id";
+    public static final String NOTIFICATION_CLICK = "notification_click";
+    public static final String ACTIVITY_SEND = "activity_send";
 }

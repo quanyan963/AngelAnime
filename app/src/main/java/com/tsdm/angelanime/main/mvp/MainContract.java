@@ -28,6 +28,8 @@ public interface MainContract {
         void toSettingView();
 
         void showView();
+
+        void toDownloadView();
     }
 
     interface Presenter extends BasePresenter<View> {

@@ -4,7 +4,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="@dimen/dp_6_x"/>
+                <corners android:radius="@dimen/dp_3_x"/>
                 <gradient android:angle="0"
                     android:endColor="@color/colorAccent"/>
             </shape>

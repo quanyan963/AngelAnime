@@ -122,6 +122,8 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
                 GSYVideoManager.instance().clearAllDefaultCache(context);//清除video缓存
                 view.showView();
                 break;
+            case R.id.download:
+                view.toDownloadView();
         }
         return false;
     }

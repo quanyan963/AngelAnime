@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tv_remote_title"
@@ -32,17 +33,24 @@
         style="@style/main_tv"
         android:textSize="@dimen/dp_12_x"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/dp_16_x"
-        android:layout_marginBottom="@dimen/dp_4_y"
+        android:paddingTop="@dimen/dp_4_y"
+        android:paddingLeft="@dimen/dp_8_x"
+        android:paddingRight="@dimen/dp_8_x"
+        android:paddingBottom="@dimen/dp_4_y"
+        android:layout_marginLeft="@dimen/dp_8_x"
         android:text="@string/pause"
-        />
+        android:background="@drawable/ripple_item_layout_effect_white"/>
     <TextView
         android:id="@+id/tv_cancel"
         style="@style/main_tv"
         android:textSize="@dimen/dp_12_x"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/tv_start"
-        android:layout_marginBottom="@dimen/dp_4_y"
-        android:layout_marginLeft="@dimen/dp_16_x"
-        android:text="@string/cancel"/>
+        android:paddingBottom="@dimen/dp_4_y"
+        android:paddingLeft="@dimen/dp_8_x"
+        android:paddingRight="@dimen/dp_8_x"
+        android:paddingTop="@dimen/dp_4_y"
+        android:layout_marginLeft="@dimen/dp_8_x"
+        android:text="@string/cancel"
+        android:background="@drawable/ripple_item_layout_effect_white"/>
 </RelativeLayout>

@@ -5,4 +5,8 @@
         android:id="@+id/cache"
         android:icon="@mipmap/delete_cache"
         android:title="@string/delete_cache"/>
+    <item
+        android:id="@+id/download"
+        android:icon="@mipmap/menu_download"
+        android:title="@string/download_detail"/>
 </menu>

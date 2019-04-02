@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -14,11 +15,14 @@ import android.widget.RemoteViews;
 
 import com.lzy.okgo.model.Progress;
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.download.DownloadActivity;
 
 import static com.lzy.okgo.model.Progress.ERROR;
 import static com.lzy.okgo.model.Progress.LOADING;
 import static com.lzy.okgo.model.Progress.PAUSE;
 import static com.lzy.okgo.model.Progress.WAITING;
+import static com.tsdm.angelanime.utils.Constants.NOTIFICATION_CLICK;
+import static com.tsdm.angelanime.utils.Constants.NOTIFICATION_ID;
 import static com.tsdm.angelanime.utils.Constants.ON_CANCEL;
 import static com.tsdm.angelanime.utils.Constants.ON_CLICK;
 import static com.tsdm.angelanime.utils.Constants.ON_PAUSE;
@@ -65,7 +69,9 @@ public class DownloadService extends Service {
             Intent deleteIntent = new Intent(ON_CLICK);
 
             //notification点击事件
-            //Intent itemIntent = new Intent(this,DownloadActivity.class);
+            Intent itemIntent = new Intent(DownloadService.this,DownloadActivity.class);
+            itemIntent.setAction(NOTIFICATION_CLICK);
+            itemIntent.putExtra(NOTIFICATION_ID,id);
 
             notification = new Notification();
             // 这个参数是通知提示闪出来的值.
@@ -75,9 +81,9 @@ public class DownloadService extends Service {
             nb = new Notification.Builder(context)
                     .setSmallIcon(R.drawable.download) // 小图标
                     //.setCustomContentView(remoteView) // 设置自定义的RemoteView，需要API最低为24
-                    //.setAutoCancel(true) // 点击通知后通知在通知栏上消失
+                    .setAutoCancel(false) // 点击通知后通知在通知栏上消失
                     .setDeleteIntent(PendingIntent.getBroadcast(context,0,deleteIntent,0))//侧滑删除
-                    ;//点击通知  .setContentIntent(PendingIntent.getActivity(context,0,itemIntent,0))
+                    .setContentIntent(PendingIntent.getActivity(context,0,itemIntent,0));//点击通知
             notification = nb.build();
             notification.contentView = remoteView;
 
@@ -85,17 +91,20 @@ public class DownloadService extends Service {
             pauseFilter.addAction(ON_PAUSE);
             registerReceiver(receiver, pauseFilter);
             Intent pauseIntent = new Intent(ON_PAUSE);
+            pauseIntent.putExtra(NOTIFICATION_ID,this.id);
             //给pause添加点击事件
             notification.contentView.setOnClickPendingIntent(R.id.tv_start, PendingIntent
-                    .getBroadcast(context, 0, pauseIntent, 0));
+                    .getBroadcast(context, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
             IntentFilter cancelFilter = new IntentFilter();
             cancelFilter.addAction(ON_CANCEL);
             registerReceiver(receiver, cancelFilter);
             Intent cancelIntent = new Intent(ON_CANCEL);
+            cancelIntent.putExtra(NOTIFICATION_ID,this.id);
             //给cancel添加点击事件
             notification.contentView.setOnClickPendingIntent(R.id.tv_cancel, PendingIntent
-                    .getBroadcast(context, 0, cancelIntent, 0));
+                    .getBroadcast(context, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            notification.flags |= Notification.FLAG_NO_CLEAR;
             manager.notify(id, notification);
 
         }
@@ -105,17 +114,22 @@ public class DownloadService extends Service {
             if (!isNotifyRemoved){
                 notification.contentView.setTextViewText(R.id.tv_remote_title, progress.fileName);
                 if (progress.status == LOADING){
+                    notification.flags |= Notification.FLAG_NO_CLEAR;
                     notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
                 }else if (progress.status == PAUSE){
+                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
                     notification.contentView.setTextViewText(R.id.tv_start, getString(R.string._continue));
                 }else if (progress.status == WAITING){
+                    notification.flags |= Notification.FLAG_NO_CLEAR;
                     notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.initing));
                     notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
                 }else if (progress.status == ERROR){
+                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
                     notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.parse_error));
                     notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.retry));
                 }
-                notification.contentView.setProgressBar(R.id.pb_download, 100, (int) (progress.fraction * 100), false);
+                notification.contentView.setProgressBar(R.id.pb_download, 100,
+                        (int) (progress.fraction * 100), false);
                 //notification.contentView = remoteView;
                 manager.notify(id, notification);
             }
@@ -123,6 +137,7 @@ public class DownloadService extends Service {
 
         @Override
         public void complete() {
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notification.tickerText = getString(R.string.complete);
             notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.com));
             if (receiver != null) {
@@ -135,6 +150,7 @@ public class DownloadService extends Service {
 
         @Override
         public void onRemove() {
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
             if (receiver != null) {
                 unregisterReceiver(receiver);
                 receiver = null;
@@ -144,12 +160,15 @@ public class DownloadService extends Service {
 
         @Override
         public void onError() {
+            notification.flags |= Notification.FLAG_NO_CLEAR;
             remoteView.setTextViewText(R.id.tv_remote_title, getString(R.string.network_error));
             remoteView.setTextViewText(R.id.tv_start, getString(R.string.retry));
         }
 
         @Override
         public void removeNotify() {
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            unregisterReceiver(receiver);
             manager.cancel(id);
             isNotifyRemoved = true;
         }

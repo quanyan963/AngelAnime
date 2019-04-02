@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.lzy.okgo.model.Progress;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
+import com.tsdm.angelanime.bean.FileInformation;
 import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
@@ -25,8 +27,8 @@ import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.RoundImageView;
 import com.tsdm.angelanime.widget.listener.PopUpListener;
-import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -41,7 +43,7 @@ import static com.tsdm.angelanime.utils.Constants.RETRY;
  */
 
 public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter> implements
-        IntroductionContract.View, PopUpListener, DownloadAdapter.DownloadClickListener, WebResponseListener {
+        IntroductionContract.View, PopUpListener, LinkAdapter.DownloadClickListener {
     @BindView(R.id.iv_title)
     RoundImageView ivTitle;
     @BindView(R.id.tv_name)
@@ -79,8 +81,8 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
 
     private AnimationDetail detail;
     private IntroductionAdapter listAdapter;
-    private DownloadAdapter baiduAdapter;
-    private DownloadAdapter torrentAdapter;
+    private LinkAdapter baiDuAdapter;
+    private LinkAdapter torrentAdapter;
     private int position;
     private VideoState mVideoState;
 
@@ -116,8 +118,8 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
         rlvBaidu.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration
                 .VERTICAL_LIST, getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x)
                 , getActivity().getResources().getColor(R.color.light_grey)));
-        baiduAdapter = new DownloadAdapter(getContext());
-        rlvBaidu.setAdapter(baiduAdapter);
+        baiDuAdapter = new LinkAdapter(getContext());
+        rlvBaidu.setAdapter(baiDuAdapter);
         //种子下载
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         gridLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -126,7 +128,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
         rlvTorrent.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration
                 .BOTH_SET, getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8_x)
                 , getActivity().getResources().getColor(R.color.light_grey)));
-        torrentAdapter = new DownloadAdapter(getContext());
+        torrentAdapter = new LinkAdapter(getContext());
         rlvTorrent.setAdapter(torrentAdapter);
         initListener();
     }
@@ -148,7 +150,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             }
         });
 
-        baiduAdapter.setOnClickListener(this);
+        baiDuAdapter.setOnClickListener(this);
         torrentAdapter.setOnClickListener(this);
     }
 
@@ -178,11 +180,11 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             this.detail = detail;
             if (detail.getBaiduUrls().size() != 0) {
                 rlBaidu.setVisibility(View.VISIBLE);
-                baiduAdapter.addList(detail.getBaiduUrls());
+                baiDuAdapter.addList(detail.getBaiduUrls());
             } else {
                 rlBaidu.setVisibility(View.GONE);
             }
-            if (detail.getTorrentUrls().size() != 0) {
+            if (detail.getTorrentUrls().size() != 0 && !detail.getTorrentUrls().get(0).getUrl().contains("magnet")) {
                 rlTorrent.setVisibility(View.VISIBLE);
                 torrentAdapter.addList(detail.getTorrentUrls());
             } else {
@@ -253,18 +255,19 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }else {
-            presenter.download(getContext(), url,this);
+            presenter.download(getContext(), url);
         }
 
     }
 
     @Override
-    public void onError() {
-
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
-    public void onParseError() {
-
+    public void postDownloading(Progress progress, int notificationId) {
+        EventBus.getDefault().post(new FileInformation(progress.fileName
+                ,progress.status, (int) (progress.fraction * 100),notificationId));
     }
 }

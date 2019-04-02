@@ -32,4 +32,7 @@
     <string name="pause">暂停</string>
     <string name="com">完成</string>
     <string name="initing">正在解析url&#8230;</string>
+    <string name="download_detail">下载内容</string>
+    <string name="downloading_item">下载中&#8230;</string>
+    <string name="pause_waite">已暂停，等待开始下载</string>
 </resources>

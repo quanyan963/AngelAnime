@@ -29,8 +29,8 @@ public class MyApplication extends Application {
     private static MyApplication sInstance;
     private List<Activity> mActivityList;
     private static AppComponent mAppComponent;
-    private static String path = Environment.getExternalStorageDirectory().getPath() + "/tsdm";
-    private static String downloadPath = path + "/download";
+    public static String path = Environment.getExternalStorageDirectory().getPath() + "/tsdm";
+    public static String downloadPath = path + "/download";
     private static File file;
     private static ImageLoaderConfiguration config;
     private OkDownload okDownload;
