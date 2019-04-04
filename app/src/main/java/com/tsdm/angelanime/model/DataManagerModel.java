@@ -4,7 +4,9 @@ package com.tsdm.angelanime.model;
 import android.app.Activity;
 import android.content.Context;
 
+import com.lzy.okserver.download.DownloadTask;
 import com.tsdm.angelanime.bean.CommentInput;
+import com.tsdm.angelanime.bean.DownloadStatue;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
@@ -13,6 +15,7 @@ import com.tsdm.angelanime.model.db.DBHelper;
 import com.tsdm.angelanime.model.net.NetHelper;
 import com.tsdm.angelanime.model.operate.OperateHelper;
 import com.tsdm.angelanime.model.prefs.PreferencesHelper;
+import com.tsdm.angelanime.service.DownloadInterface;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.nodes.Document;
@@ -110,9 +113,10 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
     }
 
     @Override
-    public Flowable<Integer> download(String url, WebResponseListener listener) {
-        return mNetHelper.download(url, listener);
+    public DownloadTask download(Context context, String url, DownloadInterface downloadInterface, int id) {
+        return mNetHelper.download(context, url, downloadInterface, id);
     }
+
 
     @Override
     public void insertTopEight(List<TopEight> value) {
@@ -162,6 +166,31 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
     @Override
     public VideoState getVideoState() {
         return mDBDbHelper.getVideoState();
+    }
+
+    @Override
+    public void insertDownloadStatue(DownloadStatue statue) {
+        mDBDbHelper.insertDownloadStatue(statue);
+    }
+
+    @Override
+    public List<DownloadStatue> getDownloadStatue() {
+        return mDBDbHelper.getDownloadStatue();
+    }
+
+    @Override
+    public void deleteDownload(DownloadStatue statue) {
+        mDBDbHelper.deleteDownload(statue);
+    }
+
+    @Override
+    public void updateStatue(DownloadStatue statue) {
+        mDBDbHelper.updateStatue(statue);
+    }
+
+    @Override
+    public void deleteAllStatue() {
+        mDBDbHelper.deleteAllStatue();
     }
 
     @Override

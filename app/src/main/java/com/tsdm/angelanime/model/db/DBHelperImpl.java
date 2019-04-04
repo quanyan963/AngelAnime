@@ -3,6 +3,7 @@ package com.tsdm.angelanime.model.db;
 
 
 import com.tsdm.angelanime.application.MyApplication;
+import com.tsdm.angelanime.bean.DownloadStatue;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
@@ -87,5 +88,30 @@ public class DBHelperImpl implements DBHelper {
     @Override
     public VideoState getVideoState() {
         return mDaoSession.getVideoStateDao().loadAll().get(0);
+    }
+
+    @Override
+    public void insertDownloadStatue(DownloadStatue statue) {
+        mDaoSession.getDownloadStatueDao().insert(statue);
+    }
+
+    @Override
+    public List<DownloadStatue> getDownloadStatue() {
+        return mDaoSession.getDownloadStatueDao().loadAll();
+    }
+
+    @Override
+    public void deleteDownload(DownloadStatue statue) {
+        mDaoSession.getDownloadStatueDao().delete(statue);
+    }
+
+    @Override
+    public void updateStatue(DownloadStatue statue) {
+        mDaoSession.getDownloadStatueDao().update(statue);
+    }
+
+    @Override
+    public void deleteAllStatue() {
+        mDaoSession.getDownloadStatueDao().deleteAll();
     }
 }

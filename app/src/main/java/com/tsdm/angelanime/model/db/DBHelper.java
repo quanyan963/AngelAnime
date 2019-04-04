@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.model.db;
 
 
+import com.tsdm.angelanime.bean.DownloadStatue;
 import com.tsdm.angelanime.bean.History;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.TopEight;
@@ -32,4 +33,14 @@ public interface DBHelper {
     void insertVideoState(VideoState value);
 
     VideoState getVideoState();
+
+    void insertDownloadStatue(DownloadStatue statue);
+
+    List<DownloadStatue> getDownloadStatue();
+
+    void deleteDownload(DownloadStatue statue);
+
+    void updateStatue(DownloadStatue statue);
+
+    void deleteAllStatue();
 }

@@ -21,6 +21,7 @@ import com.lzy.okserver.download.DownloadListener;
 import com.lzy.okserver.download.DownloadTask;
 import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.service.DownloadInterface;
 import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
@@ -42,6 +43,8 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
+
+import static com.tsdm.angelanime.utils.Constants.DOWNLOAD_TASK;
 
 /**
  * Created by Mr.Quan on 2018/11/12.
@@ -265,26 +268,6 @@ public class NetHelperImpl implements NetHelper {
         return Flowable.create(new FlowableOnSubscribe<String>() {
             @Override
             public void subscribe(final FlowableEmitter<String> e) {
-//                try {
-//                    Document document = Jsoup.connect(Url.COMMENT+Url.REPLY)
-//                            .data("ctype",data.getcType())
-//                            .data("cparent", data.getcParent())
-//                            .data("gid", data.getGid())
-//                            .data("uid", data.getUid())
-//                            .data("uname", data.getuName())
-//                            .data("unick", data.getuNick())
-//                            .data("utmpname", data.getuTmpName())
-//                            .data("ppath", data.getpPath())
-//                            .data("pvote", data.getpVote())
-//                            .data("anony", data.getaNony())
-//                            .data("captcha", data.getCaptcha())
-//                            .data("talkwhat", data.getTalkWhat()).post();
-//
-//                    Log.e("document", document.toString());
-//
-//                } catch (IOException e1) {
-//                    e1.printStackTrace();
-//                }
                 OkGo.<String>post(Url.COMMENT + Url.REPLY)
                         .tag(this)
                         .params("ctype", data.getcType())
@@ -316,32 +299,43 @@ public class NetHelperImpl implements NetHelper {
     }
 
     @Override
-    public Flowable<Integer> download(final String url, final WebResponseListener listener) {
-        return Flowable.create(new FlowableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(final FlowableEmitter<Integer> e) throws Exception {
+    public DownloadTask download(final Context context, String url, final DownloadInterface downloadInterface, final int id) {
+        GetRequest<File> request = OkGo.<File>get(url);//"http://services.gradle.org/distributions/gradle-5.3-src.zip"
+        final DownloadTask task = OkDownload.request(String.valueOf(id), request)
+                .save()
+                .register(new DownloadListener(id) {
 
-//                OkGo.<File>get(url)
-//                        .tag(this)
-//                        .execute(new FileCallback() {
-//                            @Override
-//                            public void onSuccess(Response<File> response) {
-//                                e.onComplete();
-//                            }
-//
-//                            @Override
-//                            public void onError(Response<File> response) {
-//
-//                            }
-//
-//                            @Override
-//                            public void downloadProgress(Progress progress) {
-//                                super.downloadProgress(progress);
-//
-//                                e.onNext((int) (progress.fraction * 100));
-//                            }
-//                        });
-            }
-        }, BackpressureStrategy.BUFFER);
+                    @Override
+                    public void onStart(Progress progress) {
+                        //downloadInterface.createNotification(context,id);
+                    }
+
+                    @Override
+                    public void onProgress(Progress progress) {
+                        downloadInterface.progressChange(progress);
+                        //view.postDownloading(progress,id);
+                    }
+
+                    @Override
+                    public void onError(Progress progress) {
+                        downloadInterface.onError(progress);
+                        //view.postDownloading(progress,id);
+                    }
+
+                    @Override
+                    public void onFinish(File file, Progress progress) {
+                        downloadInterface.complete(progress);
+                        //context.unbindService(service);
+                        //view.postDownloading(progress,id);
+                    }
+
+                    @Override
+                    public void onRemove(Progress progress) {
+                        downloadInterface.onRemove(progress);
+                        //context.unbindService(service);
+                        //view.postDownloading(progress,id);
+                    }
+                });
+        return task;
     }
 }

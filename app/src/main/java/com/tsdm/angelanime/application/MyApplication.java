@@ -46,7 +46,6 @@ public class MyApplication extends Application {
         mActivityList = new ArrayList<>();
         okDownload = OkDownload.getInstance();
         okDownload.setFolder(downloadPath);
-        okDownload.getThreadPool().setCorePoolSize(3);
     }
 
     public static ImageLoader getImageLoader(Context context) {

@@ -13,10 +13,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.lzy.okgo.model.Progress;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.base.MvpBaseFragment;
-import com.tsdm.angelanime.bean.FileInformation;
 import com.tsdm.angelanime.bean.VideoState;
 import com.tsdm.angelanime.bean.event.AnimationDetail;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
@@ -28,7 +26,6 @@ import com.tsdm.angelanime.widget.DividerItemDecoration;
 import com.tsdm.angelanime.widget.RoundImageView;
 import com.tsdm.angelanime.widget.listener.PopUpListener;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -98,6 +95,8 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
 
     @Override
     public void init() {
+        presenter.bind(getContext());
+
         mVideoState = presenter.geVideoState();
         startShimmer();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -255,19 +254,14 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }else {
-            presenter.download(getContext(), url);
+            presenter.download(url);
         }
 
     }
 
     @Override
     public void onDestroy() {
+        presenter.unBind();
         super.onDestroy();
-    }
-
-    @Override
-    public void postDownloading(Progress progress, int notificationId) {
-        EventBus.getDefault().post(new FileInformation(progress.fileName
-                ,progress.status, (int) (progress.fraction * 100),notificationId));
     }
 }

@@ -8,11 +8,25 @@
         android:id="@+id/i_bar"
         layout="@layout/toolbar"
         app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:id="@+id/tv_loading"
+        style="@style/main_tv"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/dp_14_x"
+        app:layout_constraintTop_toBottomOf="@+id/i_bar"
+        android:gravity="center_vertical"
+        android:drawableLeft="@drawable/down"
+        android:drawablePadding="@dimen/dp_6_y"
+        android:paddingLeft="@dimen/dp_16_x"
+        android:paddingTop="@dimen/dp_6_y"
+        android:paddingBottom="@dimen/dp_6_y"
+        android:text="@string/top_loading"
+        android:background="@color/light_grey"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rlv_download"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/i_bar"
+        app:layout_constraintTop_toBottomOf="@+id/tv_loading"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/light_grey">
 

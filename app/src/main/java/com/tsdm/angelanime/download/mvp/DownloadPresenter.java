@@ -1,7 +1,10 @@
 package com.tsdm.angelanime.download.mvp;
 
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.DownloadStatue;
 import com.tsdm.angelanime.model.DataManagerModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,4 +21,8 @@ public class DownloadPresenter extends RxPresenter<DownloadContract.View> implem
     }
 
 
+    @Override
+    public List<DownloadStatue> geDownloadStatue() {
+        return mDataManagerModel.getDownloadStatue();
+    }
 }

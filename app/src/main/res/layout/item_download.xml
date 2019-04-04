@@ -82,7 +82,8 @@
             android:layout_alignParentRight="true"
             android:padding="@dimen/dp_8_x"
             android:layout_marginRight="@dimen/dp_8_x"
-            android:src="@mipmap/delete_download"/>
+            android:src="@mipmap/delete_download"
+            android:background="@drawable/ripple_item_layout_effect_white"/>
         <ImageView
             android:id="@+id/iv_pause"
             android:layout_width="wrap_content"
@@ -91,7 +92,8 @@
             android:layout_toLeftOf="@+id/iv_delete"
             android:padding="@dimen/dp_8_x"
             android:layout_marginRight="@dimen/dp_8_x"
-            android:src="@mipmap/pause"/>
+            android:src="@mipmap/pause"
+            android:background="@drawable/ripple_item_layout_effect_white"/>
     </RelativeLayout>
     <View
         style="@style/main_line"

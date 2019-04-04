@@ -52,7 +52,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         notifyItemChanged(position);
     }
 
-    public void deleteDile(int position){
+    public void deleteData(int position){
         data.remove(position);
         notifyItemRemoved(position);
     }
@@ -108,10 +108,19 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
                 listener.onViewClick(data.get(position).getId());
             }
         });
+
+        holder.ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onViewDelete(data.get(position).getId());
+                //notifyItemRemoved(position);
+            }
+        });
     }
 
     public interface OnViewClickListener{
         void onViewClick(int id);
+        void onViewDelete(int id);
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -15,13 +15,25 @@ import android.widget.RemoteViews;
 
 import com.lzy.okgo.model.Progress;
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
+import com.tsdm.angelanime.bean.DownloadStatue;
+import com.tsdm.angelanime.bean.FileInformation;
 import com.tsdm.angelanime.download.DownloadActivity;
+import com.tsdm.angelanime.model.DataManagerModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static com.lzy.okgo.model.Progress.ERROR;
 import static com.lzy.okgo.model.Progress.LOADING;
+import static com.lzy.okgo.model.Progress.NONE;
 import static com.lzy.okgo.model.Progress.PAUSE;
 import static com.lzy.okgo.model.Progress.WAITING;
-import static com.tsdm.angelanime.utils.Constants.NOTIFICATION_CLICK;
 import static com.tsdm.angelanime.utils.Constants.NOTIFICATION_ID;
 import static com.tsdm.angelanime.utils.Constants.ON_CANCEL;
 import static com.tsdm.angelanime.utils.Constants.ON_CLICK;
@@ -35,43 +47,44 @@ public class DownloadService extends Service {
 
 
     private NotificationManager manager;
-    private Notification notification;
     private Notification.Builder nb;
     private RemoteViews remoteView;
-
+    private MyServiceConn.MyBroadcastReceiver receiver;
+    private List<Notification> notifyList = new ArrayList<>();
+    private DataManagerModel mDataManagerModel;
 
     @Override
     public void onCreate() {
+        mDataManagerModel = MyApplication.getAppComponent().getDataManagerModel();
         super.onCreate();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        receiver = new MyServiceConn.MyBroadcastReceiver();
+        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         return new NotificationControl();
     }
 
     private class NotificationControl extends Binder implements DownloadInterface {
 
-        private MyServiceConn.MyBroadcastReceiver receiver;
-        private int id;
-        boolean isNotifyRemoved = false;
+        private Notification notification;
+        //boolean isNotifyRemoved = false;
         @Override
         public void createNotification(Context context, int id) {
-            this.id = id;
-            receiver = new MyServiceConn.MyBroadcastReceiver();
-            manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
             //侧滑取消
             IntentFilter deleteFilter = new IntentFilter();
-            deleteFilter.addAction(ON_CLICK);
+            deleteFilter.addAction(ON_CLICK+id);
             registerReceiver(receiver, deleteFilter);
-            Intent deleteIntent = new Intent(ON_CLICK);
+            Intent deleteIntent = new Intent(ON_CLICK+id);
 
             //notification点击事件
             Intent itemIntent = new Intent(DownloadService.this,DownloadActivity.class);
-            itemIntent.setAction(NOTIFICATION_CLICK);
-            itemIntent.putExtra(NOTIFICATION_ID,id);
 
             notification = new Notification();
             // 这个参数是通知提示闪出来的值.
@@ -88,55 +101,61 @@ public class DownloadService extends Service {
             notification.contentView = remoteView;
 
             IntentFilter pauseFilter = new IntentFilter();
-            pauseFilter.addAction(ON_PAUSE);
+            pauseFilter.addAction(ON_PAUSE+id);
             registerReceiver(receiver, pauseFilter);
-            Intent pauseIntent = new Intent(ON_PAUSE);
-            pauseIntent.putExtra(NOTIFICATION_ID,this.id);
+            Intent pauseIntent = new Intent(ON_PAUSE+id);
+            pauseIntent.putExtra(NOTIFICATION_ID,id);
             //给pause添加点击事件
             notification.contentView.setOnClickPendingIntent(R.id.tv_start, PendingIntent
                     .getBroadcast(context, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
             IntentFilter cancelFilter = new IntentFilter();
-            cancelFilter.addAction(ON_CANCEL);
+            cancelFilter.addAction(ON_CANCEL+id);
             registerReceiver(receiver, cancelFilter);
-            Intent cancelIntent = new Intent(ON_CANCEL);
-            cancelIntent.putExtra(NOTIFICATION_ID,this.id);
+            Intent cancelIntent = new Intent(ON_CANCEL+id);
+            cancelIntent.putExtra(NOTIFICATION_ID,id);
             //给cancel添加点击事件
             notification.contentView.setOnClickPendingIntent(R.id.tv_cancel, PendingIntent
                     .getBroadcast(context, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT));
             notification.flags |= Notification.FLAG_NO_CLEAR;
             manager.notify(id, notification);
-
+            notifyList.add(notification);
+            mDataManagerModel.insertDownloadStatue(new DownloadStatue(id,WAITING));
+            //EventBus.getDefault().post(new FileInformation("",WAITING,0,id));
         }
 
         @Override
         public void progressChange(Progress progress) {
-            if (!isNotifyRemoved){
-                notification.contentView.setTextViewText(R.id.tv_remote_title, progress.fileName);
-                if (progress.status == LOADING){
-                    notification.flags |= Notification.FLAG_NO_CLEAR;
-                    notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
-                }else if (progress.status == PAUSE){
-                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
-                    notification.contentView.setTextViewText(R.id.tv_start, getString(R.string._continue));
-                }else if (progress.status == WAITING){
-                    notification.flags |= Notification.FLAG_NO_CLEAR;
-                    notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.initing));
-                    notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
-                }else if (progress.status == ERROR){
-                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
-                    notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.parse_error));
-                    notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.retry));
-                }
-                notification.contentView.setProgressBar(R.id.pb_download, 100,
-                        (int) (progress.fraction * 100), false);
-                //notification.contentView = remoteView;
-                manager.notify(id, notification);
+            int id = Integer.parseInt(progress.tag);
+            Notification notification = notifyList.get(id - 1);
+            notification.contentView.setTextViewText(R.id.tv_remote_title, progress.fileName);
+            if (progress.status == LOADING){
+                notification.flags |= Notification.FLAG_NO_CLEAR;
+                notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
+            }else if (progress.status == PAUSE){
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                notification.contentView.setTextViewText(R.id.tv_start, getString(R.string._continue));
+            }else if (progress.status == WAITING){
+                notification.flags |= Notification.FLAG_NO_CLEAR;
+                notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.initing));
+                notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.pause));
+            }else if (progress.status == ERROR){
+                notification.flags |= Notification.FLAG_NO_CLEAR;
+                notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.parse_error));
+                notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.retry));
             }
+            notification.contentView.setProgressBar(R.id.pb_download, 100,
+                    (int) (progress.fraction * 100), false);
+            //notification.contentView = remoteView;
+            manager.notify(id, notification);
+            EventBus.getDefault().post(new FileInformation(progress.fileName
+                    ,progress.status, (int) (progress.fraction * 100),id));
         }
 
         @Override
-        public void complete() {
+        public void complete(Progress progress) {
+            int id = Integer.parseInt(progress.tag);
+            Notification notification = notifyList.get(id - 1);
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notification.tickerText = getString(R.string.complete);
             notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.com));
@@ -146,45 +165,85 @@ public class DownloadService extends Service {
             }
             manager.notify(id, notification);
             //manager.cancel(1);
-        }
-
-        @Override
-        public void onRemove() {
-            notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            if (receiver != null) {
-                unregisterReceiver(receiver);
-                receiver = null;
+            List<DownloadStatue> downloadStatues = mDataManagerModel.getDownloadStatue();
+            for (int i = 0; i < downloadStatues.size(); i++) {
+                if (downloadStatues.get(i).getId() == id){
+                    mDataManagerModel.deleteDownload(downloadStatues.get(i));
+                    break;
+                }
             }
-            manager.cancel(id);
+            EventBus.getDefault().post(new FileInformation(progress.fileName,
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm")
+                            .format(new Date(progress.date)),id));
         }
 
         @Override
-        public void onError() {
-            notification.flags |= Notification.FLAG_NO_CLEAR;
-            remoteView.setTextViewText(R.id.tv_remote_title, getString(R.string.network_error));
-            remoteView.setTextViewText(R.id.tv_start, getString(R.string.retry));
-        }
-
-        @Override
-        public void removeNotify() {
+        public void onRemove(Progress progress) {
+            int id = Integer.parseInt(progress.tag);
+            Notification notification = notifyList.get(id - 1);
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
-            unregisterReceiver(receiver);
+
             manager.cancel(id);
-            isNotifyRemoved = true;
+            List<DownloadStatue> downloadStatues = mDataManagerModel.getDownloadStatue();
+            for (int i = 0; i < downloadStatues.size(); i++) {
+                if (downloadStatues.get(i).getId() == id){
+                    mDataManagerModel.deleteDownload(downloadStatues.get(i));
+                    break;
+                }
+            }
+            EventBus.getDefault().post(new FileInformation(""
+                    ,NONE, 0,id));
         }
 
-//        @Override
-//        public void onPause() {
-//            remoteView.setImageViewResource(R.id.iv_remote_start, R.mipmap.play);
-//            notification.contentView = remoteView;
-//            manager.notify(id, notification);
-//        }
-//
-//        @Override
-//        public void onStart() {
-//            remoteView.setImageViewResource(R.id.iv_remote_start, R.mipmap.pause);
-//            notification.contentView = remoteView;
-//            manager.notify(id, notification);
-//        }
+        @Override
+        public void onError(Progress progress) {
+            int id = Integer.parseInt(progress.tag);
+            Notification notification = notifyList.get(id - 1);
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+            notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.network_error));
+            notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.retry));
+            List<DownloadStatue> downloadStatues = mDataManagerModel.getDownloadStatue();
+            for (int i = 0; i < downloadStatues.size(); i++) {
+                if (downloadStatues.get(i).getId() == id){
+                    downloadStatues.get(i).setStatue(progress.status);
+                    mDataManagerModel.updateStatue(downloadStatues.get(i));
+                    break;
+                }
+            }
+            EventBus.getDefault().post(new FileInformation(""
+                    ,progress.status, (int) (progress.fraction * 100),id));
+        }
+
+        @Override
+        public void removeNotify(int id) {
+            Notification notification = notifyList.get(id - 1);
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+            //unregisterReceiver(receiver);
+            manager.cancel(id);
+            //isNotifyRemoved = true;
+        }
+    }
+
+    @Override
+    public void unbindService(ServiceConnection conn) {
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        super.unbindService(conn);
+    }
+
+    @Override
+    public void onDestroy() {
+        mDataManagerModel.deleteAllStatue();
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void onEventMainThread(FileInformation information) {
+
     }
 }

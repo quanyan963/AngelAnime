@@ -35,4 +35,5 @@
     <string name="download_detail">下载内容</string>
     <string name="downloading_item">下载中&#8230;</string>
     <string name="pause_waite">已暂停，等待开始下载</string>
+    <string name="top_loading">正在下载</string>
 </resources>

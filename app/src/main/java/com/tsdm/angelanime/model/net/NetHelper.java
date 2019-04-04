@@ -2,8 +2,10 @@ package com.tsdm.angelanime.model.net;
 
 import android.content.Context;
 
+import com.lzy.okserver.download.DownloadTask;
 import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.TopEight;
+import com.tsdm.angelanime.service.DownloadInterface;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
 import org.jsoup.nodes.Document;
@@ -36,5 +38,5 @@ public interface NetHelper {
 
     Flowable<String> submit(CommentInput data,  WebResponseListener listener);
 
-    Flowable<Integer> download(String url, WebResponseListener listener);
+    DownloadTask download(Context context, String url, DownloadInterface downloadInterface, int id);
 }

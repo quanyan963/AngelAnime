@@ -61,6 +61,12 @@ public class FileInformation implements Serializable {
         this.createDate = createDate;
     }
 
+    public FileInformation(String fileName, String createDate, int id) {
+        this.fileName = fileName;
+        this.createDate = createDate;
+        this.id = id;
+    }
+
     public FileInformation(String fileName, int state, int progress, int id) {
         this.fileName = fileName;
         this.state = state;

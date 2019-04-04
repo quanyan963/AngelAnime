@@ -26,21 +26,22 @@ import static com.tsdm.angelanime.utils.Constants.ON_PAUSE;
 
 public class MyServiceConn implements ServiceConnection {
 
-    private static List<DownloadInterface> downloadInterface = new ArrayList<>();
+    private static DownloadInterface downloadInterface;
     private static List<DownloadTask> task = new ArrayList<>();
     private static long time = 0;
 
-    public void setTask(DownloadTask task) {
-        this.task.add(task);
-    }
-
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        downloadInterface.add((DownloadInterface) iBinder);
-        task.get(task.size() - 1).start();
+        downloadInterface = (DownloadInterface) iBinder;
     }
-    public DownloadInterface getInterface (int position){
-        return downloadInterface.get(position - 1);
+
+    public void setTask(DownloadTask task) {
+        MyServiceConn.task.add(task);
+        task.start();
+    }
+
+    public DownloadInterface getInterface (){
+        return downloadInterface;
     }
 
     @Override
@@ -63,13 +64,20 @@ public class MyServiceConn implements ServiceConnection {
                         task.get(position).start();
                         time = System.currentTimeMillis();
                     }else if (task.get(position).progress.status == ERROR){
-                        task.get(position).restart();
+                        task.get(position).start();
                         time = System.currentTimeMillis();
                     }
                 }else if (intent.getAction().contains(ON_CANCEL)){
-                    task.get(position).remove(true);
+                    if (task.size() != 0 ){
+                        try{
+                            task.get(position).remove(true);
+                            task.get(position).unRegister(String.valueOf(position + 1));
+                        }catch (Exception e){
+
+                        }
+                    }
                 }else if (intent.getAction().contains(ON_CLICK)){
-                    downloadInterface.get(position).removeNotify();
+                    downloadInterface.removeNotify(position);
                 }
             }
         }

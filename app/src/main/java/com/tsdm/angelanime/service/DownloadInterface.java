@@ -11,10 +11,10 @@ import com.lzy.okgo.model.Progress;
 public interface DownloadInterface {
     void createNotification(Context context, int id);
     void progressChange(Progress progress);
-    void complete();
+    void complete(Progress progress);
 //    void onPause();
 //    void onStart();
-    void onRemove();
-    void onError();
-    void removeNotify();
+    void onRemove(Progress progress);
+    void onError(Progress progress);
+    void removeNotify(int id);
 }
