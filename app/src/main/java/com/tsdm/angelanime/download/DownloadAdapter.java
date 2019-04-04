@@ -118,6 +118,13 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         });
     }
 
+    public void insertComplete(int loadingPosition, int completePosition, FileInformation information) {
+        data.remove(loadingPosition);
+        notifyItemRemoved(loadingPosition);
+        data.add(completePosition,information);
+        notifyItemInserted(completePosition);
+    }
+
     public interface OnViewClickListener{
         void onViewClick(int id);
         void onViewDelete(int id);
