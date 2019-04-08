@@ -43,6 +43,7 @@ import static com.tsdm.angelanime.utils.Constants.HREF_URL;
 import static com.tsdm.angelanime.utils.Constants.INTRO;
 import static com.tsdm.angelanime.utils.Constants.INTRODUCTION;
 import static com.tsdm.angelanime.utils.Constants.OK;
+import static com.tsdm.angelanime.utils.Constants.PLAY_URL;
 import static com.tsdm.angelanime.utils.Constants.RETRY;
 
 /**
@@ -137,29 +138,50 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
         }
     }
 
+    class MyPlayListScriptInterface {
+        @JavascriptInterface
+        @SuppressWarnings("unused")
+        public void processHTML(String html) {
+            // 在这里处理html源码
+            presenter.getUrl(html,AnimationDetailActivity.this);
+        }
+    }
+
     @Override
     public int getLayout() {
         return R.layout.activity_detail;
     }
 
     @Override
-    public void getDetail(AnimationDetail animationDetail) {
-        if (animationDetail.getRequestStatue() == OK){
-            hideSnackBar();
-            detail = animationDetail;
-            if (isFirst){
-                if (detail.getPlayList() != null){
-                    position = detail.getPlayList().size()-1;
-                    presenter.getListUrl(detail.getPlayList().get(position), this);
-                }else {
-                    EventBus.getDefault().post(detail);
-                    EventBus.getDefault().post(new Comment(detail.getVideoNum(),OK));
-                }
-            }else {
-                presenter.getListUrl(detail.getPlayList().get(position), this);
-            }
-        }
+    public void getDetail(final AnimationDetail animationDetail) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (animationDetail.getRequestStatue() == OK){
+                    hideSnackBar();
+                    detail = animationDetail;
+                    if (isFirst){
+                        if (detail.getPlayList() != null){
+                            position = detail.getPlayList().size()-1;
 
+                            presenter.getListUrl(detail.getPlayList().get(position),
+                                    AnimationDetailActivity.this,
+                                    AnimationDetailActivity.this,
+                                    new MyPlayListScriptInterface(),PLAY_URL);
+
+                        }else {
+                            EventBus.getDefault().post(detail);
+                            EventBus.getDefault().post(new Comment(detail.getVideoNum(),OK));
+                        }
+                    }else {
+                        presenter.getListUrl(detail.getPlayList().get(position),
+                                AnimationDetailActivity.this,
+                                AnimationDetailActivity.this,
+                                new MyPlayListScriptInterface(),PLAY_URL);
+                    }
+                }
+            }
+        });
         //spPlayer.setThumbImageView();
     }
 
@@ -195,7 +217,7 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             EventBus.getDefault().post(new Comment(detail.getVideoNum(),OK));
             isFirst = false;
         }
-        presenter.getPlayUrl(position,this);
+        //presenter.getPlayUrl(position,this);
     }
 
     @Override
@@ -268,7 +290,11 @@ public class AnimationDetailActivity extends MvpBaseActivity<AnimationDetailPres
             if (this.position != position){
                 this.position = position;
                 GSYVideoManager.releaseAllVideos();
-                onComplete();
+                //onComplete();
+                presenter.getListUrl(detail.getPlayList().get(position),
+                        AnimationDetailActivity.this,
+                        AnimationDetailActivity.this,
+                        new MyPlayListScriptInterface(),PLAY_URL);
             }
             //presenter.getPlayUrl(detail.getPlayList().get(position), this);
         }

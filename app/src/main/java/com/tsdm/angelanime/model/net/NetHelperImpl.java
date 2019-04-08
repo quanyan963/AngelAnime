@@ -3,7 +3,6 @@ package com.tsdm.angelanime.model.net;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -11,7 +10,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
@@ -22,7 +20,6 @@ import com.lzy.okserver.download.DownloadTask;
 import com.tsdm.angelanime.bean.CommentInput;
 import com.tsdm.angelanime.bean.TopEight;
 import com.tsdm.angelanime.service.DownloadInterface;
-import com.tsdm.angelanime.utils.Constants;
 import com.tsdm.angelanime.utils.Url;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -43,8 +40,6 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-
-import static com.tsdm.angelanime.utils.Constants.DOWNLOAD_TASK;
 
 /**
  * Created by Mr.Quan on 2018/11/12.

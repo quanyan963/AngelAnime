@@ -30,10 +30,12 @@ public interface AnimationDetailContract {
 
         void getPlayUrl(int position, WebResponseListener listener);
 
-        void getListUrl(String url, WebResponseListener listener);
+        void getListUrl(String url, WebResponseListener listener, Context context, Object script, String name);
 
         void getData(String html, WebResponseListener listener);
 
         void insertVideoState(VideoState value);
+
+        void getUrl(String html, WebResponseListener listener);
     }
 }

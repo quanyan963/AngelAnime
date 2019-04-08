@@ -45,25 +45,6 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
         mListData = new ArrayList<>();
     }
 
-//    @Override
-//    public void getDetail(String url, final WebResponseListener listener) {
-//        addSubscribe(mDataManagerModel.getHtmlResponse(url,listener)
-//                .map(new Function<Document, AnimationDetail>() {
-//                    @Override
-//                    public AnimationDetail apply(Document document) {
-//
-//                    }
-//                })
-//                .compose(RxUtil.<AnimationDetail>rxSchedulerHelper())
-//                .subscribeWith(new CommonSubscriber<AnimationDetail>(view){
-//
-//                    @Override
-//                    public void onNext(AnimationDetail animationDetail) {
-//                        view.getDetail(animationDetail);
-//                    }
-//                }));
-//    }
-
     @Override
     public void getDetail(String s, WebResponseListener listener, Context context, Object script, String name) {
 //        mName = name;
@@ -102,25 +83,9 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
     }
 
     @Override
-    public void getListUrl(String url, WebResponseListener listener) {
-        addSubscribe(mDataManagerModel.getListUrl(url, listener)
-                .compose(RxUtil.<String[]>rxSchedulerHelper())
-                .subscribeWith(new CommonSubscriber<String[]>(view) {
+    public void getListUrl(String url, WebResponseListener listener, Context context, Object script, String name) {
 
-                    @Override
-                    public void onNext(String[] s) {
-                        for (int i = 1; i < s.length; i++) {
-                            if (i % 2 == 1) {
-                                mListData.add(s[i]);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        view.onComplete();
-                    }
-                }));
+        mDataManagerModel.getWebHtml(Url.URL + url, listener, context, script, name);
     }
 
     @Override
@@ -181,6 +146,7 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                     for (Element element : elements) {
                         playList.add(element.attr("href"));
                         playListTitle.add(element.text());
+                        mListData.add(element.attr("href"));
                     }
                 }
 
@@ -246,5 +212,34 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
     @Override
     public void insertVideoState(VideoState value) {
         mDataManagerModel.insertVideoState(value);
+    }
+
+    @Override
+    public void getUrl(String html, WebResponseListener listener) {
+        view.onComplete();
+        Document document = Jsoup.parse(html);
+        final Element baseUrl = document.getElementById("cciframe");
+        String url = baseUrl.attr("src").split("&")[1].substring(2);
+
+        addSubscribe(mDataManagerModel.getHtmlResponse(url, listener)
+                .compose(RxUtil.<Document>rxSchedulerHelper())
+                .map(new Function<Document, String>() {
+                    @Override
+                    public String apply(Document document) throws Exception {
+                        Elements elements = document.select("script");
+                        String[] urls = elements.get(elements.size() - 1).toString()
+                                .replace("\r\n\t\t","").split("var ");
+                        String baseUrl = urls[3].split("\\\"")[1];
+                        String m3u8 = urls[11].split("\\\"")[1].split("\\?")[0];
+                        return baseUrl + m3u8;
+                    }
+                })
+                .subscribeWith(new CommonSubscriber<String>(view) {
+
+                    @Override
+                    public void onNext(String s) {
+                        view.getPlayUrl(s);
+                    }
+                }));
     }
 }

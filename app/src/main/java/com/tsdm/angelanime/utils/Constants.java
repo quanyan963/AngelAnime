@@ -25,6 +25,7 @@ public class Constants {
     public static final String AMERICA = "美剧";
     public static final String AMERICA_URL = "/meiju/";
     public static final String INTRO = "INTRO";
+    public static final String PLAY_URL = "play_url";
     public static final String REPLY = "REPLY";
     public static final String DOWNLOAD_TASK = "download_task";
     public static final String NOT_FOUND = "找不到网页";
