@@ -182,6 +182,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
                 notification.contentView.setTextViewText(R.id.tv_remote_title, getString(R.string.parse_error));
                 notification.contentView.setTextViewText(R.id.tv_start, getString(R.string.retry));
             }
+
             notification.contentView.setProgressBar(R.id.pb_download, 100,
                     (int) (progress.fraction * 100), false);
             //notification.contentView = remoteView;
