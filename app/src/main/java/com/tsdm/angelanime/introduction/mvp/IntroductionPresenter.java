@@ -40,8 +40,7 @@ public class IntroductionPresenter extends RxPresenter<IntroductionContract.View
     public void download(String url) {
         id += 1;
         downloadInterface = service.getInterface();
-        service.setTask(mDataManagerModel.download(context,url,downloadInterface,id));
-        downloadInterface.createNotification(context,id);
+        downloadInterface.createNotification(url,id);
     }
 
     @Override
@@ -55,6 +54,6 @@ public class IntroductionPresenter extends RxPresenter<IntroductionContract.View
 
     @Override
     public void unBind() {
-        context.unbindService(service);
+        //context.unbindService(service);
     }
 }

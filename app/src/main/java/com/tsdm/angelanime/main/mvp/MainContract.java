@@ -45,5 +45,7 @@ public interface MainContract {
         void switchNavView(int id);
 
         boolean onNavigationSelected(MenuItem item, Context context);
+
+        boolean geDownloadInfo();
     }
 }

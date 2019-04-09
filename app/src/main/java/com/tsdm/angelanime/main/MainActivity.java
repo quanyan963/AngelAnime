@@ -2,6 +2,7 @@ package com.tsdm.angelanime.main;
 
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -25,6 +26,7 @@ import com.tsdm.angelanime.home.HomeFragment;
 import com.tsdm.angelanime.main.mvp.MainContract;
 import com.tsdm.angelanime.main.mvp.MainPresenter;
 import com.tsdm.angelanime.search.SearchActivity;
+import com.tsdm.angelanime.service.DownloadService;
 import com.tsdm.angelanime.utils.AlertUtils;
 import com.tsdm.angelanime.utils.Utils;
 
@@ -32,6 +34,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import cn.icheny.transition.CySharedElementTransition;
+
+import static com.tsdm.angelanime.utils.Constants.NOTIFICATION_ID;
+import static com.tsdm.angelanime.utils.Constants.ON_DESTROY;
 
 public class MainActivity extends MvpBaseActivity<MainPresenter> implements MainContract.View,
         View.OnClickListener, RadioGroup.OnCheckedChangeListener {//MainFragment.CallBackValue,
@@ -99,6 +104,19 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     @Override
     public void onDestroy() {
         //MyApplication.getImageLoader(this).clearMemoryCache();
+        DownloadService.MyBroadcastReceiver receiver = new DownloadService.MyBroadcastReceiver();
+        IntentFilter destroyFilter = new IntentFilter();
+        destroyFilter.addAction(ON_DESTROY);
+        registerReceiver(receiver, destroyFilter);
+        Intent destroyIntent = new Intent(ON_DESTROY);
+
+        if (presenter.geDownloadInfo()){
+            destroyIntent.putExtra(NOTIFICATION_ID,-1);
+        }else {
+            destroyIntent.putExtra(NOTIFICATION_ID,0);
+        }
+        sendBroadcast(destroyIntent);
+        unregisterReceiver(receiver);
         super.onDestroy();
     }
 

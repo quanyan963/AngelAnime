@@ -112,7 +112,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onViewDelete(data.get(position).getId());
+                listener.onViewDelete(position, data.get(position).getId());
                 //notifyItemRemoved(position);
             }
         });
@@ -127,7 +127,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
 
     public interface OnViewClickListener{
         void onViewClick(int id);
-        void onViewDelete(int id);
+        void onViewDelete(int position, int id);
     }
 
     @Override

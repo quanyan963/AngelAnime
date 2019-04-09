@@ -1,19 +1,27 @@
 package com.tsdm.angelanime.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.lzy.okgo.model.Progress;
+import com.lzy.okserver.OkDownload;
+import com.lzy.okserver.download.DownloadTask;
+import com.lzy.okserver.task.XExecutor;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.DownloadStatue;
@@ -34,49 +42,78 @@ import static com.lzy.okgo.model.Progress.LOADING;
 import static com.lzy.okgo.model.Progress.NONE;
 import static com.lzy.okgo.model.Progress.PAUSE;
 import static com.lzy.okgo.model.Progress.WAITING;
+import static com.tsdm.angelanime.utils.Constants.CHANNEL_ID;
+import static com.tsdm.angelanime.utils.Constants.CHANNEL_NAME;
 import static com.tsdm.angelanime.utils.Constants.NOTIFICATION_ID;
 import static com.tsdm.angelanime.utils.Constants.ON_CANCEL;
 import static com.tsdm.angelanime.utils.Constants.ON_CLICK;
+import static com.tsdm.angelanime.utils.Constants.ON_DESTROY;
 import static com.tsdm.angelanime.utils.Constants.ON_PAUSE;
 
 /**
  * Created by Mr.Quan on 2019/3/22.
  */
 
-public class DownloadService extends Service {
+public class DownloadService extends Service implements XExecutor.OnAllTaskEndListener {
 
 
     private NotificationManager manager;
-    private Notification.Builder nb;
+    private NotificationCompat.Builder nb;
     private RemoteViews remoteView;
-    private MyServiceConn.MyBroadcastReceiver receiver;
+    private MyBroadcastReceiver receiver;
     private List<Notification> notifyList = new ArrayList<>();
+    private static List<DownloadTask> taskList = new ArrayList<>();
     private DataManagerModel mDataManagerModel;
+    private boolean isExit = false;
+    private static DownloadInterface downloadInterface;
 
     @Override
     public void onCreate() {
+        OkDownload.getInstance().addOnAllTaskEndListener(this);
         mDataManagerModel = MyApplication.getAppComponent().getDataManagerModel();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+        }
         super.onCreate();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createNotificationChannel(String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(
+                NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
+    }
+
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        receiver = new MyServiceConn.MyBroadcastReceiver();
+        receiver = new MyBroadcastReceiver();
         manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        return new NotificationControl();
+        NotificationControl control = new NotificationControl();
+        downloadInterface = control;
+        return control;
+    }
+
+    @Override
+    public void onAllTaskEnd() {
+        downloadInterface.stop();
     }
 
     private class NotificationControl extends Binder implements DownloadInterface {
 
         private Notification notification;
+        private DownloadTask task;
         //boolean isNotifyRemoved = false;
         @Override
-        public void createNotification(Context context, int id) {
-
+        public void createNotification(String url, int id) {
+            task = mDataManagerModel.download(getApplicationContext(),url,this,id);
+            taskList.add(task);
+            task.start();
             //侧滑取消
             IntentFilter deleteFilter = new IntentFilter();
             deleteFilter.addAction(ON_CLICK+id);
@@ -91,12 +128,12 @@ public class DownloadService extends Service {
             notification.tickerText = getString(R.string.start);
             remoteView = new RemoteViews(getPackageName(), R.layout.remoteview_main);
             remoteView.setProgressBar(R.id.pb_download, 100, 0, false);
-            nb = new Notification.Builder(context)
+            nb = new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID)
                     .setSmallIcon(R.drawable.download) // 小图标
                     //.setCustomContentView(remoteView) // 设置自定义的RemoteView，需要API最低为24
                     .setAutoCancel(false) // 点击通知后通知在通知栏上消失
-                    .setDeleteIntent(PendingIntent.getBroadcast(context,0,deleteIntent,0))//侧滑删除
-                    .setContentIntent(PendingIntent.getActivity(context,0,itemIntent,0));//点击通知
+                    .setDeleteIntent(PendingIntent.getBroadcast(getApplicationContext(),0,deleteIntent,0))//侧滑删除
+                    .setContentIntent(PendingIntent.getActivity(getApplicationContext(),0,itemIntent,0));//点击通知
             notification = nb.build();
             notification.contentView = remoteView;
 
@@ -107,7 +144,7 @@ public class DownloadService extends Service {
             pauseIntent.putExtra(NOTIFICATION_ID,id);
             //给pause添加点击事件
             notification.contentView.setOnClickPendingIntent(R.id.tv_start, PendingIntent
-                    .getBroadcast(context, 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    .getBroadcast(getApplicationContext(), 0, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
             IntentFilter cancelFilter = new IntentFilter();
             cancelFilter.addAction(ON_CANCEL+id);
@@ -116,12 +153,13 @@ public class DownloadService extends Service {
             cancelIntent.putExtra(NOTIFICATION_ID,id);
             //给cancel添加点击事件
             notification.contentView.setOnClickPendingIntent(R.id.tv_cancel, PendingIntent
-                    .getBroadcast(context, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    .getBroadcast(getApplicationContext(), 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT));
             notification.flags |= Notification.FLAG_NO_CLEAR;
             manager.notify(id, notification);
             notifyList.add(notification);
             mDataManagerModel.insertDownloadStatue(new DownloadStatue(id,WAITING));
             //EventBus.getDefault().post(new FileInformation("",WAITING,0,id));
+
         }
 
         @Override
@@ -222,6 +260,19 @@ public class DownloadService extends Service {
             manager.cancel(id);
             //isNotifyRemoved = true;
         }
+
+        @Override
+        public void exit() {
+            isExit = true;
+        }
+
+        @Override
+        public void stop() {
+            if (isExit)
+                stopSelf();
+        }
+
+
     }
 
     @Override
@@ -240,6 +291,49 @@ public class DownloadService extends Service {
     public void onDestroy() {
         mDataManagerModel.deleteAllStatue();
         super.onDestroy();
+    }
+
+    private static long time = 0;
+
+    public static class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long temp = System.currentTimeMillis();
+            int position = intent.getIntExtra(NOTIFICATION_ID,-1) - 1;
+            if (temp - time > 300){
+                if (intent.getAction().contains(ON_PAUSE)){
+                    if (taskList.get(position).progress.status == LOADING){
+                        taskList.get(position).pause();
+                        time = System.currentTimeMillis();
+                    }else if (taskList.get(position).progress.status == PAUSE){
+                        taskList.get(position).start();
+                        time = System.currentTimeMillis();
+                    }else if (taskList.get(position).progress.status == ERROR){
+                        taskList.get(position).start();
+                        time = System.currentTimeMillis();
+                    }
+                }else if (intent.getAction().contains(ON_CANCEL)){
+                    if (taskList.size() != 0 ){
+                        try{
+                            taskList.get(position).remove(true);
+                            taskList.get(position).unRegister(String.valueOf(position + 1));
+                        }catch (Exception e){
+
+                        }
+                    }
+                }else if (intent.getAction().contains(ON_CLICK)){
+                    downloadInterface.removeNotify(position);
+                }else if (intent.getAction().contains(ON_DESTROY)){
+                    if (position == -1){
+                        downloadInterface.stop();
+                    }else {
+                        downloadInterface.exit();
+                    }
+
+                }
+            }
+        }
     }
 
     @Subscribe

@@ -12,7 +12,7 @@ import com.tsdm.angelanime.bean.DownloadStatue;
 import com.tsdm.angelanime.bean.FileInformation;
 import com.tsdm.angelanime.download.mvp.DownloadContract;
 import com.tsdm.angelanime.download.mvp.DownloadPresenter;
-import com.tsdm.angelanime.service.MyServiceConn;
+import com.tsdm.angelanime.service.DownloadService;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -41,7 +41,7 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
     private DownloadAdapter downloadAdapter;
     private List<FileInformation> fileName;
     private List<Integer> downList = new ArrayList<>();
-    private MyServiceConn.MyBroadcastReceiver receiver;
+    private DownloadService.MyBroadcastReceiver receiver;
     private List<DownloadStatue> statueList = new ArrayList<>();
 
     @Override
@@ -71,7 +71,7 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
         initToolbar();
         setNavigationIcon(true);
 
-        receiver = new MyServiceConn.MyBroadcastReceiver();
+        receiver = new DownloadService.MyBroadcastReceiver();
         IntentFilter pauseFilter = new IntentFilter();
         pauseFilter.addAction(ON_PAUSE);
         registerReceiver(receiver, pauseFilter);
@@ -91,9 +91,28 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
             }
 
             @Override
-            public void onViewDelete(int id) {
-                cancelIntent.putExtra(NOTIFICATION_ID, id);
-                sendBroadcast(cancelIntent);
+            public void onViewDelete(int position, int id) {
+                if (position < downList.size()){
+                    cancelIntent.putExtra(NOTIFICATION_ID, id);
+                    sendBroadcast(cancelIntent);
+                    for (int i = 0; i < downList.size(); i++) {
+                        if (downList.get(i) == id){
+                            downList.remove(i);
+                            break;
+                        }
+                    }
+
+                }else {
+                    String path = MyApplication.downloadPath + fileName.get(position - downList
+                            .size() == 0 ? 0 : downList.size() - 1).getFileName();
+                    File file = new File(path);
+                    if (file.exists()){
+                        deleteFile(path);
+                        downloadAdapter.notifyItemRemoved(position);
+                    }
+
+                }
+
             }
         });
     }

@@ -1,7 +1,5 @@
 package com.tsdm.angelanime.service;
 
-import android.content.Context;
-
 import com.lzy.okgo.model.Progress;
 
 /**
@@ -9,7 +7,7 @@ import com.lzy.okgo.model.Progress;
  */
 
 public interface DownloadInterface {
-    void createNotification(Context context, int id);
+    void createNotification(String url, int id);
     void progressChange(Progress progress);
     void complete(Progress progress);
 //    void onPause();
@@ -17,4 +15,6 @@ public interface DownloadInterface {
     void onRemove(Progress progress);
     void onError(Progress progress);
     void removeNotify(int id);
+    void exit();
+    void stop();
 }

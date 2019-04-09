@@ -95,7 +95,7 @@ public class IntroductionFragment extends MvpBaseFragment<IntroductionPresenter>
 
     @Override
     public void init() {
-        presenter.bind(getContext());
+        presenter.bind(getActivity());
 
         mVideoState = presenter.geVideoState();
         startShimmer();

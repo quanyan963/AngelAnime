@@ -9,6 +9,7 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.tsdm.angelanime.R;
 import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.base.RxPresenter;
+import com.tsdm.angelanime.bean.DownloadStatue;
 import com.tsdm.angelanime.bean.RecentlyData;
 import com.tsdm.angelanime.bean.RecentlyDetail;
 import com.tsdm.angelanime.bean.ScheduleDetail;
@@ -126,5 +127,15 @@ public class MainPresenter extends RxPresenter<MainContract.View> implements Mai
                 view.toDownloadView();
         }
         return false;
+    }
+
+    @Override
+    public boolean geDownloadInfo() {
+        List<DownloadStatue> data = mDataManagerModel.getDownloadStatue();
+        if (data.size() != 0){
+            return false;
+        }else {
+            return true;
+        }
     }
 }
