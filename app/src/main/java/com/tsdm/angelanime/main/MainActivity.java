@@ -3,6 +3,7 @@ package com.tsdm.angelanime.main;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -58,9 +59,17 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     private Fragment mCurrentFragment;
     private HomeFragment mHomeFragment;
     private ClassifyFragment mClassifyFragment;
+    private DownloadService.MyBroadcastReceiver receiver;
+    private Intent destroyIntent;
 
     @Override
     public void init() {
+        receiver = new DownloadService.MyBroadcastReceiver();
+        IntentFilter destroyFilter = new IntentFilter();
+        destroyFilter.addAction(ON_DESTROY);
+        registerReceiver(receiver, destroyFilter);
+        destroyIntent = new Intent(ON_DESTROY);
+
         initToolbar();
         setNavigationIcon(false);
         mScheduleList = presenter.getSchedule();
@@ -104,19 +113,20 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
     @Override
     public void onDestroy() {
         //MyApplication.getImageLoader(this).clearMemoryCache();
-        DownloadService.MyBroadcastReceiver receiver = new DownloadService.MyBroadcastReceiver();
-        IntentFilter destroyFilter = new IntentFilter();
-        destroyFilter.addAction(ON_DESTROY);
-        registerReceiver(receiver, destroyFilter);
-        Intent destroyIntent = new Intent(ON_DESTROY);
-
         if (presenter.geDownloadInfo()){
             destroyIntent.putExtra(NOTIFICATION_ID,-1);
         }else {
             destroyIntent.putExtra(NOTIFICATION_ID,0);
         }
         sendBroadcast(destroyIntent);
-        unregisterReceiver(receiver);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                unregisterReceiver(receiver);
+            }
+        },600);
+
         super.onDestroy();
     }
 

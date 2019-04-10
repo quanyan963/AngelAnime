@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
@@ -11,7 +11,7 @@
         android:textSize="@dimen/dp_12_x"
         android:layout_marginLeft="@dimen/dp_16_x"
         android:layout_marginRight="@dimen/dp_16_x"
-        android:layout_marginBottom="@dimen/dp_6_y"
+        android:layout_marginBottom="@dimen/dp_4_y"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:ellipsize="start"
@@ -22,8 +22,9 @@
         android:layout_height="@dimen/dp_4_y"
         android:layout_marginRight="@dimen/dp_16_x"
         android:layout_marginLeft="@dimen/dp_16_x"
-        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/dp_4_y"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_below="@+id/tv_remote_title"
         android:layout_centerVertical="true"
         android:indeterminateTint="@color/colorAccent"
         android:progressDrawable="@drawable/progress_bar"
@@ -32,8 +33,8 @@
     <TextView
         android:id="@+id/tv_start"
         style="@style/main_tv"
+        android:layout_below="@+id/pb_download"
         android:textSize="@dimen/dp_10_x"
-        android:layout_alignParentBottom="true"
         android:paddingTop="@dimen/dp_4_y"
         android:paddingLeft="@dimen/dp_8_x"
         android:paddingRight="@dimen/dp_8_x"
@@ -44,8 +45,8 @@
     <TextView
         android:id="@+id/tv_cancel"
         style="@style/main_tv"
+        android:layout_below="@+id/pb_download"
         android:textSize="@dimen/dp_10_x"
-        android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/tv_start"
         android:paddingBottom="@dimen/dp_4_y"
         android:paddingLeft="@dimen/dp_8_x"

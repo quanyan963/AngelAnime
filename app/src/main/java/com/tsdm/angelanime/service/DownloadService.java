@@ -66,6 +66,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
     private DataManagerModel mDataManagerModel;
     private boolean isExit = false;
     private static DownloadInterface downloadInterface;
+    private static boolean isError = false;
 
     @Override
     public void onCreate() {
@@ -193,6 +194,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
         @Override
         public void complete(Progress progress) {
+            isError = false;
             int id = Integer.parseInt(progress.tag);
             Notification notification = notifyList.get(id - 1);
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
@@ -218,6 +220,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
         @Override
         public void onRemove(Progress progress) {
+            isError = false;
             int id = Integer.parseInt(progress.tag);
             Notification notification = notifyList.get(id - 1);
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
@@ -236,6 +239,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
         @Override
         public void onError(Progress progress) {
+            isError = true;
             int id = Integer.parseInt(progress.tag);
             Notification notification = notifyList.get(id - 1);
             notification.flags |= Notification.FLAG_NO_CLEAR;
@@ -269,7 +273,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
         @Override
         public void stop() {
-            if (isExit)
+            if (isExit && !isError)
                 stopSelf();
         }
 
@@ -290,6 +294,13 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
     @Override
     public void onDestroy() {
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
         mDataManagerModel.deleteAllStatue();
         super.onDestroy();
     }
@@ -326,11 +337,12 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
                 }else if (intent.getAction().contains(ON_CLICK)){
                     downloadInterface.removeNotify(position);
                 }else if (intent.getAction().contains(ON_DESTROY)){
-                    if (position == -1){
-                        downloadInterface.stop();
-                    }else {
-                        downloadInterface.exit();
-                    }
+                    if (downloadInterface != null)
+                        if (position == -2){
+                            downloadInterface.stop();
+                        }else {
+                            downloadInterface.exit();
+                        }
 
                 }
             }
