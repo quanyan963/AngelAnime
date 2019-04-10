@@ -66,7 +66,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
     private DataManagerModel mDataManagerModel;
     private boolean isExit = false;
     private static DownloadInterface downloadInterface;
-    private static boolean isError = false;
+    private static boolean isError = true;
 
     @Override
     public void onCreate() {
@@ -112,6 +112,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
         //boolean isNotifyRemoved = false;
         @Override
         public void createNotification(String url, int id) {
+            isError = true;
             task = mDataManagerModel.download(getApplicationContext(),url,this,id);
             taskList.add(task);
             task.start();
@@ -165,6 +166,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
         @Override
         public void progressChange(Progress progress) {
+            isError = true;
             int id = Integer.parseInt(progress.tag);
             Notification notification = notifyList.get(id - 1);
             notification.contentView.setTextViewText(R.id.tv_remote_title, progress.fileName);
@@ -235,6 +237,11 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
             }
             EventBus.getDefault().post(new FileInformation(""
                     ,NONE, 0,id));
+
+            if (downloadStatues.size() == 1 && isExit){
+                DownloadService.this.stopSelf();
+                DownloadService.this.onDestroy();
+            }
         }
 
         @Override
@@ -273,27 +280,19 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
 
         @Override
         public void stop() {
-            if (isExit && !isError)
-                stopSelf();
+            if (isExit && !isError){
+                DownloadService.this.stopSelf();
+                DownloadService.this.onDestroy();
+            }
         }
 
 
-    }
-
-    @Override
-    public void unbindService(ServiceConnection conn) {
-        if (receiver != null) {
-            unregisterReceiver(receiver);
-            receiver = null;
-        }
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-        super.unbindService(conn);
     }
 
     @Override
     public void onDestroy() {
+        OkDownload.getInstance().removeOnAllTaskEndListener(this);
+        mDataManagerModel.deleteAllStatue();
         if (receiver != null) {
             unregisterReceiver(receiver);
             receiver = null;
@@ -301,7 +300,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
-        mDataManagerModel.deleteAllStatue();
+
         super.onDestroy();
     }
 
@@ -330,6 +329,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
                         try{
                             taskList.get(position).remove(true);
                             taskList.get(position).unRegister(String.valueOf(position + 1));
+                            taskList.remove(position);
                         }catch (Exception e){
 
                         }
@@ -339,6 +339,7 @@ public class DownloadService extends Service implements XExecutor.OnAllTaskEndLi
                 }else if (intent.getAction().contains(ON_DESTROY)){
                     if (downloadInterface != null)
                         if (position == -2){
+                            downloadInterface.exit();
                             downloadInterface.stop();
                         }else {
                             downloadInterface.exit();

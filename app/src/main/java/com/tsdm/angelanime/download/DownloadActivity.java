@@ -95,20 +95,13 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
                 if (position < downList.size()){
                     cancelIntent.putExtra(NOTIFICATION_ID, id);
                     sendBroadcast(cancelIntent);
-                    for (int i = 0; i < downList.size(); i++) {
-                        if (downList.get(i) == id){
-                            downList.remove(i);
-                            break;
-                        }
-                    }
 
                 }else {
-                    String path = MyApplication.downloadPath + fileName.get(position - downList
-                            .size() == 0 ? 0 : downList.size() - 1).getFileName();
+                    String path = MyApplication.downloadPath +"/"+ fileName.get(position).getFileName();
                     File file = new File(path);
                     if (file.exists()){
-                        deleteFile(path);
-                        downloadAdapter.notifyItemRemoved(position);
+                        file.delete();
+                        downloadAdapter.deleteData(position);
                     }
 
                 }
@@ -145,6 +138,12 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
                 if (downList.get(i) != null && downList.get(i) == information.getId()) {
                     if (information.getState() == NONE) {
                         downloadAdapter.deleteData(downList.size() - i - 1);
+                        for (int j = 0; j < downList.size(); j++) {
+                            if (downList.get(i) == information.getId()){
+                                downList.remove(i);
+                                break;
+                            }
+                        }
                     } else if (information.getState() == FINISH) {
                         downloadAdapter.insertComplete(downList.size() - i - 1,
                                 downList.size() - 1, information);
@@ -156,6 +155,7 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
                 } else if (i == downList.size() - 1) {
                     downList.add(information.getId());
                     downloadAdapter.setDownloading(information);
+                    break;
                 }
             }
         } else {

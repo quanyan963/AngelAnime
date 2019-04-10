@@ -54,6 +54,6 @@ public class IntroductionPresenter extends RxPresenter<IntroductionContract.View
 
     @Override
     public void unBind() {
-        //context.unbindService(service);
+         context.unbindService(service);
     }
 }

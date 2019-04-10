@@ -70,7 +70,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DownloadViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final DownloadViewHolder holder, int position) {
         if (data.get(position).getCreateDate() == null || data.get(position).getCreateDate().equals("")){
             if (data.get(position).getFileName() == null || data.get(position).getFileName().equals("")){
                 holder.tvFileName.setText(R.string.initing);
@@ -105,14 +105,14 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         holder.ivPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onViewClick(data.get(position).getId());
+                listener.onViewClick(data.get(holder.getAdapterPosition()).getId());
             }
         });
 
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onViewDelete(position, data.get(position).getId());
+                listener.onViewDelete(holder.getAdapterPosition(), data.get(holder.getAdapterPosition()).getId());
                 //notifyItemRemoved(position);
             }
         });

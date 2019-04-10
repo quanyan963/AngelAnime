@@ -120,13 +120,12 @@ public class MainActivity extends MvpBaseActivity<MainPresenter> implements Main
         }
         sendBroadcast(destroyIntent);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                unregisterReceiver(receiver);
-            }
-        },600);
-
+        try {
+            Thread.sleep(500);
+            unregisterReceiver(receiver);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 
