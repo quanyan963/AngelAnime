@@ -100,7 +100,5 @@ public class MyApplication extends Application {
         for (Activity activity : mActivityList) {
             activity.finish();
         }
-        //android.os.Process.killProcess(android.os.Process.myPid());
-        //System.exit(0);
     }
 }

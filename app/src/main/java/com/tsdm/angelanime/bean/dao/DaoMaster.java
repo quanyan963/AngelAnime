@@ -21,20 +21,20 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
+        DownloadStatueDao.createTable(db, ifNotExists);
         HistoryDao.createTable(db, ifNotExists);
         RecentlyDataDao.createTable(db, ifNotExists);
         TopEightDao.createTable(db, ifNotExists);
         VideoStateDao.createTable(db, ifNotExists);
-        DownloadStatueDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
+        DownloadStatueDao.dropTable(db, ifExists);
         HistoryDao.dropTable(db, ifExists);
         RecentlyDataDao.dropTable(db, ifExists);
         TopEightDao.dropTable(db, ifExists);
         VideoStateDao.dropTable(db, ifExists);
-        DownloadStatueDao.dropTable(db, ifExists);
     }
 
     /**
@@ -53,11 +53,11 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
+        registerDaoClass(DownloadStatueDao.class);
         registerDaoClass(HistoryDao.class);
         registerDaoClass(RecentlyDataDao.class);
         registerDaoClass(TopEightDao.class);
         registerDaoClass(VideoStateDao.class);
-        registerDaoClass(DownloadStatueDao.class);
     }
 
     public DaoSession newSession() {
