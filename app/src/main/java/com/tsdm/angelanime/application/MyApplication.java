@@ -11,6 +11,7 @@ import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+//import com.squareup.leakcanary.LeakCanary;
 import com.tsdm.angelanime.di.component.AppComponent;
 import com.tsdm.angelanime.di.component.DaggerAppComponent;
 import com.tsdm.angelanime.di.module.AppModule;
@@ -38,6 +39,13 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+//        leakCanary
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            // This process is dedicated to LeakCanary for heap analysis.
+//            // You should not init your app in this process.
+//            return;
+//        }
+//        LeakCanary.install(this);
         file = new File(path);
         OkGo.getInstance().init(this);
         if (sInstance == null) {
