@@ -22,7 +22,7 @@ public interface NetHelper {
 
     void getWebHtml(String s, WebResponseListener listener, Context context,Object script, String name);
 
-    //void reLoad(String name);
+    void reLoad(String name);
 
     void release();
 

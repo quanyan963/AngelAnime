@@ -226,12 +226,20 @@ public class AnimationDetailPresenter extends RxPresenter<AnimationDetailContrac
                 .map(new Function<Document, String>() {
                     @Override
                     public String apply(Document document) throws Exception {
+                        //String baseUrl = "";
                         Elements elements = document.select("script");
-                        String[] urls = elements.get(elements.size() - 1).toString()
-                                .replace("\r\n\t\t","").split("var ");
-                        String baseUrl = urls[3].split("\\\"")[1];
-                        String m3u8 = urls[11].split("\\\"")[1].split("\\?")[0];
-                        return baseUrl + m3u8;
+                        if (elements.size() > 4){
+                            String[] urls = elements.get(elements.size() - 1).toString()
+                                    .replace("\r\n\t\t","").split("var ");
+                            String baseUrl = urls[3].split("\\\"")[1];
+                            String m3u8 = urls[11].split("\\\"")[1].split("\\?")[0];
+                            return baseUrl + m3u8;
+                        }else {
+                            String[] urls = elements.get(elements.size() - 2).toString()
+                                    .replace("\r\n\t\t","").split("url:");
+                            String baseUrl = urls[1].split("type")[0].split("\\'")[1];
+                            return baseUrl;
+                        }
                     }
                 })
                 .subscribeWith(new CommonSubscriber<String>(view) {

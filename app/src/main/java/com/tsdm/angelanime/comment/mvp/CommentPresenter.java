@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.comment.mvp;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -45,6 +46,7 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
     private boolean isSlidingUpward = false;
     private int page = 1;
     private String url;
+    private int mCount;
 
     @Inject
     public CommentPresenter(DataManagerModel mDataManagerModel) {
@@ -64,19 +66,13 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
             List<ReplyItem> items = new ArrayList<>();
             CommentInput commentInput = null;
             if (rows.isEmpty()) {
-                view.getReply(new ReplyList(0));
-//                mCount += 1;
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mCount > 5){
-//                            view.getReply(new ReplyList(0));
-//                        }else {
-//                            mDataManagerModel.reLoad(mName);
-//                        }
-//
-//                    }
-//                },500);
+                //view.getReply(new ReplyList(0));
+                mCount += 1;
+                if (mCount > 5){
+                    view.getReply(new ReplyList(0));
+                }else {
+                    mDataManagerModel.reLoad(mName);
+                }
             } else {
 
                 //评论数据
@@ -92,7 +88,7 @@ public class CommentPresenter extends RxPresenter<CommentContract.View> implemen
                         data.get(8).attr("value"),
                         data.get(9).attr("value"),
                         data.get(10).attr("value"), "");
-//                mCount = 0;
+                mCount = 0;
                 pager = pager.select("a[href]");
                 //总页数
                 if (pager.select("a[href]").isEmpty()) {

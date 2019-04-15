@@ -72,6 +72,11 @@ public class DataManagerModel implements DBHelper,PreferencesHelper,NetHelper,Op
         mNetHelper.getWebHtml(s, listener, context, script,name);
     }
 
+    @Override
+    public void reLoad(String name) {
+        mNetHelper.reLoad(name);
+    }
+
 //    @Override
 //    public void reLoad(String name) {
 //        mNetHelper.reLoad(name);

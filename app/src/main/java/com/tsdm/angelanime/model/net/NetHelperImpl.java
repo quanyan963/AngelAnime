@@ -41,6 +41,8 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 
+import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
+
 /**
  * Created by Mr.Quan on 2018/11/12.
  */
@@ -103,16 +105,16 @@ public class NetHelperImpl implements NetHelper {
         initWebView(context, script, name, listener).loadUrl(s);
     }
 
-//    @Override
-//    public void reLoad(final String name) {
-////        runOnUiThread(new Runnable() {
-////            @Override
-////            public void run() {
-////                if (mWebView != null)
-////                    mWebView.loadUrl("javascript:window."+name+".processHTML(document.documentElement.outerHTML);");
-////            }
-////        });
-//    }
+    @Override
+    public void reLoad(final String name) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mWebView != null)
+                    mWebView.loadUrl("javascript:window."+name+".processHTML(document.documentElement.outerHTML);");
+            }
+        });
+    }
 
     @Override
     public void release() {
