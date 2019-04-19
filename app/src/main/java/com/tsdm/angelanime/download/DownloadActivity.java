@@ -2,6 +2,7 @@ package com.tsdm.angelanime.download;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -56,17 +57,7 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
         rlvDownload.setLayoutManager(new LinearLayoutManager(this));
         downloadAdapter = new DownloadAdapter(this);
         rlvDownload.setAdapter(downloadAdapter);
-        fileName = getFilesAllName(MyApplication.downloadPath);
-        if (fileName != null)
-            downloadAdapter.setData(fileName);
-        if (statueList.size() != 0) {
-            for (int i = 0; i < statueList.size(); i++) {
-                downList.add(statueList.get(i).getNotifyId());
-                downloadAdapter.setDownloading(new FileInformation("",
-                        statueList.get(i).getStatue(), 0, statueList.get(i).getNotifyId()));
-            }
-        }
-
+        presenter.getFileList(MyApplication.downloadPath);
 
         initToolbar();
         setNavigationIcon(true);
@@ -168,5 +159,20 @@ public class DownloadActivity extends MvpBaseActivity<DownloadPresenter> impleme
     public void onDestroy() {
         unregisterReceiver(receiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void getFileList(@Nullable List<FileInformation> informationList) {
+        fileName = informationList;
+
+        if (fileName != null)
+            downloadAdapter.setData(fileName);
+        if (statueList.size() != 0) {
+            for (int i = 0; i < statueList.size(); i++) {
+                downList.add(statueList.get(i).getNotifyId());
+                downloadAdapter.setDownloading(new FileInformation("",
+                        statueList.get(i).getStatue(), 0, statueList.get(i).getNotifyId()));
+            }
+        }
     }
 }

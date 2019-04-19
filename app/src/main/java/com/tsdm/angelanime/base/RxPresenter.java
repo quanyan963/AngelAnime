@@ -18,6 +18,7 @@ public class RxPresenter<T extends BaseView> implements BasePresenter<T> {
     private void unSubscribe() {
         if (mCompositeDisposable != null) {
             mCompositeDisposable.clear();
+            mCompositeDisposable = null;
         }
     }
 
