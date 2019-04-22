@@ -2,6 +2,7 @@ package com.tsdm.angelanime.search;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -119,9 +120,15 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     switch (motionEvent.getAction()) {
                         case MotionEvent.ACTION_UP:
-                            mContext.startActivity(new Intent(mContext, AnimationDetailActivity.class)
-                                    .putExtra(HREF_URL, Url.URL + mList.get(position).getHrefUrl()));
-                            return true;
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mContext.startActivity(new Intent(mContext,
+                                            AnimationDetailActivity.class).putExtra(HREF_URL,
+                                            Url.URL + mList.get(position).getHrefUrl()));
+                                }
+                            },100);
+                            break;
                     }
                     return false;
                 }

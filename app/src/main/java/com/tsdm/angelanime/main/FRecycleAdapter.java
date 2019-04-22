@@ -1,6 +1,7 @@
 package com.tsdm.angelanime.main;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,7 +62,12 @@ public class FRecycleAdapter extends RecyclerView.Adapter<FRecycleAdapter.FRecyc
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    listener.onItemClick(i);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onItemClick(i);
+                        }
+                    },100);
                 }
                 return false;
             }

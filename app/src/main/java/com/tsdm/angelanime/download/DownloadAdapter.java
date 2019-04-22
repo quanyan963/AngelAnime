@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -42,17 +43,17 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         notifyDataSetChanged();
     }
 
-    public void setDownloading(FileInformation information){
-        data.add(0,information);
+    public void setDownloading(FileInformation information) {
+        data.add(0, information);
         notifyItemInserted(0);
     }
 
-    public void updateData(int position, FileInformation information){
-        data.set(position,information);
+    public void updateData(int position, FileInformation information) {
+        data.set(position, information);
         notifyItemChanged(position);
     }
 
-    public void deleteData(int position){
+    public void deleteData(int position) {
         data.remove(position);
         notifyItemRemoved(position);
     }
@@ -71,10 +72,10 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
 
     @Override
     public void onBindViewHolder(@NonNull final DownloadViewHolder holder, int position) {
-        if (data.get(position).getCreateDate() == null || data.get(position).getCreateDate().equals("")){
-            if (data.get(position).getFileName() == null || data.get(position).getFileName().equals("")){
+        if (data.get(position).getCreateDate() == null || data.get(position).getCreateDate().equals("")) {
+            if (data.get(position).getFileName() == null || data.get(position).getFileName().equals("")) {
                 holder.tvFileName.setText(R.string.initing);
-            }else {
+            } else {
                 holder.tvFileName.setText(data.get(position).getFileName());
             }
             holder.rlRight.setVisibility(View.VISIBLE);
@@ -82,19 +83,19 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
             holder.ivPause.setVisibility(View.VISIBLE);
             holder.pbFileDownload.setProgress(data.get(position).getProgress());
             holder.tvFilePercent.setText(data.get(position).getProgress() == 0 ? "" : data
-                    .get(position).getProgress()+"%");
-            if (data.get(position).getState() == LOADING){
+                    .get(position).getProgress() + "%");
+            if (data.get(position).getState() == LOADING) {
                 holder.tvFileState.setText(R.string.downloading_item);
                 holder.ivPause.setImageResource(R.mipmap.pause);
-            }else if (data.get(position).getState() == PAUSE){
+            } else if (data.get(position).getState() == PAUSE) {
                 holder.tvFileState.setText(R.string.pause_waite);
                 holder.ivPause.setImageResource(R.mipmap.play);
-            }else if (data.get(position).getState() == ERROR){
+            } else if (data.get(position).getState() == ERROR) {
                 holder.tvFileName.setText(R.string.parse_error);
                 holder.ivPause.setImageResource(R.mipmap.play);
                 holder.tvFileState.setText("");
             }
-        }else {
+        } else {
             holder.ivPause.setVisibility(View.GONE);
             holder.rlRight.setVisibility(View.GONE);
             holder.rlComplete.setVisibility(View.VISIBLE);
@@ -116,18 +117,43 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
                 //notifyItemRemoved(position);
             }
         });
+
+        holder.rlComplete.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        holder.rlAll.setBackgroundResource(R.color.grey_back);
+                        holder.ivDelete.setBackgroundResource(R.color.grey_back);
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        holder.rlAll.setBackgroundResource(R.color.white);
+                        holder.ivDelete.setBackgroundResource(R.drawable.ripple_item_layout_effect_white);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        holder.rlAll.setBackgroundResource(R.color.white);
+                        holder.ivDelete.setBackgroundResource(R.drawable.ripple_item_layout_effect_white);
+                        listener.onFileOpen(holder.getAdapterPosition());
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     public void insertComplete(int loadingPosition, int completePosition, FileInformation information) {
         data.remove(loadingPosition);
         notifyItemRemoved(loadingPosition);
-        data.add(completePosition,information);
+        data.add(completePosition, information);
         notifyItemInserted(completePosition);
     }
 
-    public interface OnViewClickListener{
+    public interface OnViewClickListener {
         void onViewClick(int id);
+
         void onViewDelete(int position, int id);
+
+        void onFileOpen(int position);
     }
 
     @Override
@@ -156,6 +182,8 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         ImageView ivDelete;
         @BindView(R.id.iv_pause)
         ImageView ivPause;
+        @BindView(R.id.rl_all)
+        RelativeLayout rlAll;
 
         public DownloadViewHolder(View itemView) {
             super(itemView);
