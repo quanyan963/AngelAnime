@@ -3,6 +3,8 @@ package com.tsdm.angelanime.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
@@ -93,15 +95,16 @@ public class RoundImageView extends AppCompatImageView {
                 path.quadTo(0, height, 0, height - leftBottomRadius);
             }else {
                 path.lineTo(width, height);
-                //path.quadTo(width, height, width - rightBottomRadius, height);
 
-                //path.lineTo(leftBottomRadius, height);
-                path.quadTo(0, height, 0, height);
+                path.lineTo(0, height);
             }
 
             path.lineTo(0, leftTopRadius);
             path.quadTo(0, 0, leftTopRadius, 0);
 
+            //给画布加抗锯齿
+            canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG
+                    |Paint.FILTER_BITMAP_FLAG));
             canvas.clipPath(path);
         }
         super.onDraw(canvas);

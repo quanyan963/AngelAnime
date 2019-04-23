@@ -166,6 +166,7 @@ public class SearchActivity extends MvpBaseActivity<SearchPresenter> implements 
     }
 
     private void initHistory() {
+        //瀑布流
         rlvHistory.setHasFixedSize(true);
         rlvHistory.setLayoutManager(new FlowLayoutManager());
         rlvHistory.addItemDecoration(new DividerItemDecoration(this,

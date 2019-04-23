@@ -13,15 +13,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tsdm.angelanime.R;
+import com.tsdm.angelanime.application.MyApplication;
 import com.tsdm.angelanime.bean.FileInformation;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.lzy.okgo.model.Progress.ERROR;
+import static com.lzy.okgo.model.Progress.FINISH;
 import static com.lzy.okgo.model.Progress.LOADING;
 import static com.lzy.okgo.model.Progress.PAUSE;
 
@@ -94,6 +99,17 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
                 holder.tvFileName.setText(R.string.parse_error);
                 holder.ivPause.setImageResource(R.mipmap.play);
                 holder.tvFileState.setText("");
+            } else if (data.get(position).getState() == FINISH) {
+                String path = MyApplication.downloadPath + data.get(position).getFileName();
+                File file = new File(path);
+                notifyItemRemoved(position);
+                if (file.exists()){
+                    data.add(new FileInformation(data.get(position).getFileName(),
+                            new SimpleDateFormat("yyyy-MM-dd HH:mm")
+                            .format(new Date(file.lastModified()))));
+                }
+                data.remove(position);
+
             }
         } else {
             holder.ivPause.setVisibility(View.GONE);
