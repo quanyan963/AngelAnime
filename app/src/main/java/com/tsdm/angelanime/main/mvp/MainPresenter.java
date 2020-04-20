@@ -1,7 +1,7 @@
 package com.tsdm.angelanime.main.mvp;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
 import android.view.View;
 

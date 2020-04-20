@@ -9,9 +9,7 @@
     <string name="count">选集(%s)</string>
     <string name="cancel">取消</string>
     <string name="enter_hint">在此输入动漫名</string>
-    <string name="search_history">搜索历史</string>
     <string name="delete_history">清除搜索记录</string>
-    <string name="not_found">没找到呢</string>
     <string name="end">我是有底线的</string>
     <string name="ok">OK</string>
     <string name="network_error">网络不给力</string>

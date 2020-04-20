@@ -251,7 +251,7 @@ public class NetHelperImpl implements NetHelper {
             @Override
             public void subscribe(FlowableEmitter<Document> e) {
                 try {
-                    e.onNext(Jsoup.connect(s).get());
+                    e.onNext(Jsoup.connect(s).post());
                     e.onComplete();
                 } catch (IOException e1) {
                     listener.onError();

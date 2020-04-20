@@ -1,7 +1,7 @@
 package com.tsdm.angelanime.classify.mvp;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;

@@ -1,9 +1,12 @@
 package com.tsdm.angelanime.di.module;
 
 import android.app.Activity;
+import android.content.Intent;
 
 
 import com.tsdm.angelanime.di.scope.ActivityScope;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,4 +29,9 @@ public class ActivityModule {
         return activity;
     }
 
+
+    @Provides
+    Intent provideIntent() {
+        return new Intent();
+    }
 }

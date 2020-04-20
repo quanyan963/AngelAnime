@@ -1,7 +1,5 @@
 package com.tsdm.angelanime.bean;
 
-import android.support.annotation.Nullable;
-
 import java.io.Serializable;
 
 /**

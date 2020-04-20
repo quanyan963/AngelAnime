@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
     <!--android:layout_marginBottom="@dimen/dp_2_y"-->
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,5 +48,5 @@
             android:button="@null"
             android:checked="false"
             android:visibility="gone" />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 </RelativeLayout>

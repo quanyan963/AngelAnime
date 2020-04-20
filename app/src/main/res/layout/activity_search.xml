@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:textSize="@dimen/dp_12_x"
                 android:hint="@string/enter_hint"/>
         </RelativeLayout>
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
     <RelativeLayout
         android:visibility="invisible"
         android:id="@+id/rl_history_list"
@@ -51,7 +51,7 @@
         <View
             android:id="@+id/v_line_top"
             style="@style/main_line"/>
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rlv_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             android:background="@color/white"
             android:layout_below="@+id/v_line_top">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
         <View
             android:id="@+id/v_line_bottom"
             style="@style/main_line"
@@ -90,7 +90,7 @@
             android:id="@+id/v_loading"
             layout="@layout/view_loading" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:visibility="gone"
             android:id="@+id/rlv_search_list"
             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
             android:paddingLeft="@dimen/dp_16_x"
             android:background="@color/light_grey">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
     </RelativeLayout>
 
 

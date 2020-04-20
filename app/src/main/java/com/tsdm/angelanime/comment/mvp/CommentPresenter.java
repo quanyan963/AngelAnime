@@ -1,11 +1,10 @@
 package com.tsdm.angelanime.comment.mvp;
 
 import android.content.Context;
-import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.webkit.WebSettings;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.webkit.WebView;
 
 import com.tsdm.angelanime.application.MyApplication;

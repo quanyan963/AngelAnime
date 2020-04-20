@@ -1,7 +1,7 @@
 package com.tsdm.angelanime.di.module;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 
 import com.tsdm.angelanime.di.scope.FragmentScope;

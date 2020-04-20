@@ -1,15 +1,12 @@
 package com.tsdm.angelanime.comment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,7 +22,6 @@ import com.tsdm.angelanime.comment.mvp.CommentPresenter;
 import com.tsdm.angelanime.detail.AnimationDetailActivity;
 import com.tsdm.angelanime.utils.AlertUtils;
 import com.tsdm.angelanime.utils.HiddenAnimUtils;
-import com.tsdm.angelanime.utils.Utils;
 import com.tsdm.angelanime.widget.listener.CaptchaListener;
 import com.tsdm.angelanime.widget.listener.WebResponseListener;
 
@@ -38,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 import static com.tsdm.angelanime.utils.Constants.OK;

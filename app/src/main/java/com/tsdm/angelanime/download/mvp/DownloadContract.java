@@ -1,6 +1,6 @@
 package com.tsdm.angelanime.download.mvp;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tsdm.angelanime.base.BasePresenter;
 import com.tsdm.angelanime.base.BaseView;
